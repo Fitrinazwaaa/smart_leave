@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('akun_siswa', function (Blueprint $table) {
             $table->string('nis')->primary(); // NIS as primary key
-            $table->string('kelas');
             $table->string('nama');
             $table->enum('jk', ['L', 'P']); // Gender (L for Male, P for Female)
+            $table->string('program_keahlian');
+            $table->string('tingkatan');
+            $table->string('konsentrasi_keahlian');
             $table->string('password');
             $table->timestamps();
         });

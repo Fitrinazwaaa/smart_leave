@@ -1,17 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
 use App\Http\Controllers\GuruController;
-use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\AdminSiswaController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminKelasController;
 
-Route::get('/', [LoginController::class, 'dashboard'])->name('admin');
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.post');
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/guru/dashboard', [GuruController::class, 'dashboard'])->name('dashboardGuru');
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboardAdmin');
+    Route::get('/admin/data-siswa', [AdminController::class, 'data_siswa'])->name('dataSiswa');
 
-// Protected routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/siswa/dashboard', [SiswaController::class, 'dashboard'])->name('dashboardSiswa');
-    Route::get('/guru/dashboard', [GuruController::class, 'dashboard'])->name('dashboardGuru');
-});
+    Route::get('/admin/siswa', [AdminKelasController::class, 'indexSiswa'])->name('kelasSiswa');
+    Route::get('/admin/siswa/kelas', [AdminKelasController::class, 'indexKelas'])->name('kelasKelas');
+    Route::post('/admin/siswa/kelas/store', [AdminKelasController::class, 'store'])->name('kelas.store');
