@@ -6,7 +6,7 @@
   <title>Dispensasi Digital SMK N 1 Kawali</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ asset('css/admin/dashboard.css') }}" rel="stylesheet" type="text/css">
   <script>
     function navigateTo(page) {
       alert(`Navigasi ke halaman: ${page}`);
@@ -22,18 +22,26 @@
             <p style="font-size: 16px;font-weight: 400;">Kurikulum</p>
         </div>
         </div>
-        <button class="logout" onclick="navigateTo('logout')">Keluar</button>
+        <!-- <button class="logout" >Keluar</button> -->
+
+<!-- Form logout -->
+<form action="{{ route('logout') }}" method="POST" style="display: inline;">
+    @csrf
+    <button type="submit" class="logout">Logout</button>
+</form>
+
+
     </header>
 
     <div class="semi-circle"></div>
 
     <div class="main-container">
         <div class="menu">
-          <div class="menu-item" data-bs-toggle="tooltip" title="Lihat data siswa" onclick="navigateTo('data_siswa')">
+          <div class="menu-item" data-bs-toggle="tooltip" title="Lihat data siswa" onclick="window.location.href='{{ route('kelasSiswa') }}';">
             <i class="fas fa-user-graduate"></i>
             <span>Data Siswa</span>
           </div>
-          <div class="menu-item" data-bs-toggle="tooltip" title="Lihat data guru" onclick="navigateTo('data_guru')">
+          <div class="menu-item" data-bs-toggle="tooltip" title="Lihat data guru" onclick="window.location.href='{{ route('admin.guru.index') }}';">
             <i class="fas fa-chalkboard-teacher"></i>
             <span>Data Guru</span>
           </div>
@@ -45,6 +53,11 @@
             <i class="fas fa-file-alt"></i>
             <span>History Dispen</span>
           </div>
+          <div class="menu-item" data-bs-toggle="tooltip" title="Lihat data siswa" onclick="window.location.href='';">
+            <!-- Menggunakan ikon pengaturan untuk menunjukkan admin -->
+            <i class="fas fa-cogs"></i>
+            <span>Akun Admin</span>
+        </div>
         </div>
 
         <!-- Notifikasi dan Statistik -->
@@ -72,11 +85,12 @@
                 </table>
               </div>
             </div>
+          </div>
+
         <!-- Bootstrap 5 JS and Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybOveo3f8VgJUvP5Vyn6pd56rOH1diJfqa0ksL8/4Oh3nybs0" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0uW9YrkQ+Q+97Jmf6fF3j1vSxtIhQczb1Y88aV6YQw0W6qHm" crossorigin="anonymous"></script>
-          </div>
           <div class="stats-card">
             <h3>Statistik Pengguna</h3>
             <p class="stat">450</p>

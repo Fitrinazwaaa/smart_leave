@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->enum('jk', ['L', 'P']); // Gender (L for Male, P for Female)
             $table->string('mata_pelajaran');
+            $table->string('tingkat');
             $table->string('hari_piket');
             $table->string('password');
             $table->timestamps();

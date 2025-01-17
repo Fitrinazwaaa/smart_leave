@@ -74,7 +74,7 @@
                 <p style="font-size: 16px;font-weight: 400;">Kurikulum</p>
             </div>
         </div>
-        <button class="logout" onclick="navigateTo('logout')">Kembali</button>
+        <button class="logout" onclick="window.location.href='{{ route('kelasSiswa') }}';">Kembali</button>
     </header>
     
     <main>
@@ -88,6 +88,9 @@
             </div>
             
             <div class="buttons">
+                <button class="btn-custom" data-bs-toggle="modal" data-bs-target="#modalTambahGuru">
+                <i class="bi bi-trash"></i>
+                </button>
                 <button class="btn-custom" data-bs-toggle="modal" data-bs-target="#modalTambahKelas">
                     <i class="bi bi-plus-lg"></i> Tambah Kelas
                 </button>
@@ -106,8 +109,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTambahKelasLabel">Formulir Tambah Kelas</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                 <div class="modal-body">
                     <form id="formTambahKelas" method="POST" action="{{ route('kelas.store') }}">
                         @csrf

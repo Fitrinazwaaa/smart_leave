@@ -9,15 +9,6 @@ use Illuminate\Support\Facades\Log;
 
 class AdminKelasController extends Controller
 {
-    public function indexSiswa()
-    {
-        // Ambil semua data kelas dari database
-        $kelas = Kelas::all(); // Pastikan model Kelas sudah ada dan terhubung dengan tabel kelas
-    
-        // Kirim data kelas ke view
-        return view('admin.data_siswa', compact('kelas'));
-    }
-
     public function indexKelas()
     {
         // Ambil semua data kelas dari database

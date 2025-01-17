@@ -22,8 +22,11 @@
             <p style="font-size: 16px;font-weight: 400;">Guru</p>
         </div>
         </div>
-        <button class="logout" onclick="navigateTo('logout')">Keluar</button>
-    </header>
+<!-- Form logout -->
+<form action="{{ route('logout') }}" method="POST" style="display: inline;">
+    @csrf
+    <button type="submit" class="logout">Logout</button>
+</form>    </header>
 
     <div class="semi-circle"></div>
 

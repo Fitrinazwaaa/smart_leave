@@ -9,33 +9,34 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-        public function up(): void
-{
-    Schema::create('users', function (Blueprint $table) {
-        $table->id();
-        $table->string('username', 50)->unique();  // For NIS or NIP
-        $table->string('password');
-        $table->enum('role', ['siswa', 'guru']);  // Role to differentiate between Siswa and Guru
-        $table->rememberToken();
-        $table->timestamps();
-    });
+    public function up(): void
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('nis')->nullable()->unique();   // NIS untuk siswa, nullable agar bisa berbeda dengan guru
+            $table->string('nip')->nullable()->unique();   // NIP untuk guru, nullable agar bisa berbeda dengan siswa
+            $table->string('username')->nullable()->unique(); // Username untuk kurikulum, nullable agar bisa berbeda dengan siswa dan guru
+            $table->string('password')->nullable();  // Password untuk akun siswa
+            $table->timestamps();
+        });
 
-    // Other tables remain the same
-    Schema::create('password_reset_tokens', function (Blueprint $table) {
-        $table->string('username')->primary();
-        $table->string('token');
-        $table->timestamp('created_at')->nullable();
-    });
+        // Tabel untuk reset password
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('username')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
 
-    Schema::create('sessions', function (Blueprint $table) {
-        $table->string('id')->primary();
-        $table->foreignId('user_id')->nullable()->index();
-        $table->string('ip_address', 45)->nullable();
-        $table->text('user_agent')->nullable();
-        $table->longText('payload');
-        $table->integer('last_activity')->index();
-    });
-}
+        // Tabel sessions (default Laravel session)
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
+    }
 
     /**
      * Reverse the migrations.

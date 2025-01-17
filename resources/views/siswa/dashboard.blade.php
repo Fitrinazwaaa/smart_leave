@@ -16,36 +16,40 @@
 <body>
     <header>
         <div class="logo">
-        <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
-        <div>
-            <h2>DISPENSASI DIGITAL SMK N 1 KAWALI</h2>
-            <p style="font-size: 16px;font-weight: 400;">Siswa</p>
+          <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
+          <div>
+              <h2>DISPENSASI DIGITAL SMK N 1 KAWALI</h2>
+              <p style="font-size: 16px;font-weight: 400;">Siswa</p>
+          </div>
         </div>
-        </div>
-        <button class="logout" onclick="navigateTo('logout')">Keluar</button>
+        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+          @csrf
+          <button type="submit" class="logout">Logout</button>
+        </form>
     </header>
 
     <div class="semi-circle"></div>
 
     <div class="main-container">
-        <div class="menu">
-          <div class="menu-item" data-bs-toggle="tooltip" title="Lihat akun siswa" onclick="navigateTo('akun_siswa')">
-            <i class="fas fa-user-graduate"></i>
-            <span>Akun Siswa</span>
-          </div>
-          <div class="menu-item" data-bs-toggle="tooltip" title="Lihat akun guru" onclick="navigateTo('akun_guru')">
-            <i class="fas fa-chalkboard-teacher"></i>
-            <span>Akun Guru</span>
-          </div>
-          <div class="menu-item" data-bs-toggle="tooltip" title="Lihat jadwal piket" onclick="navigateTo('jadwal_piket')">
-            <i class="fas fa-calendar-check"></i>
-            <span>Jadwal Piket</span>
-          </div>
-          <div class="menu-item" data-bs-toggle="tooltip" title="Lihat history dispensasi" onclick="navigateTo('history_dispen')">
-            <i class="fas fa-file-alt"></i>
-            <span>History Dispen</span>
-          </div>
-        </div>
+    <div class="menu">
+  <div class="menu-item" data-bs-toggle="tooltip" title="Lihat akun siswa" onclick="navigateTo('akun_siswa')">
+    <i class="fas fa-file-alt"></i>
+    <span>Formulir</span>
+  </div>
+  <div class="menu-item" data-bs-toggle="tooltip" title="Lihat akun guru" onclick="navigateTo('akun_guru')">
+    <i class="fas fa-check-circle"></i>
+    <span>Konfirmasi</span>
+  </div>
+  <div class="menu-item" data-bs-toggle="tooltip" title="Lihat jadwal piket" onclick="navigateTo('jadwal_piket')">
+    <i class="fas fa-file-pdf"></i>
+    <span>Unduh PDF</span>
+  </div>
+  <div class="menu-item" data-bs-toggle="tooltip" title="Lihat history dispensasi" onclick="navigateTo('history_dispen')">
+    <i class="fas fa-camera"></i>
+    <span>Siswa Kembali</span>
+  </div>
+</div>
+
 
         <!-- Notifikasi dan Statistik -->
         <div class="d-flex">

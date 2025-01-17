@@ -1,7 +1,7 @@
 html, body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: linear-gradient(to bottom, #ffffff 70%, #030248);
+    /* background: linear-gradient(to bottom, #ffffff 70%, #030248); */
     min-height: 100vh;
     overflow-x: hidden; /* Mencegah scroll horizontal */
     overscroll-behavior: none; /* Mencegah overscroll (khusus untuk browser modern) */
@@ -200,3 +200,71 @@ html, body {
     button.edit:hover {
       background-color: #e1e1e1;
     }
+
+    #modalTambahSiswa .modal-content {
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      background-color: #ffffff; /* Tetap putih untuk kontras */
+      border: 1px solid #030248;
+  }
+  
+  #modalTambahSiswa .modal-header {
+      background-color: #030248;
+      color: white;
+      border-bottom: 2px solid #020031;
+      border-radius: 10px 10px 0 0;
+  }
+  
+  #modalTambahSiswa .modal-title {
+      font-weight: bold;
+      font-size: 1.25rem;
+  }
+  
+  #modalTambahSiswa .form-label {
+      font-weight: 600;
+      color: #030248; /* Gunakan warna biru gelap */
+  }
+  
+  #modalTambahSiswa .form-control {
+      border-radius: 8px;
+      border: 1px solid #030248;
+      transition: border-color 0.2s ease-in-out;
+  }
+  
+  #modalTambahSiswa .form-control:focus {
+      border-color: #030248;
+      box-shadow: 0 0 5px rgba(3, 2, 72, 0.5);
+  }
+  
+  #modalTambahSiswa .btn {
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: bold;
+  }
+  
+  #modalTambahSiswa .btn-primary {
+      background-color: #030248;
+      border-color: #030248;
+      color: white;
+      transition: background-color 0.2s ease-in-out;
+  }
+  
+  #modalTambahSiswa .btn-primary:hover {
+      background-color: #020031;
+      border-color: #020031;
+  }
+  
+  #modalTambahSiswa .btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      transition: background-color 0.2s ease-in-out;
+  }
+  
+  #modalTambahSiswa .btn-secondary:hover {
+      background-color: #5a6268;
+  }
+  
+  #modalTambahSiswa .mb-3 {
+      margin-bottom: 1.5rem !important;
+  }
+  

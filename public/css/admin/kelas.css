@@ -1,7 +1,7 @@
 html, body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: linear-gradient(to bottom, #ffffff 70%, #030248);
+    /* background: linear-gradient(to bottom, #ffffff 70%, #030248); */
     min-height: 100vh;
     overflow-x: hidden; /* Mencegah scroll horizontal */
     overscroll-behavior: none; /* Mencegah overscroll (khusus untuk browser modern) */
@@ -198,4 +198,71 @@ th {
 .table-container {
     max-height: 300px;  /* Adjust the height as needed */
     overflow-y: auto;
+}
+
+#modalTambahKelas .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff; /* Tetap putih untuk kontras */
+    border: 1px solid #030248;
+}
+
+#modalTambahKelas .modal-header {
+    background-color: #030248;
+    color: white;
+    border-bottom: 2px solid #020031;
+    border-radius: 10px 10px 0 0;
+}
+
+#modalTambahKelas .modal-title {
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+#modalTambahKelas .form-label {
+    font-weight: 600;
+    color: #030248; /* Gunakan warna biru gelap */
+}
+
+#modalTambahKelas .form-control {
+    border-radius: 8px;
+    border: 1px solid #030248;
+    transition: border-color 0.2s ease-in-out;
+}
+
+#modalTambahKelas .form-control:focus {
+    border-color: #030248;
+    box-shadow: 0 0 5px rgba(3, 2, 72, 0.5);
+}
+
+#modalTambahKelas .btn {
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+#modalTambahKelas .btn-primary {
+    background-color: #030248;
+    border-color: #030248;
+    color: white;
+    transition: background-color 0.2s ease-in-out;
+}
+
+#modalTambahKelas .btn-primary:hover {
+    background-color: #020031;
+    border-color: #020031;
+}
+
+#modalTambahKelas .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    transition: background-color 0.2s ease-in-out;
+}
+
+#modalTambahKelas .btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+#modalTambahKelas .mb-3 {
+    margin-bottom: 1.5rem !important;
 }
