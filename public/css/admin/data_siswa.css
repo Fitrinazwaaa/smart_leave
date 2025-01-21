@@ -60,7 +60,7 @@ html, body {
 
     main {
       max-width: 1280px;
-      margin: 130px auto 0;
+      margin: 107px auto 0;
       padding: 20px;
     }
 
@@ -186,6 +186,12 @@ html, body {
 
     th {
       background-color: #d9d9d9;
+      font-size: 15px;
+      text-align: center;
+    }
+
+    td {
+      font-size: 14px;
     }
 
     button.edit {
@@ -268,3 +274,18 @@ html, body {
       margin-bottom: 1.5rem !important;
   }
   
+  /* Hover effect for dropdown items */
+.dropdown-hover:hover {
+  background-color: #f8f9fa; /* Light gray on hover */
+  color: #000; /* Black text on hover */
+  }
+  
+  /* Icon hover effect */
+  .dropdown-hover:hover i {
+  color: #0056b3; /* Slightly darker blue for Import */
+  }
+  
+  /* Export hover effect for icon */
+  .dropdown-hover[href]:hover i {
+  color: #1e7e34; /* Slightly darker green for Export */
+  }

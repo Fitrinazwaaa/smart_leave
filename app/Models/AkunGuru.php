@@ -21,6 +21,7 @@ class AkunGuru extends Model
         'jk',
         'mata_pelajaran',
         'tingkat',
+        'program_keahlian',
         'hari_piket',
         'password',
     ];

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Eksports\KelasEksport;
+use App\Imports\KelasImport;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminKelasController extends Controller
 {
@@ -13,7 +15,6 @@ class AdminKelasController extends Controller
     {
         // Ambil semua data kelas dari database
         $kelas = Kelas::all(); // Pastikan model Kelas sudah ada dan terhubung dengan tabel kelas
-    
         // Kirim data kelas ke view
         return view('admin.kelas', compact('kelas'));
     }
@@ -22,14 +23,12 @@ class AdminKelasController extends Controller
     {
         try {
             Log::info('Request data:', $request->all()); // Log data yang diterima
-            
             // Validasi input
             $request->validate([
                 'program_keahlian' => 'required|string|max:255',
                 'konsentrasi_keahlian' => 'required|array|min:1',
                 'konsentrasi_keahlian.*' => 'required|string|max:255',
             ]);
-    
             // Simpan Program Keahlian dan Konsentrasi Keahlian
             foreach ($request->konsentrasi_keahlian as $konsentrasi) {
                 Kelas::create([
@@ -37,7 +36,6 @@ class AdminKelasController extends Controller
                     'konsentrasi_keahlian' => $konsentrasi,
                 ]);
             }
-            
             return response()->json([
                 'success' => true,
                 'message' => 'Kelas berhasil ditambahkan.',
@@ -48,5 +46,23 @@ class AdminKelasController extends Controller
                 'success' => false,
             ], 500);
         }
+    }
+    
+    public function import(Request $request)
+    {
+        // Validasi file
+        $request->validate([
+            'excelFile' => 'required|mimes:xlsx,csv',
+        ]);
+        // Lakukan import data
+        Excel::import(new KelasImport, $request->file('excelFile'));
+        // Redirect kembali dengan pesan sukses
+        return redirect()->back()->with('success', 'Data kelas berhasil diimpor!');
+    }
+
+    public function export()
+    {
+        // Ekspor data guru ke file Excel
+        return Excel::download(new KelasEksport, 'data_kelas.xlsx');
     }
 }

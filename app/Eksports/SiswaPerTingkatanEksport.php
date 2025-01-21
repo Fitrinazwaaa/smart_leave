@@ -9,7 +9,6 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 class SiswaPerTingkatanEksport implements FromCollection, WithHeadings, WithTitle
 {
     private $tingkatan;
-
     public function __construct($tingkatan)
     {
         $this->tingkatan = $tingkatan;
@@ -27,8 +26,6 @@ class SiswaPerTingkatanEksport implements FromCollection, WithHeadings, WithTitl
                 'program_keahlian', 
                 'jk', 
                 'password',
-                'created_at', 
-                'updated_at'
             ]);
     }
 
@@ -42,8 +39,6 @@ class SiswaPerTingkatanEksport implements FromCollection, WithHeadings, WithTitl
             'Program Keahlian', 
             'Jenis Kelamin', 
             'Password',
-            'Dibuat (kosongkan)',
-            'Diperbaharui (kosongkan)',
         ];
     }
 

@@ -42,8 +42,6 @@ class SiswaImport implements ToModel, WithHeadingRow
                     'password' => $hashedPassword, // Enkripsi Password
                     'nip' => null, // Null karena bukan guru
                     'username' => null, // Null karena bukan akun kurikulum
-                    'created_at' => now(),
-                    'updated_at' => now(),
                 ]
             );
 
@@ -68,8 +66,6 @@ class SiswaImport implements ToModel, WithHeadingRow
             'password' => $hashedPassword, // Enkripsi Password
             'nip' => null, // Null karena bukan guru
             'username' => null, // Null karena bukan akun kurikulum
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
         return $newSiswa;
