@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dispensasi Digital SMK N 1 Kawali</title>
+  <title>Dispensasi Digital SMK NEGERI 1 KAWALI</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet" type="text/css">
@@ -18,7 +18,7 @@
         <div class="logo">
         <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
         <div>
-            <h2>DISPENSASI DIGITAL SMK N 1 KAWALI</h2>
+            <h2>DISPENSASI DIGITAL SMK NEGERI 1 KAWALI</h2>
             <p style="font-size: 16px;font-weight: 400;">Guru</p>
         </div>
         </div>

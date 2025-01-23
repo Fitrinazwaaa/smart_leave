@@ -8,6 +8,7 @@
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <link href="{{ asset('css/admin/data_siswa.css') }}" rel="stylesheet">
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -26,15 +27,17 @@
 
 <body>
   <header>
+    <button class="back-button" onclick="window.location.href='{{ route('dashboard.admin') }}';">
+        <i class="fas fa-arrow-left"></i>
+    </button>
     <div class="logo">
-      <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
-      <div>
-        <h2>DISPENSASI DIGITAL SMK N 1 KAWALI</h2>
-        <p style="font-size: 16px;font-weight: 400;">Kurikulum</p>
-      </div>
+        <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
+        <div>
+            <h2>AKUN & DATA GURU SMK NEGERI 1 KAWALI</h2>
+            <p class="sub-title">Kurikulum</p>
+        </div>
     </div>
-    <button class="logout" onclick="window.location.href='{{ route('dashboard.admin') }}';">Kembali</button>
-  </header>
+</header>
 
   <main>
     @if(session('success'))
@@ -167,7 +170,7 @@
     <div class="accordion">
       @foreach ($dataGuru as $guru)
       <div class="accordion-item">
-        <button class="accordion-trigger btn btn-dark w-100">Data & Akun Guru SMK N 1 Kawali</button>
+        <button class="accordion-trigger btn btn-dark w-100">Data & Akun Guru SMK NEGERI 1 KAWALI</button>
         <div class="accordion-content">
           <table class="table table-striped">
             <thead>

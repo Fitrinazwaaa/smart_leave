@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dispensasi Digital SMK N 1 Kawali</title>
+  <title>Dispensasi Digital SMK NEGERI 1 KAWALI</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link href="{{ asset('css/admin/dashboard.css') }}" rel="stylesheet" type="text/css">
@@ -19,9 +19,9 @@
   <header>
     <div class="logo">
       <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
-      <div>
-        <h2>DISPENSASI DIGITAL SMK N 1 KAWALI</h2>
-        <p style="font-size: 16px;font-weight: 400;">Kurikulum</p>
+      <div class="text-container">
+        <h2>DISPENSASI DIGITAL SMK NEGERI 1 KAWALI</h2>
+        <p class="sub-title">Kurikulum</p>
       </div>
     </div>
     <!-- Form logout -->
@@ -30,6 +30,7 @@
       <button type="submit" class="logout">Logout</button>
     </form>
   </header>
+  
   <div class="semi-circle"></div>
   <div class="main-container">
     <div class="menu">

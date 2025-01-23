@@ -7,56 +7,90 @@ html, body {
   overscroll-behavior: none; /* Mencegah overscroll (khusus untuk browser modern) */
   }
   
-  header {
+/* Header Style */
+header {
   position: fixed;
   width: 100%;
   top: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px;
-  background-color: #030248;
+  justify-content: space-between; /* Space between logo and logout button */
+  align-items: center; /* Center items vertically */
+  padding: 15px 20px;
+  background: linear-gradient(90deg, #030248, #4b6cb7);
   color: white;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-  
-  header .logo {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-bottom: 3px solid #dce400;
+  transition: all 0.3s ease;
+}
+
+header:hover {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+/* Logo Styling */
+header .logo {
   margin-left: 40px;
   display: flex;
-  align-items: center;
-  gap: 16px;
-  }
-  
-  header .logo img {
-  width: 62px;
-  height: 62px;
-  }
-  
-  header h2{
-  margin-top: 15px;
-  margin-bottom: -1px;
-  font-size: 23px;
+  align-items: center; /* Align logo vertically in the center */
+  gap: 16px; /* Space between image and text */
+}
+
+header .logo img {
+  width: 70px;
+  height: 70px;
+  padding: 5px;
+  border-radius: 50%; /* Circular logo */
+  border: 3px solid white;
+}
+
+header .text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center text vertically within its container */
+}
+
+header h2 {
+  margin: 0;
+  font-size: 24px;
   font-weight: bold;
-  }
-  
-  header .logout {
-  margin-right: 40px;
-  background-color: #d32f2f;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  line-height: 1.2; /* Adjust line height */
+}
+
+header .sub-title {
+  margin: 0;
+  font-size: 14px;
+  color: #dce400; /* Gold subtitle color */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Logout Button Styling */
+header .logout {
+  background-color: #f44336; /* Red color */
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
+  margin-right: 40px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: 5px;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  }
-  
-  header .logout:hover {
-  background-color: #a21818;
-  box-shadow: 0 3px 11px rgba(0, 0, 0, 0.3);
-  transform: scale(1.016);
-  }
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+header .logout:hover {
+  background-color: #d32f2f; /* Darker red */
+  transform: translateY(-2px); /* Slight hover lift */
+}
+
+header .logout:focus {
+  outline: none;
+  transform: translateY(-2px);
+}
+
   
   .semi-circle {
   width: 915px;

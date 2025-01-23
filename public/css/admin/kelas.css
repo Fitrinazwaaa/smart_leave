@@ -1,268 +1,158 @@
-html, body {
+/* Global Style */
+html,
+body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    /* background: linear-gradient(to bottom, #ffffff 70%, #030248); */
+    font-family: 'Roboto', sans-serif;
     min-height: 100vh;
-    overflow-x: hidden; /* Mencegah scroll horizontal */
-    overscroll-behavior: none; /* Mencegah overscroll (khusus untuk browser modern) */
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    background: linear-gradient(to bottom, #ffffff, #f3f4f7);
+    background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
 }
 
+/* Header Style */
 header {
     position: fixed;
     width: 100%;
     top: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    /* Align items to the start */
     align-items: center;
-    padding: 6px;
-    background-color: #030248;
+    /* Vertically center the content */
+    padding: 15px;
+    background: linear-gradient(90deg, #030248, #4b6cb7);
     color: white;
     z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-bottom: 3px solid #dce400;
+    transition: all 0.3s ease;
 }
 
-header .logo {
+header:hover {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+/* Back Button Styling (Arrow only) */
+header .back-button {
     margin-left: 40px;
+    margin-right: 20px;
+    background-color: transparent;
+    border: none;
+    padding: 8px;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    /* Ensure no space between button and icon */
+}
+
+header .back-button i {
+    font-size: 20px;
+    margin: 0;
+    /* Ensure no extra space around the icon */
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect */
+header .back-button:hover {
+    transform: scale(1.1);
+    color: #dce400;
+    /* Change to gold color on hover */
+}
+
+/* Focus effect */
+header .back-button:focus {
+    outline: none;
+    transform: scale(1.1);
+}
+
+/* Logo Styling */
+header .logo {
     display: flex;
     align-items: center;
+    /* Align logo vertically in the center */
+    justify-content: center;
+    /* Center content horizontally */
     gap: 16px;
 }
 
 header .logo img {
-    width: 62px;
-    height: 62px;
+    width: 70px;
+    height: 70px;
+    padding: 5px;
+    border-radius: 50%;
+    border: 3px solid white;
 }
 
-header h2{
-    margin-top: 15px;
-    margin-bottom: -1px;
-    font-size: 23px;
+header h2 {
+    margin: 0;
+    font-size: 24px;
     font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    line-height: 1.2;
+    /* Adjust line height to improve vertical centering */
 }
 
-header .logout {
-    margin-right: 40px;
-    background-color: #d32f2f;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
+header .sub-title {
+    margin: 0;
+    font-size: 14px;
+    color: #dce400;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-header .logout:hover {
-    background-color: #a21818;
-    box-shadow: 0 3px 11px rgba(0, 0, 0, 0.3);
-    transform: scale(1.016);
-}
-
-main {
-    max-width: 1280px;
+.container {
+    max-width: 1160px;
     margin: 130px auto 0;
-    padding: 20px;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);}
+
+.card {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
-.search-container {
-    position: relative;
-    width: 423px;
-    padding-right: 1px;
-    margin-right: -20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-}
-
-.search-container:hover {
-    box-shadow: 0 3px 11px rgba(0, 0, 0, 0.3);
-    transform: scale(1.01);
-}
-
-.search-container input {
-    width: 100%;
-    padding: 12px 0 12px 40px;
-    border: 1px solid #030248;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.search-container svg {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-    color: #030248;
-}
-
-.buttons {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    margin-left: auto;
-}
-
-.btn-custom {
+.card-header {
     background-color: #030248;
     color: white;
-    border: 1px solid #dce400;
-    padding: 12px 20px;
-    cursor: pointer;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.btn-custom:hover {
-    box-shadow: 0 3px 11px rgba(0, 0, 0, 0.3);
-    transform: scale(1.06);
-    background-color: #020031;
-}
-
-.btn-custom i {
-    font-size: 18px;
-}
-
-/* Accordion CSS */
-.accordion {
-    margin-top: 30px;
-    margin-bottom: 50px;
-    width: 100%;
-}
-
-.accordion-item {
-    margin-bottom: 20px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
-}
-
-.accordion-item.active {
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-}
-
-.accordion-trigger {
-    background-color: #030248;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 12px;
-    width: 100%;
-    text-align: left;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.accordion-trigger:hover {
-    background-color: #020031;
-}
-
-.accordion-content {
-    display: block;
-    overflow: hidden;
-    opacity: 0;
-    max-height: 0;
-    transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
-    padding: 0 16px;
-}
-
-.accordion-content.active {
-    opacity: 1;
-    max-height: 500px;
-    padding: 16px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 16px;
-}
-
-th, td {
-    border: 1px solid #d9d9d9;
-    padding: 12px;
-    text-align: left;
-}
-
-th {
-    background-color: #d9d9d9;
-    text-align: center;
-}
-
-.table-container {
-    max-height: 300px;  /* Adjust the height as needed */
-    overflow-y: auto;
-}
-
-#modalTambahKelas .modal-content {
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    background-color: #ffffff; /* Tetap putih untuk kontras */
-    border: 1px solid #030248;
-}
-
-#modalTambahKelas .modal-header {
-    background-color: #030248;
-    color: white;
-    border-bottom: 2px solid #020031;
-    border-radius: 10px 10px 0 0;
-}
-
-#modalTambahKelas .modal-title {
     font-weight: bold;
-    font-size: 1.25rem;
 }
 
-#modalTambahKelas .form-label {
+.table th,
+.table td {
+    vertical-align: middle;
+}
+
+.btn-danger,
+.btn-primary {
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.form-label {
     font-weight: 600;
-    color: #030248; /* Gunakan warna biru gelap */
 }
 
-#modalTambahKelas .form-control {
-    border-radius: 8px;
-    border: 1px solid #030248;
-    transition: border-color 0.2s ease-in-out;
+.form-control {
+    border-radius: 5px;
+    box-shadow: none;
+    transition: box-shadow 0.3s ease;
 }
 
-#modalTambahKelas .form-control:focus {
-    border-color: #030248;
-    box-shadow: 0 0 5px rgba(3, 2, 72, 0.5);
+.form-control:focus {
+    box-shadow: 0 0 8px rgba(0, 48, 72, 0.2);
 }
 
-#modalTambahKelas .btn {
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: bold;
-}
-
-#modalTambahKelas .btn-primary {
-    background-color: #030248;
-    border-color: #030248;
-    color: white;
-    transition: background-color 0.2s ease-in-out;
-}
-
-#modalTambahKelas .btn-primary:hover {
-    background-color: #020031;
-    border-color: #020031;
-}
-
-#modalTambahKelas .btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    transition: background-color 0.2s ease-in-out;
-}
-
-#modalTambahKelas .btn-secondary:hover {
-    background-color: #5a6268;
-}
-
-#modalTambahKelas .mb-3 {
-    margin-bottom: 1.5rem !important;
+#loadingSpinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

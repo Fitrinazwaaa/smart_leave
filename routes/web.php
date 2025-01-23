@@ -63,4 +63,5 @@ Route::prefix('admin/siswa')->group(function () {
     Route::post('/kelas/store', [AdminKelasController::class, 'store'])->name('kelas.store');
     Route::post('/kelas/import', [AdminKelasController::class, 'import'])->name('admin.kelas.import');
     Route::get('/kelas/eksport', [AdminKelasController::class, 'export'])->name('admin.kelas.export'); // Export data kelas
+    Route::post('/kelas/delete', [AdminKelasController::class, 'destroy'])->name('kelas.destroy');
 });

@@ -18,7 +18,7 @@ class AdminKelasController extends Controller
         // Kirim data kelas ke view
         return view('admin.kelas', compact('kelas'));
     }
-    
+
     public function store(Request $request)
     {
         try {
@@ -47,7 +47,7 @@ class AdminKelasController extends Controller
             ], 500);
         }
     }
-    
+
     public function import(Request $request)
     {
         // Validasi file
@@ -65,4 +65,17 @@ class AdminKelasController extends Controller
         // Ekspor data guru ke file Excel
         return Excel::download(new KelasEksport, 'data_kelas.xlsx');
     }
+
+    public function destroy(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:kelas,id',
+        ]);
+
+        Kelas::whereIn('id', $request->ids)->delete();
+
+        return response()->json(['success' => true]);
+    }
+    
 }

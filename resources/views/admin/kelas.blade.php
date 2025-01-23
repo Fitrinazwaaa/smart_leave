@@ -1,262 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Manajemen Kelas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJb3RrP6j1eg84BQ2erfFPLBaZrj1I1NE9FYkCOs5TtZUSSHjGZbmL8HjzqP" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEJb3RrP6j1eg84BQ2erfFPLBaZrj1I1NE9FYkCOs5TtZUSSHjGZbmL8HjzqP" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="{{ asset('css/admin/kelas.css') }}" rel="stylesheet" type="text/css">
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const triggers = document.querySelectorAll(".accordion-trigger");
-
-            triggers.forEach((trigger) => {
-                trigger.addEventListener("click", () => {
-                    const content = trigger.nextElementSibling;
-                    const parentItem = trigger.closest('.accordion-item');
-
-                    content.classList.toggle("active");
-                    parentItem.classList.toggle("active");
-                });
-            });
-            // Search functionality
-            const searchInput = document.getElementById("searchProgramKeahlian");
-            searchInput.addEventListener("input", function() {
-                const programKeahlianValue = searchInput.value.toLowerCase();
-                const tableRows = document.querySelectorAll(".table tbody tr");
-                // Show or hide rows based on search
-                tableRows.forEach(row => {
-                    const programKeahlianText = row.cells[1].textContent.toLowerCase();
-                    const konsentrasiKeahlianText = row.cells[2].textContent.toLowerCase();
-                    // Hide row if it doesn't match either of the fields
-                    if (programKeahlianText.includes(programKeahlianValue) || konsentrasiKeahlianText.includes(programKeahlianValue)) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
-                // Automatically open the accordion when typing in the search box
-                const accordionItem = document.querySelector(".accordion-item");
-                const accordionContent = accordionItem.querySelector(".accordion-content");
-                if (!accordionItem.classList.contains("active")) {
-                    accordionItem.classList.add("active");
-                    accordionContent.classList.add("active");
-                }
-            });
-            // Optionally, auto-open accordion when clicking on the search input
-            const searchBox = document.getElementById("searchProgramKeahlian");
-            searchBox.addEventListener("focus", () => {
-                const accordionItem = document.querySelector(".accordion-item");
-                const accordionContent = accordionItem.querySelector(".accordion-content");
-                if (!accordionItem.classList.contains("active")) {
-                    accordionItem.classList.add("active");
-                    accordionContent.classList.add("active");
-                }
-            });
-        });
-    </script>
 </head>
 
 <body>
     <header>
+        <button class="back-button" onclick="window.location.href='{{ route('kelasSiswa') }}';">
+            <i class="fas fa-arrow-left"></i>
+        </button>
         <div class="logo">
             <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
             <div>
-                <h2>DISPENSASI DIGITAL SMK N 1 KAWALI</h2>
-                <p style="font-size: 16px;font-weight: 400;">Kurikulum</p>
+                <h2>KELAS SMK NEGERI 1 KAWALI</h2>
+                <p class="sub-title">Kurikulum</p>
             </div>
         </div>
-        <button class="logout" onclick="window.location.href='{{ route('kelasSiswa') }}';">Kembali</button>
     </header>
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @endif
-    @if($errors->any())
-    <div class="alert alert-danger">
-        {{ implode(', ', $errors->all()) }}
-    </div>
-    @endif
-    <main>
-        <div style="display: flex; align-items: center; margin-bottom: 20px;">
-            <div class="search-container">
-                <input type="text" id="searchProgramKeahlian" placeholder="Cari Program atau Konsentrasi Keahlian" class="form-control">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </div>
-            <div class="buttons">
-                <button class="btn-custom" data-bs-toggle="modal" data-bs-target="#modalTambahGuru">
-                    <i class="bi bi-trash"></i>
-                </button>
-                <button class="btn-custom" data-bs-toggle="modal" data-bs-target="#modalTambahKelas">
-                    <i class="bi bi-plus-lg"></i> Tambah Kelas
-                </button>
-                <div class="dropdown" style="position: relative;">
-                    <button class="btn btn-secondary" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: white; color: black; border:none; padding: 12px 0; margin-left: -15px; cursor: pointer; display: flex; align-items: center;">
-                        <i class="bi bi-three-dots-vertical" style="font-size: 24px;"></i>
-                    </button>
-                    <ul class="dropdown-menu shadow" aria-labelledby="dropdownMenuButton" style="border-radius: 10px; overflow: hidden; min-width: 200px;">
-                        <!-- Opsi Import -->
-                        <li>
-                            <button class="dropdown-item d-flex align-items-center dropdown-hover" data-bs-toggle="modal" data-bs-target="#importModal" style="transition: background-color 0.3s;">
-                                <i class="bi bi-upload me-2" style="font-size: 18px; color: #007bff;"></i>
-                                <span>Import Excel</span>
-                            </button>
-                        </li>
-                        <!-- Divider -->
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <!-- Opsi Export -->
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center dropdown-hover" href="{{ route('admin.kelas.export') }}" style="transition: background-color 0.3s;">
-                                <i class="bi bi-download me-2" style="font-size: 18px; color: #28a745;"></i>
-                                <span>Export Excel</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <!-- Modal Import -->
-                    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="importModalLabel">Import Data Kelas</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <form action="{{ route('admin.kelas.import') }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label for="excelFile" class="form-label">Pilih File Excel:</label>
-                                            <input type="file" class="form-control" id="excelFile" name="excelFile" accept=".xls,.xlsx" required>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                        <button type="submit" class="btn btn-primary">Import</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+    <script>
+        // Tambahkan event listener untuk perubahan scroll
+        window.addEventListener("scroll", function () {
+            const header = document.querySelector("header");
+            if (window.scrollY > 50) {
+                header.classList.add("shrink");
+            } else {
+                header.classList.remove("shrink");
+            }
+        });
+    </script>
+    
+    <div class="container">
+        <!-- Judul dan Tombol Aksi -->
+        <div class="d-flex justify-content-between align-items-center mb-20">
+            <h1 class="mb-4" style="font-weight: bold;">Manajemen Kelas</h1>
+            <button id="btnHapusTerpilih" class="btn btn-danger" style="border-radius: 6px;">Hapus</button>
         </div>
-        <!-- Modal -->
-        <div class="modal fade" id="modalTambahKelas" tabindex="-1" aria-labelledby="modalTambahKelasLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTambahKelasLabel">Formulir Tambah Kelas</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="formTambahKelas" method="POST" action="{{ route('kelas.store') }}">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="program_keahlian" class="form-label">Program Keahlian</label>
-                                <input type="text" class="form-control" id="program_keahlian" name="program_keahlian" placeholder="Masukkan Program Keahlian" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="konsentrasi_keahlian" class="form-label">Konsentrasi Keahlian</label>
-                                <input type="text" class="form-control" id="konsentrasi_keahlian" name="konsentrasi_keahlian" placeholder="Masukkan Program Keahlian" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="jml_kelas" class="form-label">Banyak Kelas</label>
-                                <input type="number" class="form-control" id="jml_kelas" name="jml_kelas" placeholder="Masukkan Jumlah Kelas" required>
-                            </div>
-                            <div id="konsentrasiKelasContainer"></div>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                            <button type="submit" class="btn btn-primary" id="btnSimpanKelas">Simpan</button>
-                        </form>
-                        <script>
-                            document.getElementById('formTambahKelas').addEventListener('submit', function(event) {
-                                event.preventDefault(); // Mencegah form untuk submit otomatis
-                                const programKeahlian = document.getElementById('program_keahlian').value;
-                                const konsentrasiKeahlian = document.getElementById('konsentrasi_keahlian').value;
-                                const jmlKelas = parseInt(document.getElementById('jml_kelas').value);
-                                // Validasi input
-                                if (!programKeahlian || !konsentrasiKeahlian || isNaN(jmlKelas) || jmlKelas <= 0) {
-                                    alert('Pastikan semua data terisi dengan benar!');
-                                    return;
-                                }
-                                // Persiapkan data untuk dikirim
-                                const dataToSend = [];
-                                for (let i = 1; i <= jmlKelas; i++) {
-                                    dataToSend.push({
-                                        program_keahlian: programKeahlian,
-                                        konsentrasi_keahlian: `${konsentrasiKeahlian} ${i}`,
-                                    });
-                                }
-                                // Kirim data ke backend
-                                fetch('{{ route("kelas.store") }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        },
-                                        body: JSON.stringify({
-                                            program_keahlian: programKeahlian,
-                                            konsentrasi_keahlian: dataToSend.map(item => item.konsentrasi_keahlian),
-                                        }),
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            alert('Kelas berhasil ditambahkan!');
-                                            location.reload(); // Reload page
-                                        } else {
-                                            alert('Terjadi kesalahan, coba lagi.');
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('Error:', error);
-                                        alert('Terjadi kesalahan pada proses pengiriman.');
-                                    });
-                            });
-                        </script>
-                    </div>
-                </div>
+
+        <!-- Tabel Data Kelas -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Daftar Kelas</h5>
             </div>
-        </div>
-        <div class="accordion">
-            <div class="accordion-item">
-                <button class="accordion-trigger btn btn-dark w-100">Kelas SMK Negeri 1 Kawali</button>
-                <div class="accordion-content">
-                    <div class="table-container">
-                        <table class="table">
-                            <thead>
+            <div class="card-body">
+                <!-- Membungkus tabel dengan div yang memiliki scroll -->
+                <div style="max-height: 320px; overflow-y: auto; overflow-x: auto;">
+                    <table class="table table-bordered" id="kelasTable">
+                        <thead style="position: sticky; top: 0; z-index: 2; background-color: #f8f9fa; color: #212529; border-top: 3px solid #dee2e6;">
+                            <tr style="text-align: center; font-weight: bold;">
+                                <th style="padding: 10px;"><input type="checkbox" id="selectAll"></th>
+                                <th style="padding: 10px;">Program Keahlian</th>
+                                <th style="padding: 10px;">Konsentrasi Keahlian</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($kelas as $item)
                                 <tr>
-                                    <th><input type="checkbox"></th>
-                                    <th>Program Keahlian</th>
-                                    <th>Konsentrasi Keahlian</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($kelas as $item)
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox"></td>
+                                    <td style="text-align: center;"><input type="checkbox" class="delete-checkbox" value="{{ $item->id }}"></td>
                                     <td>{{ $item->program_keahlian }}</td>
-                                    <td>{{ $item->konsentrasi_keahlian }}</td>
+                                    <td style="text-align: center;">{{ $item->konsentrasi_keahlian }}</td>
                                 </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </div>            
+
+        <!-- Form Tambah Kelas -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Tambah Kelas</h5>
+            </div>
+            <div class="card-body">
+                <form id="formTambahKelas">
+                    <div class="mb-3">
+                        <label for="programKeahlian" class="form-label">Program Keahlian</label>
+                        <input type="text" class="form-control" id="programKeahlian" name="program_keahlian"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="konsentrasiKeahlian" class="form-label">Konsentrasi Keahlian (<i
+                                style="color: #030248; font-size: 12px;">contoh : RPL 1, RPL 2, RPL 3</i>)</label>
+                        <input type="text" class="form-control" id="konsentrasiKeahlian" name="konsentrasi_keahlian"
+                            required>
+                    </div>
+                    <!-- Menggunakan d-flex dan justify-content-end untuk meratakan tombol ke kanan -->
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Tambah</button>
+                    </div>
+                </form>
+
+            </div>
         </div>
-    </main>
+
+        <!-- Spinner Loading -->
+        <div id="loadingSpinner" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            // Pilih semua checkbox
+            $('#selectAll').on('change', function() {
+                $('.delete-checkbox').prop('checked', this.checked);
+            });
+
+            // Form tambah kelas
+            $('#formTambahKelas').on('submit', function(e) {
+                e.preventDefault();
+
+                const programKeahlian = $('#programKeahlian').val();
+                const konsentrasiKeahlian = $('#konsentrasiKeahlian').val().split(',');
+
+                $.ajax({
+                    url: '{{ route('kelas.store') }}',
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {
+                        program_keahlian: programKeahlian,
+                        konsentrasi_keahlian: konsentrasiKeahlian,
+                    },
+                    beforeSend: function() {
+                        $('#loadingSpinner').show();
+                    },
+                    success: function(response) {
+                        $('#loadingSpinner').hide();
+                        if (response.success) {
+                            Swal.fire('Berhasil!', 'Data kelas berhasil ditambahkan.',
+                                    'success')
+                                .then(() => location.reload());
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#loadingSpinner').hide();
+                        Swal.fire('Gagal!', 'Terjadi kesalahan.', 'error');
+                    }
+                });
+            });
+
+            // Hapus kelas terpilih
+            $('#btnHapusTerpilih').on('click', function() {
+                const ids = $('.delete-checkbox:checked').map(function() {
+                    return $(this).val();
+                }).get();
+
+                if (ids.length === 0) {
+                    Swal.fire('Peringatan!', 'Pilih data yang ingin dihapus.', 'warning');
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: 'Data yang dihapus tidak dapat dikembalikan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ route('kelas.destroy') }}',
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            data: {
+                                ids: ids
+                            },
+                            beforeSend: function() {
+                                $('#loadingSpinner').show();
+                            },
+                            success: function(response) {
+                                $('#loadingSpinner').hide();
+                                if (response.success) {
+                                    Swal.fire('Berhasil!', 'Data berhasil dihapus.',
+                                            'success')
+                                        .then(() => location.reload());
+                                }
+                            },
+                            error: function() {
+                                $('#loadingSpinner').hide();
+                                Swal.fire('Gagal!', 'Terjadi kesalahan.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
     <!-- Bootstrap 5 JS and Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybOveo3f8VgJUvP5Vyn6pd56rOH1diJfqa0ksL8/4Oh3nybs0" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0uW9YrkQ+Q+97Jmf6fF3j1vSxtIhQczb1Y88aV6YQw0W6qHm" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz4fnFO9gybOveo3f8VgJUvP5Vyn6pd56rOH1diJfqa0ksL8/4Oh3nybs0" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
+        integrity="sha384-pzjw8f+ua7Kw1TIq0uW9YrkQ+Q+97Jmf6fF3j1vSxtIhQczb1Y88aV6YQw0W6qHm" crossorigin="anonymous">
+    </script>
 </body>
+
 </html>
