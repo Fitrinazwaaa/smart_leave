@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('mata_pelajaran');
             $table->string('tingkat');
             $table->string('program_keahlian')->nullable();
-            $table->string('hari_piket');
+            $table->string('hari_piket')->nullable();
             $table->string('password');
             $table->timestamps();
         });

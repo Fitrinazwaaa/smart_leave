@@ -46,7 +46,7 @@
         <i class="fas fa-file-alt"></i>
         <span>History Dispen</span>
       </div>
-      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat data siswa" onclick="window.location.href='';">
+      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat data siswa" onclick="window.location.href='{{ route('akun-kurikulum.index') }}';">
         <!-- Menggunakan ikon pengaturan untuk menunjukkan admin -->
         <i class="fas fa-cogs"></i>
         <span>Akun Admin</span>

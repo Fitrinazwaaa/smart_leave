@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Eksports\KelasEksport;
+use App\Exports\KelasEksport;
 use App\Imports\KelasImport;
 use App\Models\Kelas;
 use Illuminate\Http\Request;

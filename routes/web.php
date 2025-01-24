@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminSiswaController;
@@ -14,21 +16,21 @@ Route::middleware(['guest'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/siswa/dashboard', function () {
+    Route::get('/siswa', function () {
         if (Auth::user()->nis) { // Hanya siswa yang memiliki NIS
             return view('siswa.dashboard');
         }
         return redirect('/')->withErrors(['error' => 'Akses ditolak.']);
     })->name('dashboard.siswa');
 
-    Route::get('/guru/dashboard', function () {
+    Route::get('/guru', function () {
         if (Auth::user()->nip) { // Hanya guru yang memiliki NIP
             return view('guru.dashboard');
         }
         return redirect('/')->withErrors(['error' => 'Akses ditolak.']);
     })->name('dashboard.guru');
 
-    Route::get('/admin/dashboard', function () {
+    Route::get('/admin', function () {
         if (Auth::user()->username) { // Hanya kurikulum yang memiliki username
             return view('admin.dashboard');
         }
@@ -39,12 +41,17 @@ Route::middleware(['auth'])->group(function () {
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::prefix('admin/pengaturan')->group(function () {
+    Route::get('/', [AdminController::class, 'edit'])->name('akun-kurikulum.index');
+    Route::post('/update', [AdminController::class, 'update'])->name('akun-kurikulum.update');
+}); 
 // Rute untuk manajemen data guru
 Route::prefix('admin/guru')->group(function () {
     Route::get('/', [AdminGuruController::class, 'indexGuru'])->name('admin.guru.index'); // Halaman daftar guru
     Route::post('/store', [AdminGuruController::class, 'store'])->name('admin.guru.store'); // Tambah data guru
     Route::post('/import', [AdminGuruController::class, 'import'])->name('admin.guru.import'); // Import data guru
     Route::get('/export', [AdminGuruController::class, 'export'])->name('admin.guru.export'); // Export data guru
+    Route::delete('/hapus', [AdminGuruController::class, 'destroyMultiple'])->name('delete-guru');
 });
 
 Route::prefix('admin/siswa')->group(function () {
@@ -53,7 +60,7 @@ Route::prefix('admin/siswa')->group(function () {
     Route::post('/store', [AdminSiswaController::class, 'store'])->name('akun-siswa.store');
     Route::get('/get-konsentrasi', [AdminSiswaController::class, 'getKonsentrasi'])->name('get-konsentrasi');
     Route::get('/naik-tingkat', [AdminSiswaController::class, 'increaseTingkatan'])->name('increaseTingkatan');
-    Route::delete('/hapus-multiple', [AdminSiswaController::class, 'destroyMultiple'])->name('delete-siswa');
+    Route::delete('/hapus', [AdminSiswaController::class, 'destroyMultiple'])->name('delete-siswa');
     Route::get('/search', [AdminSiswaController::class, 'search'])->name('akun_siswa.search');
     Route::get('/export', [AdminSiswaController::class, 'export'])->name('export-siswa');
     Route::post('/import', [AdminSiswaController::class, 'import'])->name('import-siswa');

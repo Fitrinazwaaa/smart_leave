@@ -10,11 +10,10 @@ class AkunSiswa extends Model
     use HasFactory;
 
     protected $table = 'akun_siswa';
-    protected $guarded=[];
-
     protected $primaryKey = 'nis';
-    protected $keyType = 'string';
+    protected $guarded=[];
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'nis',

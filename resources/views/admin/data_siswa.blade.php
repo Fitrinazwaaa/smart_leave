@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konfirmasi Dispensasi</title>
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KyZXEJb3RrP6j1eg84BQ2erfFPLBaZrj1I1NE9FYkCOs5TtZUSSHjGZbmL8HjzqP" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJb3RrP6j1eg84BQ2erfFPLBaZrj1I1NE9FYkCOs5TtZUSSHjGZbmL8HjzqP" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -87,15 +86,12 @@
                     </form>
                 </div>
                 <!-- Modal untuk menambah akun siswa -->
-                <div class="modal fade" id="modalTambahSiswa" tabindex="-1" aria-labelledby="modalTambahSiswaLabel"
-                    aria-hidden="true">
+                <div class="modal fade" id="modalTambahSiswa" tabindex="-1" aria-labelledby="modalTambahSiswaLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modalTambahSiswaLabel">Formulir Tambah Data & Akun Siswa
-                                </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                                <h5 class="modal-title" id="modalTambahSiswaLabel">Formulir Tambah Data & Akun Siswa</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <!-- Formulir Tambah Akun Siswa -->
@@ -257,8 +253,7 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            <input type="checkbox" id="select_all_{{ $tingkatan['tingkatan'] }}"
-                                                class="select_all" data-tingkatan="{{ $tingkatan['tingkatan'] }}">
+                                            <input type="checkbox" id="select_all_{{ $tingkatan['tingkatan'] }}" class="select_all" data-tingkatan="{{ $tingkatan['tingkatan'] }}">
                                         </th>
                                         <th>NIS</th>
                                         <th>Nama</th>
@@ -271,9 +266,7 @@
                                     @foreach ($tingkatan['data'] as $siswa)
                                         <tr class="searchable">
                                             <td style="text-align: center;">
-                                                <input type="checkbox" name="hapus[]"
-                                                    class="checkbox_ids checkbox_ids_{{ $tingkatan['tingkatan'] }}"
-                                                    value="{{ $siswa['nis'] }}">
+                                                <input type="checkbox" name="hapus[]" class="checkbox_ids checkbox_ids_{{ $tingkatan['tingkatan'] }}" value="{{ $siswa['nis'] }}">
                                             </td>
                                             <td style="text-align: center">{{ $siswa['nis'] }}</td>
                                             <td>{{ $siswa['nama'] }}</td>
@@ -472,12 +465,7 @@
     {{-- DELETE - END --}}
     <!-- Bootstrap 5 JS and Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-        integrity="sha384-oBqDVmMz4fnFO9gybOveo3f8VgJUvP5Vyn6pd56rOH1diJfqa0ksL8/4Oh3nybs0" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
-        integrity="sha384-pzjw8f+ua7Kw1TIq0uW9YrkQ+Q+97Jmf6fF3j1vSxtIhQczb1Y88aV6YQw0W6qHm" crossorigin="anonymous">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybOveo3f8VgJUvP5Vyn6pd56rOH1diJfqa0ksL8/4Oh3nybs0" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"integrity="sha384-pzjw8f+ua7Kw1TIq0uW9YrkQ+Q+97Jmf6fF3j1vSxtIhQczb1Y88aV6YQw0W6qHm" crossorigin="anonymous"></script>
 </body>
-
 </html>

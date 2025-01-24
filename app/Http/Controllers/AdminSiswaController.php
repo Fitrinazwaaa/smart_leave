@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Eksports\SiswaEksport;
+use App\Exports\SiswaEksport;
 use App\Imports\SiswaImport;
 use Illuminate\Http\Request;
 use App\Models\AkunSiswa;

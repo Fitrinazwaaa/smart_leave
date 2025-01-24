@@ -1,5 +1,5 @@
 <?php
-namespace App\Eksports;
+namespace App\Exports;
 
 use App\Models\AkunSiswa;
 use Maatwebsite\Excel\Concerns\FromCollection;

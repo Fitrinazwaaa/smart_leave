@@ -25,4 +25,7 @@ class AkunGuru extends Model
         'hari_piket',
         'password',
     ];
+    protected $hidden = [
+        'password',
+    ];
 }

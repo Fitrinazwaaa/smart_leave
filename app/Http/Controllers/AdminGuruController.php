@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\GuruImport;
 use App\Exports\GuruExport;
 use App\Models\Kelas;
+use App\Models\User;
 
 class AdminGuruController extends Controller
 {
@@ -55,6 +56,19 @@ class AdminGuruController extends Controller
         }
     }
 
+    public function destroyMultiple(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'hapus' => 'required|array|min:1',
+            'hapus.*' => 'exists:akun_guru,nip', // pastikan nip yang dipilih valid
+        ]);
+        // Hapus data poin pelajar dengan nip yang sesuai
+        User::whereIn('nip', $request->hapus)->delete();
+        // Hapus entri guru berdasarkan nip yang dipilih
+        AkunGuru::whereIn('nip', $request->hapus)->delete();
+        return redirect()->route('admin.guru.index')->with('success', 'Guru yang dipilih beserta akunnya berhasil dihapus.');
+    }
 
     public function indexGuru()
     {
