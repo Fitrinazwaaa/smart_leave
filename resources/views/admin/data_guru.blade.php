@@ -210,15 +210,14 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="program_keahlian" class="form-label">Program Keahlian</label>
-                                    <select class="form-select" id="program_keahlian" name="program_keahlian"
-                                        required>
+                                    <select class="form-select" id="program_keahlian" name="program_keahlian" required>
                                         <option value="">Pilih Program Keahlian</option>
                                         @foreach ($programKeahlian as $item)
-                                            <option value="{{ $item->program_keahlian }}">{{ $item->program_keahlian }}
-                                            </option>
+                                            <option value="{{ $item->program_keahlian }}">{{ $item->program_keahlian }}</option>
                                         @endforeach
+                                        <option value="NULL">Tidak Memilih</option> <!-- Opsi Kosong yang bisa dipilih -->
                                     </select>
-                                </div>
+                                </div>                                
                                 <div class="mb-3">
                                     <label for="hari_piket" class="form-label">Hari Piket</label>
                                     <select class="form-select" id="hari_piket" name="hari_piket" required>
@@ -228,8 +227,9 @@
                                         <option value="Rabu">Rabu</option>
                                         <option value="Kamis">Kamis</option>
                                         <option value="Jumat">Jumat</option>
+                                        <option value="NULL">Tidak ada jadwal</option> <!-- Opsi Kosong yang bisa dipilih -->
                                     </select>
-                                </div>
+                                </div>                                
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password</label>
                                     <input type="password" class="form-control" id="password" name="password"
@@ -256,6 +256,8 @@
                 {{ session('error') }}
             </div>
         @endif
+    <!-- Bagian untuk pengecekan data guru -->
+    @if($dataGuru->isNotEmpty()) <!-- Jika data guru tidak kosong -->
         <div class="accordion">
             <div class="accordion-item">
                 <button class="accordion-trigger btn btn-dark w-100">DATA & AKUN GURU SMK NEGERI 1 KAWALI</button>
@@ -291,6 +293,7 @@
                 </div>
             </div>
         </div>
+    @endif
     </main>
     {{-- DELETE - START --}}
     <script>
