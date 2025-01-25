@@ -45,6 +45,7 @@ Route::prefix('admin/pengaturan')->group(function () {
     Route::get('/', [AdminController::class, 'edit'])->name('akun-kurikulum.index');
     Route::post('/update', [AdminController::class, 'update'])->name('akun-kurikulum.update');
 }); 
+
 // Rute untuk manajemen data guru
 Route::prefix('admin/guru')->group(function () {
     Route::get('/', [AdminGuruController::class, 'indexGuru'])->name('admin.guru.index'); // Halaman daftar guru

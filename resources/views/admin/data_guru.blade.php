@@ -1,3 +1,7 @@
+<?php
+use App\Models\AkunGuru;
+$totalGuru = AkunGuru::count(); // Hitung jumlah guru
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -227,7 +231,7 @@
                                         <option value="Rabu">Rabu</option>
                                         <option value="Kamis">Kamis</option>
                                         <option value="Jumat">Jumat</option>
-                                        <option value="NULL">Tidak ada jadwal</option> <!-- Opsi Kosong yang bisa dipilih -->
+                                        <option value="-">Tidak ada jadwal</option> <!-- Opsi Kosong yang bisa dipilih -->
                                     </select>
                                 </div>                                
                                 <div class="mb-3">
@@ -260,7 +264,10 @@
     @if($dataGuru->isNotEmpty()) <!-- Jika data guru tidak kosong -->
         <div class="accordion">
             <div class="accordion-item">
-                <button class="accordion-trigger btn btn-dark w-100">DATA & AKUN GURU SMK NEGERI 1 KAWALI</button>
+                <button class="accordion-trigger btn btn-dark w-100">DATA & AKUN GURU SMK NEGERI 1 KAWALI <span class="float-end"
+                    style="font-weight: 500; margin-right: 20px; font-size: 11px; margin-top: 4px">
+                    Jumlah Guru: {{ $totalGuru }}
+                </span></button>
                 <div class="accordion-content">
                     <table class="table table-striped">
                         <thead>
@@ -285,11 +292,11 @@
                                     <td>{{ $guru->mata_pelajaran }}</td>
                                     <td>{{ $guru->tingkat }}</td>
                                     <td>{{ $guru->program_keahlian }}</td>
-                                    <td>{{ $guru->hari_piket }}</td>
+                                    <td>{{ is_null($guru->hari_piket) ? '-' : $guru->hari_piket }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table>                    
                 </div>
             </div>
         </div>
