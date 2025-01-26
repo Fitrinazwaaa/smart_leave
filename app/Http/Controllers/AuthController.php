@@ -16,17 +16,22 @@ class AuthController extends Controller
 
     public function loginSiswa(Request $request)
     {
-        $request->validate([
-            'nis' => 'required|string|max:20',
-            'password' => 'required|string|min:6',
+        // Validasi kredensial login siswa
+        $credentials = $request->validate([
+            'nis' => 'required',
+            'password' => 'required',
         ]);
-        // Cek kredensial login siswa
-        if (Auth::attempt(['nis' => $request->nis, 'password' => $request->password])) {
-            return redirect()->route('dashboard.siswa'); // Redirect ke dashboard siswa
+    
+        // Cek apakah siswa ada
+        if (Auth::attempt($credentials)) {
+            $nis = Auth::user()->nis;  // Ambil NIS dari user yang login
+            return redirect()->route('dashboard.siswa', ['nis' => $nis]);  // Arahkan ke dashboard siswa dengan NIS
         }
+    
         // Jika login gagal
-        return redirect()->back()->withErrors(['error' => 'NIS atau password salah.'])->withInput();
+        return back()->withErrors(['error' => 'NIS atau password salah.']);
     }
+    
 
     public function loginGuru(Request $request)
     {

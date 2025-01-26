@@ -7,6 +7,9 @@ use App\Http\Controllers\AdminSiswaController;
 use App\Http\Controllers\AdminKelasController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminGuruController;
+use App\Http\Controllers\GuruKonfirmasiController;
+use App\Http\Controllers\SiswaDispensasiController;
+use App\Http\Controllers\SiswaKonfirmController;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/', [AuthController::class, 'index_login'])->name('login');
@@ -44,7 +47,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::prefix('admin/pengaturan')->group(function () {
     Route::get('/', [AdminController::class, 'edit'])->name('akun-kurikulum.index');
     Route::post('/update', [AdminController::class, 'update'])->name('akun-kurikulum.update');
-}); 
+});
 
 // Rute untuk manajemen data guru
 Route::prefix('admin/guru')->group(function () {
@@ -72,4 +75,21 @@ Route::prefix('admin/siswa')->group(function () {
     Route::post('/kelas/import', [AdminKelasController::class, 'import'])->name('admin.kelas.import');
     Route::get('/kelas/eksport', [AdminKelasController::class, 'export'])->name('admin.kelas.export'); // Export data kelas
     Route::post('/kelas/delete', [AdminKelasController::class, 'destroy'])->name('kelas.destroy');
+});
+
+Route::prefix('/siswa')->group(function () {
+    Route::get('/dispensasi', [SiswaDispensasiController::class, 'index'])->name('dispensasi.index');
+    Route::get('/dispensasi/create', [SiswaDispensasiController::class, 'create'])->name('dispensasi.create');
+    Route::post('/dispensasi', [SiswaDispensasiController::class, 'store'])->name('dispensasi.store');
+    Route::get('/dispensasi/{dispensasi}/edit', [SiswaDispensasiController::class, 'edit'])->name('dispensasi.edit');
+    Route::put('/dispensasi/{dispensasi}', [SiswaDispensasiController::class, 'update'])->name('dispensasi.update');
+    Route::get('/dispensasi/qr-code', [SiswaDispensasiController::class, 'generateQRCode'])->name('dispensasi.qrCode');
+    Route::get('/dispensasi/lapor-kembali', [SiswaDispensasiController::class, 'showReturnForm'])->name('dispensasi.reportReturn');
+    Route::post('/dispensasi/lapor-kembali', [SiswaDispensasiController::class, 'storeReturn'])->name('dispensasi.storeReturn');
+    Route::get('/konfirmasi', [SiswaKonfirmController::class, 'tungguKonfir'])->name('konfirm.index');
+    
+});
+
+Route::prefix('/guru')->group(function () {
+    Route::get('/konfirm_guru_piket', [GuruKonfirmasiController::class, 'konfirGuruPiket'])->name('konfirGuruPiket');
 });

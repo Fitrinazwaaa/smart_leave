@@ -32,9 +32,9 @@
 
     <div class="main-container">
         <div class="menu">
-          <div class="menu-item" data-bs-toggle="tooltip" title="Lihat akun siswa" onclick="navigateTo('akun_siswa')">
+          <div class="menu-item" data-bs-toggle="tooltip" title="Lihat konfirmasi guru piket" onclick="window.location.href='{{ route('konfirGuruPiket') }}';">
             <i class="fas fa-user-graduate"></i>
-            <span>Akun Siswa</span>
+            <span>Konfirmasi Guru Piket</span>
           </div>
           <div class="menu-item" data-bs-toggle="tooltip" title="Lihat akun guru" onclick="navigateTo('akun_guru')">
             <i class="fas fa-chalkboard-teacher"></i>
