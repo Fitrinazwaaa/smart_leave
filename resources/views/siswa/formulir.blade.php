@@ -5,26 +5,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulir Dispensasi - SMK NEGERI 1 KAWALI</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link href="{{ asset('css/form.css') }}" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJb3RrP6j1eg84BQ2erfFPLBaZrj1I1NE9FYkCOs5TtZUSSHjGZbmL8HjzqP" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Global Style */
+        html,
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overscroll-behavior: none;
+            background: linear-gradient(to bottom, #ffffff, #f3f4f7);
+            background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+        }
+
+        /* Header Style */
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            display: flex;
+            justify-content: flex-start;
+            /* Align items to the start */
+            align-items: center;
+            /* Vertically center the content */
+            padding: 15px;
+            background: linear-gradient(90deg, #030248, #4b6cb7);
+            color: white;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-bottom: 3px solid #dce400;
+            transition: all 0.3s ease;
+        }
+
+        header:hover {
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Back Button Styling (Arrow only) */
+        header .back-button {
+            margin-left: 40px;
+            margin-right: 20px;
+            background-color: transparent;
+            border: none;
+            padding: 8px;
+            font-size: 20px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease, color 0.3s ease;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            /* Ensure no space between button and icon */
+        }
+
+        header .back-button i {
+            font-size: 20px;
+            margin: 0;
+            /* Ensure no extra space around the icon */
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        /* Hover effect */
+        header .back-button:hover {
+            transform: scale(1.1);
+            color: #dce400;
+            /* Change to gold color on hover */
+        }
+
+        /* Focus effect */
+        header .back-button:focus {
+            outline: none;
+            transform: scale(1.1);
+        }
+
+        /* Logo Styling */
+        header .logo {
+            display: flex;
+            align-items: center;
+            /* Align logo vertically in the center */
+            justify-content: center;
+            /* Center content horizontally */
+            gap: 16px;
+        }
+
+        header .logo img {
+            width: 70px;
+            height: 70px;
+            padding: 5px;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+
+        header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            line-height: 1.2;
+            /* Adjust line height to improve vertical centering */
+        }
+
+        header .sub-title {
+            margin: 0;
+            font-size: 14px;
+            color: #dce400;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+    main {
+        max-width: 1000px; /* Membatasi lebar konten */
+        margin: 130px auto 30px; /* Menambahkan margin atas yang lebih besar dari header */
+        padding: 30px; /* Padding di dalam kontainer */
+        background-color: #ffffff; /* Warna latar belakang putih */
+        border-radius: 12px; /* Sudut melengkung untuk estetika */
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Shadow lebih lembut dan profesional */
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efek hover */
+    }
+
+    main:hover {
+        transform: translateY(-5px); /* Sedikit efek hover untuk interaksi */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Shadow lebih intens saat hover */
+    }
+
+    /* Responsivitas untuk layar kecil */
+    @media (max-width: 768px) {
+        main {
+            margin: 120px 15px 30px; /* Menambahkan jarak atas lebih kecil pada layar kecil */
+            padding: 20px; /* Mengurangi padding untuk layar kecil */
+        }
+    }
+    </style>
 </head>
 
 <body>
-    <header class="bg-primary text-white py-3">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div class="logo d-flex align-items-center">
-                <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo" width="50" class="me-2">
-                <h2 class="mb-0">Formulir Dispensasi</h2>
+    <header>
+        <button class="back-button" onclick="window.location.href='{{ route('dashboard.siswa') }}';">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="logo">
+            <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
+            <div>
+                <h2>DISPENSASI SISWA SMK NEGERI 1 KAWALI</h2>
+                <p class="sub-title">{{ $siswa->nama }}</p>
             </div>
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-danger">Logout</button>
-            </form>
         </div>
     </header>
 
-    <main class="container mt-4">
-        <h3 class="mb-4">Isi Formulir Dispensasi</h3>
+    <main class="container">
+        <h3 style="text-align: center; font-weight: bold;">Isi Formulir Dispensasi</h3>
 
         <!-- Formulir Dispensasi -->
         <form action="{{ route('dispensasi.store') }}" method="POST" enctype="multipart/form-data">
@@ -42,11 +176,7 @@
 
             <div class="mb-3">
                 <label for="jk" class="form-label">Jenis Kelamin</label>
-                <select class="form-select" id="jk" name="jk" required>
-                    <option value="" disabled selected>Pilih kategori</option>
-                    <option value="P" {{ $siswa->jk == 'P' ? 'selected' : '' }}>Perempuan</option>
-                    <option value="L" {{ $siswa->jk == 'L' ? 'selected' : '' }}>Laki - Laki</option>
-                </select>
+                <input type="text" class="form-control" id="jk" name="jk" value="{{ $siswa->jk }}" readonly>
             </div>
 
             <div class="mb-3">
@@ -63,6 +193,28 @@
                 <label for="program_keahlian" class="form-label">Program Keahlian</label>
                 <input type="text" class="form-control" id="program_keahlian" name="program_keahlian" value="{{ $siswa->program_keahlian }}" readonly>
             </div>
+            
+<!-- Mata Pelajaran yang tidak di ikuti -->
+<div class="mb-3">
+    <label for="mata_pelajaran" class="form-label">Mata Pelajaran Yang Tidak Diikuti</label>
+    <select class="form-control" id="mata_pelajaran" name="mata_pelajaran" required>
+        <option value="" disabled selected>Pilih Mata Pelajaran</option>
+        @foreach($mataPelajaran as $mataPelajaranItem)
+            <option value="{{ $mataPelajaranItem->mata_pelajaran }}">{{ $mataPelajaranItem->mata_pelajaran }}</option>
+        @endforeach
+    </select>
+</div>
+
+<!-- Nama Pengajar -->
+<div class="mb-3">
+    <label for="nama_pengajar" class="form-label">Nama Pengajar</label>
+    <select class="form-select" id="nama_pengajar" name="nama_pengajar" required>
+        <option value="" disabled selected>Pilih Nama Pengajar</option>
+    </select>
+</div>
+
+<!-- Input tersembunyi untuk menyimpan NIP -->
+<input type="hidden" id="nip" name="nip">
 
             <!-- Kategori Dispensasi -->
             <div class="mb-3">
@@ -103,8 +255,39 @@
             <p>&copy; 2025 SMK Negeri 1 Kawali | All Rights Reserved</p>
         </div>
     </footer>
+    <script>
+    document.getElementById('mata_pelajaran').addEventListener('change', function() {
+        var mataPelajaran = this.value;
+
+        if (mataPelajaran) {
+            fetch(`/siswa/get-pengajar/${mataPelajaran}`)
+                .then(response => response.json())
+                .then(data => {
+                    var namaPengajarSelect = document.getElementById('nama_pengajar');
+                    namaPengajarSelect.innerHTML = '<option value="" disabled selected>Pilih Nama Pengajar</option>';
+
+                    data.forEach(function(pengajar) {
+                        var option = document.createElement('option');
+                        option.value = pengajar.nip;
+                        option.textContent = pengajar.nama;
+                        namaPengajarSelect.appendChild(option);
+                    });
+
+                    // Menambahkan event listener untuk menangani pemilihan nama pengajar
+                    namaPengajarSelect.addEventListener('change', function() {
+                        var nip = this.value;
+                        document.getElementById('nip').value = nip;  // Menyimpan nip yang terpilih ke input tersembunyi
+                    });
+                })
+                .catch(error => console.log('Error:', error));
+        }
+    });
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybOveo3f8VgJUvP5Vyn6pd56rOH1diJfqa0ksL8/4Oh3nybs0" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0uW9YrkQ+Q+97Jmf6fF3j1vSxtIhQczb1Y88aV6YQw0W6qHm" crossorigin="anonymous"></script>
 </body>
 
 </html>

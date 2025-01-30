@@ -30,4 +30,9 @@ class MataPelajaranGuru extends Model
         'tingkat',
         'mata_pelajaran',
     ];
+    public function siswa()
+{
+    return $this->hasMany(AkunSiswa::class, 'program_keahlian', 'program_keahlian');
+}
+
 }

@@ -1,463 +1,201 @@
+<?php
+// Ambil NIP dari pengguna yang sedang login
+
+use App\Models\AkunGuru;
+use App\Models\Dispensasi;
+use App\Models\Konfirmasi;
+use Illuminate\Support\Facades\Auth;
+
+$nip = Auth::user()->nip;
+$guru = AkunGuru::where('nip', $nip)->first();
+
+// Jika guru tidak ditemukan, redirect ke halaman login dengan error
+if (!$guru) {
+    return redirect()->route('login')->withErrors(['error' => 'Guru tidak ditemukan.']);
+}
+
+// Variabel untuk menampung jumlah pengajuan yang memerlukan konfirmasi
+$pengajuanPiket = 0;
+$pengajuanPengajar = 0;
+$pengajuanKurikulum = 0;
+
+// Memeriksa apakah guru tersebut memiliki izin untuk mengonfirmasi pengajuan
+if ($guru->jabatan == 'piket') {
+    // Hitung jumlah pengajuan yang memerlukan konfirmasi untuk guru piket
+    $pengajuanPiket = Dispensasi::join('konfirmasi', 'dispensasi.id_dispen', '=', 'konfirmasi.id_dispen')
+        ->where('dispensasi.nip', $nip)
+        ->whereNull('konfirmasi.konfirmasi_1')  // Belum terkonfirmasi oleh guru piket
+        ->whereNull('konfirmasi.konfirmasi_2')  // Belum terkonfirmasi oleh pihak lain
+        ->count();
+}
+
+if ($guru->mata_pelajaran) {
+    // Hitung jumlah pengajuan yang memerlukan konfirmasi untuk guru pengajar
+    $pengajuanPengajar = Dispensasi::join('konfirmasi', 'dispensasi.id_dispen', '=', 'konfirmasi.id_dispen')
+        ->where('dispensasi.nip', $nip)
+        ->whereNull('konfirmasi.konfirmasi_1')  // Belum terkonfirmasi oleh guru pengajar
+        ->whereNull('konfirmasi.konfirmasi_2')  // Belum terkonfirmasi oleh pihak lain
+        ->count();
+}
+
+if ($guru->jabatan == 'kurikulum') {
+    // Hitung jumlah pengajuan yang memerlukan konfirmasi untuk kurikulum
+    $pengajuanKurikulum = Konfirmasi::whereNull('konfirmasi.konfirmasi_2') // Belum terkonfirmasi oleh kurikulum
+        ->whereNull('konfirmasi.konfirmasi_3') // Belum terkonfirmasi oleh pihak lain
+        ->count(); 
+}
+
+
+$pengajuanDispen = Dispensasi::where('status', 'pending')->count(); // Asumsi status "pending" untuk dispensasi yang belum diproses
+
+$notifications = Auth::user()->notifications ?? []; // Notifikasi default
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konfirmasi Dispensasi</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KyZXEJb3RrP6j1eg84BQ2erfFPLBaZrj1I1NE9FYkCOs5TtZUSSHjGZbmL8HjzqP" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="{{ asset('css/admin/data_siswa.css') }}" rel="stylesheet" type="text/css">
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const triggers = document.querySelectorAll(".accordion-trigger");
-            triggers.forEach((trigger) => {
-                trigger.addEventListener("click", () => {
-                    const content = trigger.nextElementSibling;
-                    const parentItem = trigger.closest('.accordion-item');
-                    content.classList.toggle("active");
-                    parentItem.classList.toggle("active");
-                });
-            });
-        });
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dashboard guru</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet" type="text/css">
+  <script>
+    function navigateTo(page) {
+      alert(`Navigasi ke halaman: ${page}`);
+    }
+  </script>
 </head>
 
 <body>
-    <header>
-        <div class="logo">
-            <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
-            <div>
-                <h2>DISPENSASI DIGITAL SMK NEGERI 1 KAWALI</h2>
-                <p style="font-size: 16px;font-weight: 400;">Kurikulum</p>
-            </div>
-        </div>
-        <button class="logout" onclick="window.location.href='{{ route('dashboard.admin') }}';">Kembali</button>
-    </header>
-    <!-- Modal Konfirmasi Hapus -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Penghapusan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Apakah Anda yakin ingin menghapus siswa yang dipilih?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Hapus</button>
-                </div>
-            </div>
-        </div>
+  <header>
+    <div class="logo">
+      <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
+      <div class="text-container">
+        <h2>DISPENSASI DIGITAL SMK NEGERI 1 KAWALI</h2>
+        <p class="sub-title">{{ $guru->nama }}</p>
+      </div>
     </div>
-    <main>
-        <div style="display: flex; align-items: center; margin-bottom: 20px;">
-            <!-- Searching -->
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Cari NIS, Nama, Kelas, Program Keahlian..."
-                    onkeyup="searchTable()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </div>
-            <div class="buttons">
-                <div class="buttons">
-                    <!-- Tombol Hapus yang hanya muncul setelah memilih siswa -->
-                    <button type="button" class="btn-custom" onclick="deleteSelected()"><i class="bi bi-trash"></i>
-                        Hapus Terpilih</button>
-                    <!-- Tombol untuk membuka modal -->
-                    <button class="btn-custom" data-bs-toggle="modal" data-bs-target="#modalTambahSiswa">
-                        <i class="bi bi-plus-lg"></i> Tambah Siswa
-                    </button>
-                    <!-- Form untuk hapus yang disembunyikan -->
-                    <form id="deleteForm" action="{{ route('delete-siswa') }}" method="POST" style="display: none;">
-                        @csrf
-                        @method('DELETE')
-                    </form>
-                </div>
+    <!-- Form logout -->
+    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+      @csrf
+      <button type="submit" class="logout">Logout</button>
+    </form>
+  </header>
 
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        // Ambil semua checkbox "Select All"
-                        const selectAllCheckboxes = document.querySelectorAll('.select_all');
+  @if (!empty($notifications)) <!-- Check if notifications are not empty -->
+  @foreach ($notifications as $notification)
+  <div>
+    <p>{{ $notification->data['nama_siswa'] }} mengajukan dispensasi.</p>
+    <p>Kategori: {{ $notification->data['kategori'] }}</p>
+    <p>Waktu Keluar: {{ $notification->data['waktu_keluar'] }}</p>
+  </div>
+  @endforeach
+  @else
+  <p>Tidak ada notifikasi untuk saat ini.</p> <!-- Default message when no notifications -->
+  @endif
 
-                        // Loop setiap "Select All" checkbox
-                        selectAllCheckboxes.forEach(selectAllCheckbox => {
-                            selectAllCheckbox.addEventListener('change', function() {
-                                const tingkatan = this.dataset
-                                .tingkatan; // Ambil tingkatan dari atribut data-tingkatan
-                                const checkboxes = document.querySelectorAll(
-                                `.checkbox_ids_${tingkatan}`); // Checkbox individu di tingkatan ini
+  <div class="semi-circle"></div>
 
-                                // Ubah status semua checkbox berdasarkan "Select All"
-                                checkboxes.forEach(checkbox => {
-                                    checkbox.checked = this.checked;
-                                });
-                            });
-                        });
+  <div class="main-container">
+  <div class="menu">
+    <!-- Konfirmasi Guru Piket -->
+    @if ($pengajuanPiket > 0 && $guru->jabatan == 'piket')
+    <div class="menu-item" data-bs-toggle="tooltip" title="Lihat konfirmasi guru piket" onclick="window.location.href='{{ route('konfirGuruPiket') }}';">
+        <i class="fas fa-user-graduate"></i>
+        <span>Konfirmasi Guru Piket</span>
+        <span class="badge bg-danger">{{ $pengajuanPiket }}</span>
+    </div>
+    @endif
 
-                        // Tambahkan event listener untuk uncheck "Select All" jika satu checkbox diubah
-                        const allCheckboxes = document.querySelectorAll('.checkbox_ids');
-                        allCheckboxes.forEach(checkbox => {
-                            checkbox.addEventListener('change', function() {
-                                const tingkatan = this.classList[1].split('_')[2]; // Ambil tingkatan dari class
-                                const selectAll = document.getElementById(`select_all_${tingkatan}`);
-                                const tingkatanCheckboxes = document.querySelectorAll(
-                                    `.checkbox_ids_${tingkatan}`);
+    <!-- Konfirmasi Guru Pengajar -->
+    @if ($pengajuanPengajar > 0 && $guru->mata_pelajaran)
+    <div class="menu-item" data-bs-toggle="tooltip" title="Lihat konfirmasi guru pengajar" onclick="window.location.href='{{ route('konfirGuruMataPelajaran') }}';">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Konfirmasi Guru Pengajar</span>
+        <span class="badge bg-danger">{{ $pengajuanPengajar }}</span>
+    </div>
+    @endif
 
-                                // Jika semua checkbox dicentang, centang "Select All"; jika tidak, uncheck
-                                selectAll.checked = Array.from(tingkatanCheckboxes).every(cb => cb.checked);
-                            });
-                        });
-
-                        // Fungsi untuk menghapus data yang dipilih
-                        window.deleteSelected = function() {
-                            // Ambil semua checkbox yang terpilih
-                            const checkedBoxes = document.querySelectorAll('input[name="hapus[]"]:checked');
-                            if (checkedBoxes.length === 0) {
-                                alert('Tidak ada siswa yang dipilih untuk dihapus.');
-                                return;
-                            }
-
-                            // Tampilkan modal konfirmasi
-                            const confirmModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-                            confirmModal.show();
-
-                            // Pastikan tombol konfirmasi hanya memiliki satu event listener
-                            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-                            confirmDeleteBtn.onclick = function() {
-                                // Ambil semua NIS yang dipilih
-                                const selectedValues = Array.from(checkedBoxes).map(cb => cb.value);
-
-                                // Siapkan form dan kirim
-                                const deleteForm = document.getElementById('deleteForm');
-                                deleteForm.innerHTML = '@csrf @method('DELETE')'; // Reset isi form
-                                selectedValues.forEach(value => {
-                                    const input = document.createElement('input');
-                                    input.type = 'hidden';
-                                    input.name = 'hapus[]';
-                                    input.value = value;
-                                    deleteForm.appendChild(input);
-                                });
-                                deleteForm.submit(); // Kirim form penghapusan
-                            };
-                        };
-                    });
-                </script>
-                <!-- Modal untuk menambah akun siswa -->
-                <div class="modal fade" id="modalTambahSiswa" tabindex="-1" aria-labelledby="modalTambahSiswaLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalTambahSiswaLabel">Formulir Tambah Data & Akun Siswa
-                                </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Formulir Tambah Akun Siswa -->
-                                <form action="{{ route('akun-siswa.store') }}" method="POST">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label for="nis" class="form-label">NIS</label>
-                                        <input type="text" class="form-control" id="nis" name="nis"
-                                            placeholder="Masukkan NIS" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="nama" class="form-label">Nama</label>
-                                        <input type="text" class="form-control" id="nama" name="nama"
-                                            placeholder="Masukkan Nama" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="jk" class="form-label">Jenis Kelamin</label>
-                                        <select class="form-select" id="jk" name="jk" required>
-                                            <option value="">Pilih Jenis Kelamin</option>
-                                            <option value="L">Laki-Laki</option>
-                                            <option value="P">Perempuan</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="tingkatan" class="form-label">Tingkatan</label>
-                                        <select class="form-select" id="tingkatan" name="tingkatan" required>
-                                            <option value="">Pilih Tingkatan</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="program_keahlian" class="form-label">Program Keahlian</label>
-                                        <select class="form-select" id="program_keahlian" name="program_keahlian"
-                                            required>
-                                            <option value="">Pilih Program Keahlian</option>
-                                            @foreach ($programKeahlian as $item)
-                                                <option value="{{ $item->program_keahlian }}">
-                                                    {{ $item->program_keahlian }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="konsentrasi_keahlian" class="form-label">Konsentrasi
-                                            Keahlian</label>
-                                        <select class="form-select" id="konsentrasi_keahlian"
-                                            name="konsentrasi_keahlian" required disabled>
-                                            <option value="">Pilih Konsentrasi Keahlian</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="password" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="password" name="password"
-                                            placeholder="Masukkan Password" required>
-                                    </div>
-
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Tutup</button>
-                                    <button type="submit" class="btn btn-primary"
-                                        id="btnSimpanSiswa">Simpan</button>
-                                </form>
-
-                                <script>
-                                    document.getElementById('program_keahlian').addEventListener('change', function() {
-                                        const programKeahlian = this.value;
-                                        const konsentrasiKeahlianSelect = document.getElementById('konsentrasi_keahlian');
-
-                                        if (programKeahlian) {
-                                            fetch(`{{ url('/admin/siswa/get-konsentrasi') }}?program_keahlian=${programKeahlian}`)
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    konsentrasiKeahlianSelect.innerHTML =
-                                                        '<option value="">Pilih Konsentrasi Keahlian</option>';
-                                                    data.forEach(item => {
-                                                        konsentrasiKeahlianSelect.innerHTML +=
-                                                            `<option value="${item}">${item}</option>`;
-                                                    });
-                                                    konsentrasiKeahlianSelect.disabled = false;
-                                                })
-                                                .catch(err => console.error('Error:', err));
-                                        } else {
-                                            konsentrasiKeahlianSelect.innerHTML = '<option value="">Pilih Konsentrasi Keahlian</option>';
-                                            konsentrasiKeahlianSelect.disabled = true;
-                                        }
-                                    });
-                                </script>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn-custom" href="javascript:void(0);" onclick="increaseTingkatan()">
-                    <i class="bi bi-arrow-up-circle"></i> Naik Tingkat
-                </button>
-                <script>
-                    function increaseTingkatan() {
-                        if (confirm("Apakah Anda yakin ingin menambah tingkatan untuk semua siswa?")) {
-                            // Redirect ke route untuk menambah tingkatan
-                            window.location.href = "{{ route('increaseTingkatan') }}";
-                        }
-                    }
-                </script>
-                <button class="btn-custom" onclick="window.location.href='{{ route('kelasKelas') }}';">
-                    <i class="bi bi-grid"></i> Kelas
-                </button>
-                <div class="dropdown" style="position: relative;">
-                    <button class="btn btn-secondary" type="button" id="dropdownMenuButton"
-                        data-bs-toggle="dropdown" aria-expanded="false"
-                        style="background-color: white; color: black; border:none; padding: 12px 0; margin-left: -15px; cursor: pointer; display: flex; align-items: center;">
-                        <i class="bi bi-three-dots-vertical" style="font-size: 24px;"></i>
-                    </button>
-                    <ul class="dropdown-menu shadow" aria-labelledby="dropdownMenuButton"
-                        style="border-radius: 10px; overflow: hidden; min-width: 200px;">
-                        <!-- Opsi Import -->
-                        <li>
-                            <button class="dropdown-item d-flex align-items-center dropdown-hover"
-                                data-bs-toggle="modal" data-bs-target="#importModal"
-                                style="transition: background-color 0.3s;">
-                                <i class="bi bi-upload me-2" style="font-size: 18px; color: #007bff;"></i>
-                                <span>Import Excel</span>
-                            </button>
-                        </li>
-                        <!-- Divider -->
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <!-- Opsi Export -->
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center dropdown-hover"
-                                href="{{ route('export-siswa') }}" style="transition: background-color 0.3s;">
-                                <i class="bi bi-download me-2" style="font-size: 18px; color: #28a745;"></i>
-                                <span>Export Excel</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+    <!-- Konfirmasi Kurikulum -->
+    @if ($pengajuanKurikulum > 0 && $guru->jabatan == 'kurikulum')
+    <div class="menu-item" data-bs-toggle="tooltip" title="Lihat konfirmasi kurikulum" onclick="window.location.href='{{ route('konfirGuruKurikulum') }}';">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Konfirmasi Kurikulum</span>
+        <span class="badge bg-danger">{{ $pengajuanKurikulum }}</span>
+    </div>
+    @endif
+      
+      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat jadwal piket" onclick="navigateTo('jadwal_piket')">
+        <i class="fas fa-calendar-check"></i>
+        <span>Jadwal Piket</span>
+      </div>
+      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat history dispensasi" onclick="navigateTo('history_dispen')">
+        <i class="fas fa-file-alt"></i>
+        <span>History Dispen</span>
+      </div>
+    </div>
+      
+    <!-- Notifikasi dan Statistik -->
+    <div class="d-flex">
+      <div class="notification-card">
+        <h4>Notifikasi Pengajuan Dispensasi</h4>
+        @if ($pengajuanDispen > 0)
+        <div class="alert alert-info d-flex justify-content-between align-items-center">
+          <div>
+            <p><strong>{{ $pengajuanDispen }} Pengajuan Dispensasi Baru</strong></p>
+          </div>
+          <div>
+            <button class="btn btn-success btn-sm" onclick="">
+              Lihat Detail
+            </button>
+          </div>
         </div>
-        <!-- Modal Import -->
-        <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="importModalLabel">Import Data Siswa</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <form action="{{ route('import-siswa') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="excelFile" class="form-label">Pilih File Excel:</label>
-                                <input type="file" class="form-control" id="excelFile" name="excelFile"
-                                    accept=".xls,.xlsx" required>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Import</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        @if (session('success'))
-            <div id="popupAlert" class="alert alert-success alert-popup">
-                {{ session('success') }}
-            </div>
+        @else
+        <p>Tidak ada pengajuan dispensasi baru.</p>
         @endif
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show error-message" role="alert">
-                {{ session('error') }}
-            </div>
-        @endif
-        <div id="noResultsMessage" class="alert alert-warning" style="display: none;">
-            <strong>Data yang Anda cari tidak ditemukan!</strong>
-        </div>
-        <script>
-            // Menutup pop-up alert secara otomatis setelah 4 detik
-            document.addEventListener("DOMContentLoaded", function() {
-                setTimeout(function() {
-                    const alert = document.getElementById("popupAlert");
-                    if (alert) {
-                        alert.style.opacity = '0';
-                        setTimeout(() => alert.remove(), 500); // Hapus elemen setelah animasi selesai
-                    }
-                }, 4000); // 4000 ms = 4 detik
-            });
-        </script>
-        <!-- Accordion untuk Data Siswa -->
-        <div class="accordion">
-            @foreach ($dataPerTingkatan as $tingkatan)
-                @if (!empty($tingkatan['data']))
-                    <div class="accordion-item">
-                        <button class="accordion-trigger btn btn-dark w-100">
-                            Data & Akun Siswa Tingkat {{ $tingkatan['tingkatan'] }} SMK NEGERI 1 KAWALI
-                            <span class="float-end" style="font-weight: 500; margin-right: 20px; font-size: 11px;">
-                                Jumlah Siswa: {{ count($tingkatan['data']) }}
-                            </span>
-                        </button>
-                        <div class="accordion-content" style="overflow-y: auto; overflow-x: auto;">
-                            <table class="table" id="siswaTable">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <input type="checkbox" id="select_all_{{ $tingkatan['tingkatan'] }}"
-                                                class="select_all" data-tingkatan="{{ $tingkatan['tingkatan'] }}">
-                                        </th>
-                                        <th>NIS</th>
-                                        <th>Nama</th>
-                                        <th>Kelas</th>
-                                        <th>Program Keahlian</th>
-                                        <th>Jenis Kelamin</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($tingkatan['data'] as $siswa)
-                                        <tr class="searchable">
-                                            <td style="text-align: center;">
-                                                <input type="checkbox" name="hapus[]"
-                                                    class="checkbox_ids checkbox_ids_{{ $tingkatan['tingkatan'] }}"
-                                                    value="{{ $siswa['nis'] }}">
-                                            </td>
-                                            <td>{{ $siswa['nis'] }}</td>
-                                            <td>{{ $siswa['nama'] }}</td>
-                                            <td>{{ $siswa['tingkatan'] }} {{ $siswa['konsentrasi_keahlian'] }}</td>
-                                            <td>{{ $siswa['program_keahlian'] }}</td>
-                                            <td>{{ $siswa['jk'] }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                @endif
-            @endforeach
-        </div>
-    </main>
+      </div>
+      <div class="stats-card">
+        <h3>Statistik Pengguna</h3>
+        <p class="stat">450</p>
+        <p>Siswa Terdaftar</p>
+        <p class="stat">38</p>
+        <p>Guru Aktif</p>
+      </div>
+    </div>
 
-    <script>
-        // Fungsi untuk pencarian tabel
-        function searchTable() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            const accordionItems = document.querySelectorAll('.accordion-item');
+    <div class="info-cards">
+      <div class="info-card">
+        <h3>Data Siswa & Data Guru</h3>
+        <div class="divider"></div>
+        <p>Data ini dibutuhkan untuk login baik itu guru maupun siswa.</p>
+        <p>Username guru menggunakan NIP</p>
+        <p>Username siswa menggunakan nip</p>
+        <p>Dengan password masing-masing</p>
+      </div>
 
-            // Iterasi setiap item accordion
-            let hasData = false;
-            accordionItems.forEach(item => {
-                const rows = item.querySelectorAll('#siswaTable tbody tr');
-                let itemMatches = false; // Flag untuk item accordion
+      <div class="info-card">
+        <h3>Jadwal Piket Guru</h3>
+        <div class="divider"></div>
+        <p>Ini digunakan untuk mengetahui siapa saja guru yang bertugas melakukan piket sekolah.</p>
+      </div>
 
-                rows.forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    let rowText = '';
+      <div class="info-card">
+        <h3>History Dispen Siswa</h3>
+        <div class="divider"></div>
+        <p>Kumpulan data siswa yang telah melakukan dispen dalam 1 tahun.</p>
+      </div>
+    </div>
+  </div>
 
-                    cells.forEach(cell => {
-                        rowText += cell.textContent.toLowerCase() + ' ';
-                    });
-
-                    if (rowText.includes(filter)) {
-                        row.style.display = ''; // Tampilkan baris
-                        itemMatches = true; // Tandai item accordion memiliki data yang cocok
-                    } else {
-                        row.style.display = 'none'; // Sembunyikan baris
-                    }
-                });
-
-                // Tampilkan atau sembunyikan accordion berdasarkan apakah ada data yang cocok
-                const accordionContent = item.querySelector('.accordion-content');
-                if (itemMatches) {
-                    item.style.display = ''; // Tampilkan item accordion
-                    hasData = true;
-                } else {
-                    item.style.display = 'none'; // Sembunyikan item accordion
-                }
-            });
-
-            // Tampilkan pesan "Data tidak ditemukan" jika tidak ada item yang cocok
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            if (hasData) {
-                noResultsMessage.style.display = 'none';
-            } else {
-                noResultsMessage.style.display = 'block';
-            }
-        }
-    </script>
-
-    <!-- Bootstrap 5 JS and Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-        integrity="sha384-oBqDVmMz4fnFO9gybOveo3f8VgJUvP5Vyn6pd56rOH1diJfqa0ksL8/4Oh3nybs0" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
-        integrity="sha384-pzjw8f+ua7Kw1TIq0uW9YrkQ+Q+97Jmf6fF3j1vSxtIhQczb1Y88aV6YQw0W6qHm" crossorigin="anonymous">
-    </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  </script>
 </body>
+
 </html>

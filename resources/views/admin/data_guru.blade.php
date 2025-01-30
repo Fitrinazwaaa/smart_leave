@@ -193,9 +193,17 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
                                 <div class="mb-3">
                                     <label for="jk" class="form-label">Jenis Kelamin</label>
                                     <select class="form-select" id="jk" name="jk" required>
-                                        <option value="">Pilih Jenis Kelamin</option>
+                                        <option value="" disabled>Pilih</option>
                                         <option value="L">Laki-Laki</option>
                                         <option value="P">Perempuan</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="jabatan" class="form-label">Jabatan</label>
+                                    <select class="form-select" id="jabatan" name="jabatan" required>
+                                        <option value="" disabled>piih</option>
+                                        <option value="kurikulum">Kurikulum</option>
+                                        <option value="-">Tidak Ada</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
@@ -206,7 +214,7 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
                                 <div class="mb-3">
                                     <label for="tingkat" class="form-label">Tingkat</label>
                                     <select class="form-select" id="tingkat" name="tingkat" required>
-                                        <option value="">Pilih Tingkatan</option>
+                                        <option value="" disabled>Pilih</option>
                                         <option value="10">10</option>
                                         <option value="11">11</option>
                                         <option value="12">12</option>
@@ -215,7 +223,7 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
                                 <div class="mb-3">
                                     <label for="program_keahlian" class="form-label">Program Keahlian</label>
                                     <select class="form-select" id="program_keahlian" name="program_keahlian" required>
-                                        <option value="">Pilih Program Keahlian</option>
+                                        <option value="" disabled>Pilih</option>
                                         @foreach ($programKeahlian as $item)
                                             <option value="{{ $item->program_keahlian }}">{{ $item->program_keahlian }}</option>
                                         @endforeach
@@ -225,7 +233,7 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
                                 <div class="mb-3">
                                     <label for="hari_piket" class="form-label">Hari Piket</label>
                                     <select class="form-select" id="hari_piket" name="hari_piket" required>
-                                        <option value="">Pilih Hari Piket</option>
+                                        <option value="" disabled>Pilih Hari Piket</option>
                                         <option value="Senin">Senin</option>
                                         <option value="Selasa">Selasa</option>
                                         <option value="Rabu">Rabu</option>

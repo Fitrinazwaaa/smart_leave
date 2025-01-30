@@ -4,18 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\AkunSiswa;
 use App\Models\Dispensasi;
-use BaconQrCode\Encoder\QrCode;
+use App\Models\Konfirmasi;
+use App\Models\AkunGuru;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\KonfirmasiNotifikasi;
 
 class SiswaDispensasiController extends Controller
 {
     // Menampilkan formulir pengajuan dispensasi
     public function create()
     {
-        return view('dispensasi.create');
+        $nis = auth()->user()->nis; // Ambil NIS siswa yang login
+        $siswa = AkunSiswa::where('nis', $nis)->first();
+
+        if (!$siswa) {
+            return redirect()->route('dashboard.siswa')->withErrors(['error' => 'Siswa tidak ditemukan.']);
+        }
+
+        return view('dispensasi.create', compact('siswa'));
     }
 
-    // Menyimpan pengajuan dispensasi
+    // Menyimpan pengajuan dispensasi baru
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -24,23 +35,41 @@ class SiswaDispensasiController extends Controller
             'tingkatan' => 'required|string',
             'konsentrasi_keahlian' => 'required|string',
             'program_keahlian' => 'required|string',
+            'jk' => 'required|string',
+            'mata_pelajaran' => 'nullable|string',
+            'nama_pengajar' => 'nullable|string',
+            'nip' => 'nullable|string',  // Validasi untuk nip
             'kategori' => 'required|string',
             'waktu_keluar' => 'required|date',
             'alasan' => 'required|string',
             'bukti_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Menangani upload foto bukti jika ada
         if ($request->hasFile('bukti_foto')) {
             $fileName = time() . '.' . $request->bukti_foto->extension();
             $request->bukti_foto->move(public_path('uploads'), $fileName);
             $validated['bukti_foto'] = $fileName;
         }
 
-        // Menyimpan pengajuan dispensasi
-        Dispensasi::create($validated);
+        $dispensasi = Dispensasi::create($validated);
 
-        return redirect()->route('dispensasi.index')->with('success', 'Pengajuan dispensasi berhasil dibuat.');
+        // Otomatis membuat data konfirmasi
+        Konfirmasi::create([
+            'id_dispen' => $dispensasi->id_dispen,
+            'konfirmasi_1' => null,
+            'konfirmasi_2' => null,
+            'konfirmasi_3' => null,
+        ]);
+
+        // Kirim notifikasi ke guru piket
+        $hariIni = now()->format('l');
+        $guruPiket = AkunGuru::where('hari_piket', $hariIni)->first();
+
+        if ($guruPiket) {
+            Notification::send($guruPiket, new KonfirmasiNotifikasi($dispensasi));
+        }
+
+        return redirect()->route('dashboard.siswa')->with('success', 'Pengajuan dispensasi berhasil dibuat.');
     }
 
     // Menampilkan daftar dispensasi
@@ -52,76 +81,72 @@ class SiswaDispensasiController extends Controller
         // Mengambil data siswa berdasarkan NIS
         $siswa = AkunSiswa::where('nis', $nis)->first();
 
-        $dispensasi = Dispensasi::all();
+        $mataPelajaran = DB::table('matapelajaran_guru')->select('mata_pelajaran')->distinct()->get();
+
+        // Mengambil data dispensasi untuk siswa tersebut
+        $dispensasi = Dispensasi::where('nis', $nis)->get();
         if ($siswa) {
-            // return view('dispensasi.create', compact('siswa'));
-            return view('siswa.formulir', compact('dispensasi', 'siswa'));
+            // Menampilkan formulir dispensasi
+            return view('siswa.formulir', compact('dispensasi', 'siswa', 'mataPelajaran'));
         }
     }
 
-    // Menampilkan form untuk memperbarui status dispensasi
-    public function edit(Dispensasi $dispensasi)
+    public function getPengajar($mataPelajaran)
     {
-        return view('dispensasi.edit', compact('dispensasi'));
-    }
+        // Mengambil data nama pengajar berdasarkan mata pelajaran yang dipilih
+        $pengajar = DB::table('matapelajaran_guru')
+                       ->where('mata_pelajaran', $mataPelajaran)
+                       ->select('nama', 'nip')
+                       ->get();
+    
+        return response()->json($pengajar);
+    }    
 
-    // Memperbarui status dispensasi
-    public function update(Request $request, Dispensasi $dispensasi)
+    // Proses konfirmasi bertahap (guru piket, pengajar, kurikulum)
+    public function konfirmasi(Request $request, $id)
     {
-        $validated = $request->validate([
-            'status' => 'required|in:pending,disetujui,ditolak',
-        ]);
+        $konfirmasi = Konfirmasi::where('id_dispen', $id)->first();
 
-        $dispensasi->update($validated);
-
-        return redirect()->route('dispensasi.index')->with('success', 'Status dispensasi berhasil diperbarui.');
-    }
-
-    public function generateQRCode($nis)
-    {
-        // Mencari data siswa berdasarkan nis
-        $siswa = AkunSiswa::where('nis', $nis)->first();
-
-        if (!$siswa) {
-            // Jika siswa tidak ditemukan, arahkan ke halaman dashboard dengan pesan error
-            return redirect()->route('dashboard.siswa', ['nis' => $nis])->withErrors(['error' => 'Siswa tidak ditemukan.']);
+        if (!$konfirmasi) {
+            return redirect()->back()->withErrors(['error' => 'Data konfirmasi tidak ditemukan.']);
         }
 
-        // Mencari dispensasi berdasarkan nis siswa
-        $dispensasi = Dispensasi::where('nis', $nis)->first();
-
-        if (!$dispensasi) {
-            // Jika dispensasi tidak ditemukan, arahkan ke halaman dashboard dengan pesan error
-            return redirect()->route('dashboard.siswa', ['nis' => $nis])->withErrors(['error' => 'Data dispensasi tidak ditemukan.']);
+        if (!$konfirmasi->konfirmasi_1) {
+            $konfirmasi->update(['konfirmasi_1' => true]);
+            return redirect()->back()->with('success', 'Konfirmasi oleh guru piket berhasil.');
+        } elseif (!$konfirmasi->konfirmasi_2) {
+            $konfirmasi->update(['konfirmasi_2' => true]);
+            return redirect()->back()->with('success', 'Konfirmasi oleh guru pengajar berhasil.');
+        } elseif (!$konfirmasi->konfirmasi_3) {
+            $konfirmasi->update(['konfirmasi_3' => true]);
+            return redirect()->back()->with('success', 'Konfirmasi oleh kurikulum berhasil.');
         }
 
-        // Membuat QR Code yang mengarah ke halaman pelaporan kembali
-        $qrCode = QrCode::size(200)->generate(route('dispensasi.reportReturn', $dispensasi->id));
-
-        // Mengirimkan QR code ke tampilan
-        return view('dispensasi.qrCode', compact('qrCode', 'dispensasi'));
+        return redirect()->back()->withErrors(['error' => 'Semua tahap konfirmasi telah selesai.']);
     }
 
     // Menampilkan formulir pelaporan kembali
     public function showReturnForm($id)
     {
         $dispensasi = Dispensasi::findOrFail($id);
+
+        if (!$dispensasi) {
+            return redirect()->back()->withErrors(['error' => 'Data dispensasi tidak ditemukan.']);
+        }
+
         return view('dispensasi.returnForm', compact('dispensasi'));
     }
 
-    // Menyimpan waktu kembali siswa
+    // Menyimpan waktu kembali
     public function storeReturn(Request $request, $id)
     {
         $validated = $request->validate([
             'waktu_kembali' => 'required|date',
         ]);
 
-        // Menyimpan waktu kembali pada dispensasi
         $dispensasi = Dispensasi::findOrFail($id);
-        $dispensasi->update([
-            'waktu_kembali' => $validated['waktu_kembali'],
-        ]);
+        $dispensasi->update(['waktu_kembali' => $validated['waktu_kembali']]);
 
-        return redirect()->route('dispensasi.index')->with('success', 'Siswa berhasil melaporkan kembali.');
+        return redirect()->route('dashboard.siswa')->with('success', 'Waktu kembali berhasil dilaporkan.');
     }
 }

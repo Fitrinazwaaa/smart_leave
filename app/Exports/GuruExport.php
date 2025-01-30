@@ -24,6 +24,7 @@ class GuruExport implements FromCollection, WithHeadings
             'tingkat', 
             'mata_pelajaran', 
             'hari_piket', 
+            'jabatan',
             'password',
         ])->get();
     }
@@ -43,6 +44,7 @@ class GuruExport implements FromCollection, WithHeadings
             'TINGKAT', 
             'MATA PELAJARAN', 
             'HARI PIKET', 
+            'JABATAN', 
             'PASSWORD',
         ];
     }

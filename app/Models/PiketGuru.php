@@ -9,24 +9,17 @@ class PiketGuru extends Model
 {
     use HasFactory;
 
-    /**
-     * Nama tabel yang terkait dengan model ini.
-     *
-     * @var string
-     */
     protected $table = 'piket_guru';
-    protected $guarded=[];
-    // protected $fillable = ['nama', 'hari_piket']; 
-
-    /**
-     * Atribut yang dapat diisi secara massal.
-     *
-     * @var array
-     */
+    protected $guarded = [];
     protected $fillable = [
         'nip',
         'nama',
         'jk',
         'hari_piket',
     ];
+    // Relasi jika diperlukan
+    public function dispensasi()
+    {
+        return $this->hasMany(Dispensasi::class, 'nip', 'nip');
+    }
 }

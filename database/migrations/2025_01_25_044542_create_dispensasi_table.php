@@ -6,36 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('dispensasi', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_dispen');
             $table->string('nis');
             $table->string('nama');
-            $table->string('tingkatan'); // Kolom tingkatan
-            $table->string('konsentrasi_keahlian'); // Kolom konsentrasi keahlian
-            $table->string('program_keahlian'); // Kolom konsentrasi keahlian
-            $table->enum('jk', ['L', 'P']); // Gender (L for Male, P for Female)
-            $table->string('kategori'); // Masuk kelas, keluar sekolah, dll.
-            $table->string('mata_pelajaran')->nullable(); // Optional, hanya untuk kategori masuk kelas
+            $table->string('tingkatan');
+            $table->string('konsentrasi_keahlian');
+            $table->string('program_keahlian');
+            $table->enum('jk', ['L', 'P']);
+            $table->string('kategori');
+            $table->string('mata_pelajaran');
+            $table->string('nip');
+            $table->string('nama_pengajar');
             $table->datetime('waktu_keluar');
             $table->datetime('waktu_kembali')->nullable();
             $table->text('alasan');
             $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending');
-            $table->string('bukti_foto')->nullable(); // Opsional, untuk bukti foto
-            $table->string('guru_piket')->nullable(); // Opsional, untuk bukti foto
-            $table->string('guru_pelajaran')->nullable(); // Opsional, untuk bukti foto
-            $table->string('kurikulum')->nullable(); // Opsional, untuk bukti foto
+            $table->string('bukti_foto')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('dispensasi');

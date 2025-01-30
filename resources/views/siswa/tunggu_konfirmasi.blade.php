@@ -1,161 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Halaman Konfirmasi Guru</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f7fa;
-      padding: 40px;
-    }
-    .card {
-      border: none;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .card:hover {
-      transform: scale(1.02);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-    .card-body {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .student-info {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .student-info .name {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin: 0;
-    }
-    .student-info .class {
-      font-size: 0.95rem;
-      color: #6c757d;
-      margin: 0;
-    }
-    .actions button {
-      min-width: 110px;
-      transition: background-color 0.2s, transform 0.2s;
-    }
-    .actions .btn:hover {
-      transform: translateY(-2px);
-    }
-    .actions .detail {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-    }
-    .actions .detail:hover {
-      background-color: #0056b3;
-    }
-    .actions .confirm {
-      background-color: #28a745;
-      color: #fff;
-      border: none;
-    }
-    .actions .confirm:hover {
-      background-color: #218838;
-    }
-    .actions .confirm:disabled {
-      background-color: #d6d8db;
-      color: #6c757d;
-      cursor: not-allowed;
-    }
-    .icon-wrapper {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .check-icon {
-      font-size: 1.5rem;
-      color: #28a745;
-    }
-  </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJb3RrP6j1eg84BQ2erfFPLBaZrj1I1NE9FYkCOs5TtZUSSHjGZbmL8HjzqP" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link href="{{ asset('css/tunggu_konfirm.css') }}" rel="stylesheet" type="text/css">
 </head>
+
 <body>
+  <header>
+    <button class="back-button" onclick="window.location.href='{{ route('dashboard.siswa') }}';">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="logo">
+      <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
+      <div>
+        <h2>DISPENSASI SISWA SMK NEGERI 1 KAWALI</h2>
+        <p class="sub-title">{{ $siswa->nama }}</p>
+      </div>
+    </div>
+  </header>
+
   <div class="container">
     <h1 class="mb-4 text-center">Konfirmasi Dispensasi</h1>
 
     <!-- Guru Piket Card -->
-@foreach ($guruPiket as $data)
-<div class="card">
-  <div class="card-body">
-    <div class="d-flex align-items-center gap-3">
-      <div class="icon-wrapper">
-        <div class="spinner-border text-secondary" role="status">
-          <span class="visually-hidden">Loading...</span>
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-3">
+          <div class="icon-wrapper">
+            <div class="status-icon">
+              @if($konfir && $konfir->konfirmasi_1)
+              <!-- Show a checkmark icon if the confirmation exists -->
+              <i class="bi bi-check-circle-fill text-success" style="font-size: 24px;"></i>
+              @else
+              <!-- Show a loading spinner if confirmation does not exist -->
+              <div class="spinner-border text-secondary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              @endif
+            </div>
+          </div>
+          <div class="student-info">
+            <p class="name">Konfirmasi Guru Piket</p>
+            @if($konfir && $konfir->konfirmasi_1)
+            <p class="class">
+              @if($guruPiket)
+              Telah disetujui oleh : {{ $guruPiket->nama }}
+              @else
+              Nama guru tidak ditemukan
+              @endif
+            </p>
+            @else
+            <p class="class">Belum ada konfirmasi</p>
+            @endif
+          </div>
+        </div>
+        <div class="actions d-flex gap-2">
+          <button class="btn detail">Kirim bot chat</button>
         </div>
       </div>
-      <div class="student-info">
-        <p class="name">Konfirmasi Guru Piket</p>
-        <p class="class">
-          {{ $data->nama ?? 'Belum ada konfirmasi' }}
-        </p>
-      </div>
     </div>
-    <div class="actions d-flex gap-2">
-      <button class="btn detail">Kirim bot chat</button>
-    </div>
-  </div>
-</div>
-@endforeach
 
-<!-- Guru Pengajar Card -->
-@foreach ($guruPengajar as $data)
-<div class="card">
-  <div class="card-body">
-    <div class="d-flex align-items-center gap-3">
-      <div class="icon-wrapper">
-        <div class="spinner-border text-secondary" role="status">
-          <span class="visually-hidden">Loading...</span>
+    <!-- Guru Pengajar Card -->
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-3">
+          <div class="icon-wrapper">
+            <div class="status-icon">
+              @if($konfir && $konfir->konfirmasi_2)
+              <!-- Show a checkmark icon if the confirmation exists -->
+              <i class="bi bi-check-circle-fill text-success" style="font-size: 24px;"></i>
+              @else
+              <!-- Show a loading spinner if confirmation does not exist -->
+              <div class="spinner-border text-secondary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              @endif
+            </div>
+          </div>
+          <div class="student-info">
+            <p class="name">Konfirmasi Guru Pengajar</p>
+            @if($konfir && $konfir->konfirmasi_2)
+            <p class="class">
+              @if($guruPengajar)
+              Telah disetujui oleh : {{ $guruPengajar->nama }}
+              @else
+              Nama guru tidak ditemukan
+              @endif
+            </p>
+            @else
+            <p class="class">Belum ada konfirmasi</p>
+            @endif
+          </div>
+        </div>
+        <div class="actions d-flex gap-2">
+          <button class="btn detail">Kirim bot chat</button>
         </div>
       </div>
-      <div class="student-info">
-        <p class="name">Konfirmasi Guru Pengajar</p>
-        <p class="class">{{ $data->nama ?? 'Belum ada konfirmasi' }}</p>
-      </div>
     </div>
-    <div class="actions d-flex gap-2">
-      <button class="btn detail">Kirim bot chat</button>
-    </div>
-  </div>
-</div>
-@endforeach
 
-<!-- Kurikulum Card -->
-@foreach ($kurikulum as $data)
-<div class="card">
-  <div class="card-body">
-    <div class="d-flex align-items-center gap-3">
-      <div class="icon-wrapper">
-        <div class="spinner-border text-secondary" role="status">
-          <span class="visually-hidden">Loading...</span>
+    <!-- Kurikulum Card -->
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-3">
+          <div class="icon-wrapper">
+            <div class="status-icon">
+              @if($konfir && $konfir->konfirmasi_3)
+              <!-- Show a checkmark icon if the confirmation exists -->
+              <i class="bi bi-check-circle-fill text-success" style="font-size: 24px;"></i>
+              @else
+              <!-- Show a loading spinner if confirmation does not exist -->
+              <div class="spinner-border text-secondary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              @endif
+            </div>
+          </div>
+          <div class="student-info">
+            <p class="name">Konfirmasi Kurikulum</p>
+            @if($konfir && $konfir->konfirmasi_3)
+            <p class="class">
+              @if($guruKurikulum)
+              Telah disetujui oleh : {{ $guruKurikulum->nama }}
+              @else
+              Nama guru tidak ditemukan
+              @endif
+            </p>
+            @else
+            <p class="class">Belum ada konfirmasi</p>
+            @endif
+          </div>
+        </div>
+        <div class="actions d-flex gap-2">
+          <button class="btn detail">Kirim bot chat</button>
         </div>
       </div>
-      <div class="student-info">
-        <p class="name">Konfirmasi Kurikulum</p>
-        <p class="class">{{ $data->username ?? 'Belum ada konfirmasi' }}</p>
-      </div>
     </div>
-    <div class="actions d-flex gap-2">
-      <button class="btn detail">Kirim bot chat</button>
-    </div>
-  </div>
-</div>
-@endforeach
-
-
   </div>
 
   <script>
@@ -183,7 +169,11 @@
   </script>
 
   <!-- Bootstrap and Bootstrap Icons CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+  <!-- Bootstrap and Bootstrap Icons CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybOveo3f8VgJUvP5Vyn6pd56rOH1diJfqa0ksL8/4Oh3nybs0" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0uW9YrkQ+Q+97Jmf6fF3j1vSxtIhQczb1Y88aV6YQw0W6qHm" crossorigin="anonymous"></script>
 </body>
+
 </html>

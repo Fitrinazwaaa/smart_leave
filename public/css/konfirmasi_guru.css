@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+    padding: 40px;
+  }
+
+  .card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .student-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .student-info .name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .student-info .class {
+    font-size: 0.95rem;
+    color: #6c757d;
+    margin: 0;
+  }
+
+  .actions button {
+    min-width: 110px;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+
+  .actions .btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .actions .detail {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+  }
+
+  .actions .detail:hover {
+    background-color: #0056b3;
+  }
+
+  .actions .confirm {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+  }
+
+  .actions .confirm:hover {
+    background-color: #218838;
+  }
+
+  .actions .confirm:disabled {
+    background-color: #d6d8db;
+    color: #6c757d;
+    cursor: not-allowed;
+  }
+
+  .icon-wrapper {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .check-icon {
+    font-size: 1.5rem;
+    color: #28a745;
+  }

@@ -23,13 +23,14 @@ class AdminGuruController extends Controller
             'nip' => 'required|string|unique:akun_guru,nip|max:20',
             'nama' => 'required|string|max:100',
             'jk' => 'required|in:L,P',
-            'mata_pelajaran' => 'required|string|max:100',
+            'mata_pelajaran' => 'required|string|max:255', // Memperbesar panjang string
             'tingkat' => 'required|string|max:10',
             'program_keahlian' => 'required|string|max:100',
             'hari_piket' => 'nullable|string|max:10',
+            'jabatan' => 'nullable|string|max:10',
             'password' => 'required|string|min:6',
         ]);
-
+    
         try {
             // Simpan data ke dalam tabel akun_guru
             AkunGuru::create([
@@ -38,11 +39,12 @@ class AdminGuruController extends Controller
                 'jk' => $request->jk,
                 'mata_pelajaran' => $request->mata_pelajaran,
                 'tingkat' => $request->tingkat,
-                'program_keahlian' => $request->program_keahlian, // Pastikan ini sesuai
+                'program_keahlian' => $request->program_keahlian,
                 'hari_piket' => $request->hari_piket,
+                'jabatan' => $request->jabatan,
                 'password' => Hash::make($request->password),
             ]);
-
+    
             // Simpan data ke dalam tabel users (nip dan password)
             DB::table('users')->insert([
                 'nip' => $request->nip,
@@ -52,7 +54,7 @@ class AdminGuruController extends Controller
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-
+    
             // Simpan data ke tabel piket_guru jika hari_piket valid (senin-jumat)
             $validDays = ['senin', 'selasa', 'rabu', 'kamis', 'jumat'];
             if (!is_null($request->hari_piket) && in_array(strtolower($request->hari_piket), $validDays)) {
@@ -65,19 +67,26 @@ class AdminGuruController extends Controller
                     'updated_at' => now(),
                 ]);
             }
-
-            // Simpan data ke tabel matapelajaran_guru
-            DB::table('matapelajaran_guru')->insert([
-                'nip' => $request->nip,
-                'nama' => $request->nama,
-                'jk' => $request->jk,
-                'mata_pelajaran' => $request->mata_pelajaran,
-                'tingkat' => $request->tingkat,
-                'program_keahlian' => $request->program_keahlian,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
+    
+            // Proses mata pelajaran (pisahkan berdasarkan koma)
+            $mataPelajaran = explode(',', $request->mata_pelajaran);
+            foreach ($mataPelajaran as $pelajaran) {
+                // Trim spasi di sekitar nama mata pelajaran
+                $pelajaran = trim($pelajaran);
+    
+                // Simpan data ke tabel matapelajaran_guru
+                DB::table('matapelajaran_guru')->insert([
+                    'nip' => $request->nip,
+                    'nama' => $request->nama,
+                    'jk' => $request->jk,
+                    'mata_pelajaran' => $pelajaran,
+                    'tingkat' => $request->tingkat,
+                    'program_keahlian' => $request->program_keahlian,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+    
             // Redirect dengan pesan sukses
             return redirect()->back()->with('success', 'Akun guru berhasil ditambahkan.');
         } catch (\Exception $e) {
@@ -85,6 +94,7 @@ class AdminGuruController extends Controller
             return redirect()->back()->with('error', 'Gagal menambahkan akun guru: ' . $e->getMessage());
         }
     }
+    
 
 
     public function destroyMultiple(Request $request)

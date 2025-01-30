@@ -1,6 +1,8 @@
 <?php
 // Ambil data siswa berdasarkan NIS yang login
 use App\Models\AkunSiswa;
+use Illuminate\Support\Facades\Auth;
+
 $nis = Auth::user()->nis;  // Mendapatkan NIS dari user yang sedang login
 $siswa = AkunSiswa::where('nis', $nis)->first();
 
@@ -15,7 +17,7 @@ if (!$siswa) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dispensasi Digital SMK NEGERI 1 KAWALI</title>
+    <title>Dispensasi Siswa SMK NEGERI 1 KAWALI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet" type="text/css">
@@ -30,12 +32,12 @@ if (!$siswa) {
     <header>
         <div class="logo">
             <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
-            <div>
-                <h2>DISPENSASI DIGITAL SMK NEGERI 1 KAWALI</h2>
-                <p style="font-size: 16px;font-weight: 400;">{{ $siswa->nama }}
-            </p>
+            <div class="text-container">
+                <h2>DISPENSASI SISWA SMK NEGERI 1 KAWALI</h2>
+                <p class="sub-title">{{ $siswa->nama }}</p>
             </div>
         </div>
+        <!-- Form logout -->
         <form action="{{ route('logout') }}" method="POST" style="display: inline;">
             @csrf
             <button type="submit" class="logout">Logout</button>
@@ -46,8 +48,7 @@ if (!$siswa) {
 
     <div class="main-container">
         <div class="menu">
-            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat formulir dispen"
-                onclick="window.location.href='{{ route('dispensasi.index') }}';">
+            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat formulir dispen" onclick="window.location.href='{{ route('dispensasi.index') }}';">
                 <i class="fas fa-file-alt"></i>
                 <span>Formulir</span>
             </div>
@@ -55,13 +56,18 @@ if (!$siswa) {
                 <i class="fas fa-check-circle"></i>
                 <span>Konfirmasi</span>
             </div>
-            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat unduh dispen"
-                onclick="navigateTo('jadwal_piket')">
+            <div class="menu-item" data-bs-toggle="tooltip" title="Unduh hasil dispen" onclick="downloadPDF()">
                 <i class="fas fa-file-pdf"></i>
-                <span>Unduh PDF</span>
+                <span>Unduh Dispensasi</span>
             </div>
-            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat bukti kembalinya siswa"
-                onclick="window.location.href='{{ route('dispensasi.qrCode', ['nis' => Auth::user()->nis]) }}';">
+
+            <script>
+                function downloadPDF() {
+                    window.location.href = "{{ route('dispensasi.pdfDownload') }}";
+                }
+            </script>
+
+            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat bukti kembalinya siswa" onclick="window.location.href='{{ route('dispensasi.qrCode', ['nis' => Auth::user()->nis]) }}';">
                 <i class="fas fa-camera"></i>
                 <span>Siswa Kembali</span>
             </div>

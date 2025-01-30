@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('akun_guru', function (Blueprint $table) {
@@ -19,14 +16,11 @@ return new class extends Migration
             $table->string('tingkat');
             $table->string('program_keahlian')->nullable();
             $table->string('hari_piket')->nullable();
+            $table->string('jabatan')->nullable();
             $table->string('password');
             $table->timestamps();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
+    }    
     public function down(): void
     {
         Schema::dropIfExists('akun_guru');

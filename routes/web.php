@@ -7,7 +7,9 @@ use App\Http\Controllers\AdminSiswaController;
 use App\Http\Controllers\AdminKelasController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminGuruController;
+use App\Http\Controllers\DispensasiController;
 use App\Http\Controllers\GuruKonfirmasiController;
+use App\Http\Controllers\KonfirmasiController;
 use App\Http\Controllers\SiswaDispensasiController;
 use App\Http\Controllers\SiswaKonfirmController;
 
@@ -86,10 +88,37 @@ Route::prefix('/siswa')->group(function () {
     Route::get('/dispensasi/qr-code', [SiswaDispensasiController::class, 'generateQRCode'])->name('dispensasi.qrCode');
     Route::get('/dispensasi/lapor-kembali', [SiswaDispensasiController::class, 'showReturnForm'])->name('dispensasi.reportReturn');
     Route::post('/dispensasi/lapor-kembali', [SiswaDispensasiController::class, 'storeReturn'])->name('dispensasi.storeReturn');
+    Route::get('/get-pengajar/{mataPelajaranId}', [SiswaDispensasiController::class, 'getPengajar']);  
+    Route::post('/konfirmasi/{konfirmasi}', [SiswaDispensasiController::class, 'konfirmasi'])->name('konfirmasi.proses');
+
     Route::get('/konfirmasi', [SiswaKonfirmController::class, 'tungguKonfir'])->name('konfirm.index');
-    
 });
 
 Route::prefix('/guru')->group(function () {
-    Route::get('/konfirm_guru_piket', [GuruKonfirmasiController::class, 'konfirGuruPiket'])->name('konfirGuruPiket');
+    // Route untuk halaman konfirmasi guru piket
+    Route::get('/konfirmasi_piket', [GuruKonfirmasiController::class, 'konfirGuruPiket'])->name('konfirGuruPiket');
+    
+    // Route untuk menangani konfirmasi piket
+    Route::post('/konfirmasi_piket/proses', [GuruKonfirmasiController::class, 'konfirmasiPiket'])->name('konfirmasiPiket');
+    
+    // Route untuk halaman konfirmasi mata pelajaran
+    Route::get('/konfirmasi_mata_pelajaran', [GuruKonfirmasiController::class, 'konfirGuruMataPelajaran'])->name('konfirGuruMataPelajaran');
+    
+    // Route untuk menangani konfirmasi mata pelajaran
+    Route::post('/konfirmasi_mata_pelajaran/proses', [GuruKonfirmasiController::class, 'konfirmasiMataPelajaran'])->name('konfirmasiMataPelajaran');
+
+    // Halaman untuk daftar konfirmasi kurikulum
+Route::get('/konfirmasi_kurikulum', [GuruKonfirmasiController::class, 'konfirGuruKurikulum'])->name('konfirGuruKurikulum');
+
+// Proses konfirmasi kurikulum
+Route::post('/konfirmasi_kurikulum/proses', [GuruKonfirmasiController::class, 'konfirmasiKurikulum'])->name('konfirmasiKurikulum');
+
 });
+
+use App\Http\Controllers\PdfViewerController;
+
+Route::get('/siswa/pdf-viewer', [PdfViewerController::class, 'showPdf'])->name('pdf.viewer');
+use App\Http\Controllers\DispensasiPdfController;
+
+Route::get('/siswa/dispensasi/pdf', [DispensasiPdfController::class, 'generatePdf'])->name('dispensasi.pdf');
+Route::get('/siswa/dispensasi/pdf/download', [DispensasiPdfController::class, 'downloadPdf'])->name('dispensasi.pdfDownload');

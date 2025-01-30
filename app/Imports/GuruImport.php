@@ -46,6 +46,7 @@ class GuruImport implements ToModel, WithHeadingRow
                 'mata_pelajaran' => $row['mata_pelajaran'],
                 'program_keahlian' => $row['program_keahlian'],
                 'tingkat' => $row['tingkat'],
+                'jabatan' => $row['jabatan'],
                 'hari_piket' => empty($row['hari_piket']) ? null : $row['hari_piket'],
                 'password' => $hashedPassword,
             ]);
@@ -96,6 +97,7 @@ class GuruImport implements ToModel, WithHeadingRow
             'mata_pelajaran' => $row['mata_pelajaran'],
             'program_keahlian' => $row['program_keahlian'],
             'tingkat' => $row['tingkat'],
+            'jabatan' => $row['jabatan'],
             'hari_piket' => empty($row['hari_piket']) ? null : $row['hari_piket'],
             'password' => $hashedPassword,
         ]);
