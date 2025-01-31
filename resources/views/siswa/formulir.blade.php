@@ -118,28 +118,39 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
 
-    main {
-        max-width: 1000px; /* Membatasi lebar konten */
-        margin: 130px auto 30px; /* Menambahkan margin atas yang lebih besar dari header */
-        padding: 30px; /* Padding di dalam kontainer */
-        background-color: #ffffff; /* Warna latar belakang putih */
-        border-radius: 12px; /* Sudut melengkung untuk estetika */
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Shadow lebih lembut dan profesional */
-        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efek hover */
-    }
-
-    main:hover {
-        transform: translateY(-5px); /* Sedikit efek hover untuk interaksi */
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Shadow lebih intens saat hover */
-    }
-
-    /* Responsivitas untuk layar kecil */
-    @media (max-width: 768px) {
         main {
-            margin: 120px 15px 30px; /* Menambahkan jarak atas lebih kecil pada layar kecil */
-            padding: 20px; /* Mengurangi padding untuk layar kecil */
+            max-width: 1000px;
+            /* Membatasi lebar konten */
+            margin: 130px auto 30px;
+            /* Menambahkan margin atas yang lebih besar dari header */
+            padding: 30px;
+            /* Padding di dalam kontainer */
+            background-color: #ffffff;
+            /* Warna latar belakang putih */
+            border-radius: 12px;
+            /* Sudut melengkung untuk estetika */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            /* Shadow lebih lembut dan profesional */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            /* Efek hover */
         }
-    }
+
+        main:hover {
+            transform: translateY(-5px);
+            /* Sedikit efek hover untuk interaksi */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            /* Shadow lebih intens saat hover */
+        }
+
+        /* Responsivitas untuk layar kecil */
+        @media (max-width: 768px) {
+            main {
+                margin: 120px 15px 30px;
+                /* Menambahkan jarak atas lebih kecil pada layar kecil */
+                padding: 20px;
+                /* Mengurangi padding untuk layar kecil */
+            }
+        }
     </style>
 </head>
 
@@ -193,28 +204,28 @@
                 <label for="program_keahlian" class="form-label">Program Keahlian</label>
                 <input type="text" class="form-control" id="program_keahlian" name="program_keahlian" value="{{ $siswa->program_keahlian }}" readonly>
             </div>
-            
-<!-- Mata Pelajaran yang tidak di ikuti -->
-<div class="mb-3">
-    <label for="mata_pelajaran" class="form-label">Mata Pelajaran Yang Tidak Diikuti</label>
-    <select class="form-control" id="mata_pelajaran" name="mata_pelajaran" required>
-        <option value="" disabled selected>Pilih Mata Pelajaran</option>
-        @foreach($mataPelajaran as $mataPelajaranItem)
-            <option value="{{ $mataPelajaranItem->mata_pelajaran }}">{{ $mataPelajaranItem->mata_pelajaran }}</option>
-        @endforeach
-    </select>
-</div>
 
-<!-- Nama Pengajar -->
-<div class="mb-3">
-    <label for="nama_pengajar" class="form-label">Nama Pengajar</label>
-    <select class="form-select" id="nama_pengajar" name="nama_pengajar" required>
-        <option value="" disabled selected>Pilih Nama Pengajar</option>
-    </select>
-</div>
+            <!-- Mata Pelajaran yang tidak di ikuti -->
+            <div class="mb-3">
+                <label for="mata_pelajaran" class="form-label">Mata Pelajaran Yang Tidak Diikuti</label>
+                <select class="form-control" id="mata_pelajaran" name="mata_pelajaran" required>
+                    <option value="" disabled selected>Pilih Mata Pelajaran</option>
+                    @foreach($mataPelajaran as $mataPelajaranItem)
+                    <option value="{{ $mataPelajaranItem->mata_pelajaran }}">{{ $mataPelajaranItem->mata_pelajaran }}</option>
+                    @endforeach
+                </select>
+            </div>
 
-<!-- Input tersembunyi untuk menyimpan NIP -->
-<input type="hidden" id="nip" name="nip">
+            <!-- Nama Pengajar -->
+            <div class="mb-3">
+                <label for="nama_pengajar" class="form-label">Nama Pengajar</label>
+                <select class="form-select" id="nama_pengajar" name="nama_pengajar" required>
+                    <option value="" disabled selected>Pilih Nama Pengajar</option>
+                </select>
+            </div>
+
+            <!-- Input tersembunyi untuk menyimpan NIP -->
+            <input type="hidden" id="nip" name="nip">
 
             <!-- Kategori Dispensasi -->
             <div class="mb-3">
@@ -256,33 +267,33 @@
         </div>
     </footer>
     <script>
-    document.getElementById('mata_pelajaran').addEventListener('change', function() {
-        var mataPelajaran = this.value;
+        document.getElementById('mata_pelajaran').addEventListener('change', function() {
+            var mataPelajaran = this.value;
 
-        if (mataPelajaran) {
-            fetch(`/siswa/get-pengajar/${mataPelajaran}`)
-                .then(response => response.json())
-                .then(data => {
-                    var namaPengajarSelect = document.getElementById('nama_pengajar');
-                    namaPengajarSelect.innerHTML = '<option value="" disabled selected>Pilih Nama Pengajar</option>';
+            if (mataPelajaran) {
+                fetch(`/siswa/get-pengajar/${mataPelajaran}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var namaPengajarSelect = document.getElementById('nama_pengajar');
+                        namaPengajarSelect.innerHTML = '<option value="" disabled selected>Pilih Nama Pengajar</option>';
 
-                    data.forEach(function(pengajar) {
-                        var option = document.createElement('option');
-                        option.value = pengajar.nip;
-                        option.textContent = pengajar.nama;
-                        namaPengajarSelect.appendChild(option);
-                    });
+                        data.forEach(function(pengajar) {
+                            var option = document.createElement('option');
+                            option.value = pengajar.nip;
+                            option.textContent = pengajar.nama;
+                            namaPengajarSelect.appendChild(option);
+                        });
 
-                    // Menambahkan event listener untuk menangani pemilihan nama pengajar
-                    namaPengajarSelect.addEventListener('change', function() {
-                        var nip = this.value;
-                        document.getElementById('nip').value = nip;  // Menyimpan nip yang terpilih ke input tersembunyi
-                    });
-                })
-                .catch(error => console.log('Error:', error));
-        }
-    });
-</script>
+                        // Menambahkan event listener untuk menangani pemilihan nama pengajar
+                        namaPengajarSelect.addEventListener('change', function() {
+                            var nip = this.value;
+                            document.getElementById('nip').value = nip; // Menyimpan nip yang terpilih ke input tersembunyi
+                        });
+                    })
+                    .catch(error => console.log('Error:', error));
+            }
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
