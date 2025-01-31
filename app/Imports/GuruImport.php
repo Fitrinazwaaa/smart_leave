@@ -25,18 +25,7 @@ class GuruImport implements ToModel, WithHeadingRow
         $hashedPassword = Hash::make($row['password']);
 
         // Pisahkan hari piket dan mata pelajaran
-        $hariPiket = empty($row['hari_piket']) ? null : explode(',', $row['hari_piket']);
         $mataPelajaran = explode(',', $row['mata_pelajaran']);
-
-        // Daftar hari valid
-        $validDays = ['senin', 'selasa', 'rabu', 'kamis', 'jumat'];
-
-        // Filter hari piket untuk hanya menyertakan hari valid
-        if (!is_null($hariPiket)) {
-            $hariPiket = array_filter($hariPiket, function ($hari) use ($validDays) {
-                return in_array(strtolower(trim($hari)), $validDays);
-            });
-        }
 
         if ($existingGuru) {
             // Update data di tabel akun_guru
@@ -46,8 +35,8 @@ class GuruImport implements ToModel, WithHeadingRow
                 'mata_pelajaran' => $row['mata_pelajaran'],
                 'program_keahlian' => $row['program_keahlian'],
                 'tingkat' => $row['tingkat'],
+                'no_hp' => $row['telepon'],
                 'jabatan' => $row['jabatan'],
-                'hari_piket' => empty($row['hari_piket']) ? null : $row['hari_piket'],
                 'password' => $hashedPassword,
             ]);
 
@@ -59,19 +48,6 @@ class GuruImport implements ToModel, WithHeadingRow
                     'username' => null,
                 ]
             );
-
-            // Update data di tabel piket_guru (jika hari_piket tidak kosong)
-            if (!empty($hariPiket)) {
-                foreach ($hariPiket as $hari) {
-                    DB::table('piket_guru')->updateOrInsert(
-                        ['nip' => $row['nip'], 'hari_piket' => trim($hari)],
-                        [
-                            'nama' => $row['nama'],
-                            'jk' => $row['jenis_kelamin'],
-                        ]
-                    );
-                }
-            }
 
             // Update data di tabel matapelajaran_guru
             foreach ($mataPelajaran as $mapel) {
@@ -97,8 +73,8 @@ class GuruImport implements ToModel, WithHeadingRow
             'mata_pelajaran' => $row['mata_pelajaran'],
             'program_keahlian' => $row['program_keahlian'],
             'tingkat' => $row['tingkat'],
+            'no_hp' => $row['telepon'],
             'jabatan' => $row['jabatan'],
-            'hari_piket' => empty($row['hari_piket']) ? null : $row['hari_piket'],
             'password' => $hashedPassword,
         ]);
 
@@ -108,18 +84,6 @@ class GuruImport implements ToModel, WithHeadingRow
             'password' => $hashedPassword,
             'username' => null,
         ]);
-
-        // Tambahkan data ke tabel piket_guru (jika hari_piket tidak kosong)
-        if (!empty($hariPiket)) {
-            foreach ($hariPiket as $hari) {
-                DB::table('piket_guru')->insert([
-                    'nip' => $row['nip'],
-                    'nama' => $row['nama'],
-                    'jk' => $row['jenis_kelamin'],
-                    'hari_piket' => trim($hari),
-                ]);
-            }
-        }
 
         // Tambahkan data ke tabel matapelajaran_guru
         foreach ($mataPelajaran as $mapel) {

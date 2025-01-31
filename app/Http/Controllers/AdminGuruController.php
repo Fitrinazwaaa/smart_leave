@@ -26,7 +26,7 @@ class AdminGuruController extends Controller
             'mata_pelajaran' => 'required|string|max:255', // Memperbesar panjang string
             'tingkat' => 'required|string|max:10',
             'program_keahlian' => 'required|string|max:100',
-            'hari_piket' => 'nullable|string|max:10',
+            'no_hp' => 'nullable|string|max:20',
             'jabatan' => 'nullable|string|max:10',
             'password' => 'required|string|min:6',
         ]);
@@ -40,7 +40,7 @@ class AdminGuruController extends Controller
                 'mata_pelajaran' => $request->mata_pelajaran,
                 'tingkat' => $request->tingkat,
                 'program_keahlian' => $request->program_keahlian,
-                'hari_piket' => $request->hari_piket,
+                'no_hp' => $request->no_hp,
                 'jabatan' => $request->jabatan,
                 'password' => Hash::make($request->password),
             ]);
@@ -54,19 +54,6 @@ class AdminGuruController extends Controller
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-    
-            // Simpan data ke tabel piket_guru jika hari_piket valid (senin-jumat)
-            $validDays = ['senin', 'selasa', 'rabu', 'kamis', 'jumat'];
-            if (!is_null($request->hari_piket) && in_array(strtolower($request->hari_piket), $validDays)) {
-                DB::table('piket_guru')->insert([
-                    'nip' => $request->nip,
-                    'nama' => $request->nama,
-                    'jk' => $request->jk,
-                    'hari_piket' => $request->hari_piket,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
     
             // Proses mata pelajaran (pisahkan berdasarkan koma)
             $mataPelajaran = explode(',', $request->mata_pelajaran);

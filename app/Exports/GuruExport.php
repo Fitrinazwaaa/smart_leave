@@ -23,7 +23,7 @@ class GuruExport implements FromCollection, WithHeadings
             'program_keahlian', 
             'tingkat', 
             'mata_pelajaran', 
-            'hari_piket', 
+            'no_hp',
             'jabatan',
             'password',
         ])->get();
@@ -43,7 +43,7 @@ class GuruExport implements FromCollection, WithHeadings
             'PROGRAM KEAHLIAN', 
             'TINGKAT', 
             'MATA PELAJARAN', 
-            'HARI PIKET', 
+            'TELEPON', 
             'JABATAN', 
             'PASSWORD',
         ];

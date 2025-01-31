@@ -1,201 +1,282 @@
 <?php
-// Ambil NIP dari pengguna yang sedang login
 
 use App\Models\AkunGuru;
-use App\Models\Dispensasi;
-use App\Models\Konfirmasi;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
-$nip = Auth::user()->nip;
+Carbon::setLocale('id');
+$nip = Auth::user()->nip;  // Mendapatkan nip dari user yang sedang login
 $guru = AkunGuru::where('nip', $nip)->first();
+// Ambil data pengguna dari tabel akun_guru berdasarkan NIP
+$akunGuru = DB::table('akun_guru')->where('nip', $nip)->first();
 
-// Jika guru tidak ditemukan, redirect ke halaman login dengan error
 if (!$guru) {
-    return redirect()->route('login')->withErrors(['error' => 'Guru tidak ditemukan.']);
+  // Jika guru tidak ditemukan, tampilkan error atau redirect
+  return redirect()->route('login')->withErrors(['error' => 'Guru tidak ditemukan.']);
 }
-
-// Variabel untuk menampung jumlah pengajuan yang memerlukan konfirmasi
-$pengajuanPiket = 0;
-$pengajuanPengajar = 0;
-$pengajuanKurikulum = 0;
-
-// Memeriksa apakah guru tersebut memiliki izin untuk mengonfirmasi pengajuan
-if ($guru->jabatan == 'piket') {
-    // Hitung jumlah pengajuan yang memerlukan konfirmasi untuk guru piket
-    $pengajuanPiket = Dispensasi::join('konfirmasi', 'dispensasi.id_dispen', '=', 'konfirmasi.id_dispen')
-        ->where('dispensasi.nip', $nip)
-        ->whereNull('konfirmasi.konfirmasi_1')  // Belum terkonfirmasi oleh guru piket
-        ->whereNull('konfirmasi.konfirmasi_2')  // Belum terkonfirmasi oleh pihak lain
-        ->count();
-}
-
-if ($guru->mata_pelajaran) {
-    // Hitung jumlah pengajuan yang memerlukan konfirmasi untuk guru pengajar
-    $pengajuanPengajar = Dispensasi::join('konfirmasi', 'dispensasi.id_dispen', '=', 'konfirmasi.id_dispen')
-        ->where('dispensasi.nip', $nip)
-        ->whereNull('konfirmasi.konfirmasi_1')  // Belum terkonfirmasi oleh guru pengajar
-        ->whereNull('konfirmasi.konfirmasi_2')  // Belum terkonfirmasi oleh pihak lain
-        ->count();
-}
-
-if ($guru->jabatan == 'kurikulum') {
-    // Hitung jumlah pengajuan yang memerlukan konfirmasi untuk kurikulum
-    $pengajuanKurikulum = Konfirmasi::whereNull('konfirmasi.konfirmasi_2') // Belum terkonfirmasi oleh kurikulum
-        ->whereNull('konfirmasi.konfirmasi_3') // Belum terkonfirmasi oleh pihak lain
-        ->count(); 
-}
-
-
-$pengajuanDispen = Dispensasi::where('status', 'pending')->count(); // Asumsi status "pending" untuk dispensasi yang belum diproses
-
-$notifications = Auth::user()->notifications ?? []; // Notifikasi default
 ?>
-
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>dashboard guru</title>
+  <title>Halaman Konfirmasi Guru</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet" type="text/css">
-  <script>
-    function navigateTo(page) {
-      alert(`Navigasi ke halaman: ${page}`);
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJb3RrP6j1eg84BQ2erfFPLBaZrj1I1NE9FYkCOs5TtZUSSHjGZbmL8HjzqP" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Global Style */
+    html,
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overscroll-behavior: none;
+      background: linear-gradient(to bottom, #ffffff, #f3f4f7);
+      background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
     }
-  </script>
+
+    /* Header Style */
+    header {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      display: flex;
+      justify-content: flex-start;
+      /* Align items to the start */
+      align-items: center;
+      /* Vertically center the content */
+      padding: 15px;
+      background: linear-gradient(90deg, #030248, #4b6cb7);
+      color: white;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      border-bottom: 3px solid #dce400;
+      transition: all 0.3s ease;
+    }
+
+    header:hover {
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Back Button Styling (Arrow only) */
+    header .back-button {
+      margin-left: 40px;
+      margin-right: 20px;
+      background-color: transparent;
+      border: none;
+      padding: 8px;
+      font-size: 20px;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.3s ease, color 0.3s ease;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      /* Ensure no space between button and icon */
+    }
+
+    header .back-button i {
+      font-size: 20px;
+      margin: 0;
+      /* Ensure no extra space around the icon */
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    /* Hover effect */
+    header .back-button:hover {
+      transform: scale(1.1);
+      color: #dce400;
+      /* Change to gold color on hover */
+    }
+
+    /* Focus effect */
+    header .back-button:focus {
+      outline: none;
+      transform: scale(1.1);
+    }
+
+    /* Logo Styling */
+    header .logo {
+      display: flex;
+      align-items: center;
+      /* Align logo vertically in the center */
+      justify-content: center;
+      /* Center content horizontally */
+      gap: 16px;
+    }
+
+    header .logo img {
+      width: 70px;
+      height: 70px;
+      padding: 5px;
+      border-radius: 50%;
+      border: 3px solid white;
+    }
+
+    header h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      line-height: 1.2;
+      /* Adjust line height to improve vertical centering */
+    }
+
+    header .sub-title {
+      margin: 0;
+      font-size: 14px;
+      color: #dce400;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    .container{
+      max-width: 1280px;
+  margin: 130px auto 0;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 5px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-body {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .student-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .student-info .name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .student-info .class {
+      font-size: 0.95rem;
+      color: #6c757d;
+      margin: 0;
+    }
+
+    .actions button {
+      background-color: #4b6cb7;
+      color: white;
+      min-width: 110px;
+      transition: background-color 0.2s, transform 0.2s;
+    }
+    
+    .actions .btn:hover {
+      background-color: #4b6cb7;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .actions .detail {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+    }
+
+    .actions .detail:hover {
+      background-color: #0056b3;
+    }
+
+    .actions .confirm {
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+    }
+
+    .actions .confirm:hover {
+      background-color: #218838;
+    }
+
+    .actions .confirm:disabled {
+      background-color: #d6d8db;
+      color: #6c757d;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 
 <body>
   <header>
+    <button class="back-button" onclick="window.location.href='{{ route('dashboard.guru') }}';">
+      <i class="fas fa-arrow-left"></i>
+    </button>
     <div class="logo">
       <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
-      <div class="text-container">
+      <div>
         <h2>DISPENSASI DIGITAL SMK NEGERI 1 KAWALI</h2>
         <p class="sub-title">{{ $guru->nama }}</p>
       </div>
     </div>
-    <!-- Form logout -->
-    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-      @csrf
-      <button type="submit" class="logout">Logout</button>
-    </form>
   </header>
-
-  @if (!empty($notifications)) <!-- Check if notifications are not empty -->
-  @foreach ($notifications as $notification)
-  <div>
-    <p>{{ $notification->data['nama_siswa'] }} mengajukan dispensasi.</p>
-    <p>Kategori: {{ $notification->data['kategori'] }}</p>
-    <p>Waktu Keluar: {{ $notification->data['waktu_keluar'] }}</p>
+  @if (session('success'))
+  <div class="alert alert-success">
+    {{ session('success') }}
   </div>
-  @endforeach
-  @else
-  <p>Tidak ada notifikasi untuk saat ini.</p> <!-- Default message when no notifications -->
   @endif
 
-  <div class="semi-circle"></div>
-
-  <div class="main-container">
-  <div class="menu">
-    <!-- Konfirmasi Guru Piket -->
-    @if ($pengajuanPiket > 0 && $guru->jabatan == 'piket')
-    <div class="menu-item" data-bs-toggle="tooltip" title="Lihat konfirmasi guru piket" onclick="window.location.href='{{ route('konfirGuruPiket') }}';">
-        <i class="fas fa-user-graduate"></i>
-        <span>Konfirmasi Guru Piket</span>
-        <span class="badge bg-danger">{{ $pengajuanPiket }}</span>
-    </div>
-    @endif
-
-    <!-- Konfirmasi Guru Pengajar -->
-    @if ($pengajuanPengajar > 0 && $guru->mata_pelajaran)
-    <div class="menu-item" data-bs-toggle="tooltip" title="Lihat konfirmasi guru pengajar" onclick="window.location.href='{{ route('konfirGuruMataPelajaran') }}';">
-        <i class="fas fa-chalkboard-teacher"></i>
-        <span>Konfirmasi Guru Pengajar</span>
-        <span class="badge bg-danger">{{ $pengajuanPengajar }}</span>
-    </div>
-    @endif
-
-    <!-- Konfirmasi Kurikulum -->
-    @if ($pengajuanKurikulum > 0 && $guru->jabatan == 'kurikulum')
-    <div class="menu-item" data-bs-toggle="tooltip" title="Lihat konfirmasi kurikulum" onclick="window.location.href='{{ route('konfirGuruKurikulum') }}';">
-        <i class="fas fa-chalkboard-teacher"></i>
-        <span>Konfirmasi Kurikulum</span>
-        <span class="badge bg-danger">{{ $pengajuanKurikulum }}</span>
-    </div>
-    @endif
-      
-      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat jadwal piket" onclick="navigateTo('jadwal_piket')">
-        <i class="fas fa-calendar-check"></i>
-        <span>Jadwal Piket</span>
-      </div>
-      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat history dispensasi" onclick="navigateTo('history_dispen')">
-        <i class="fas fa-file-alt"></i>
-        <span>History Dispen</span>
-      </div>
-    </div>
-      
-    <!-- Notifikasi dan Statistik -->
-    <div class="d-flex">
-      <div class="notification-card">
-        <h4>Notifikasi Pengajuan Dispensasi</h4>
-        @if ($pengajuanDispen > 0)
-        <div class="alert alert-info d-flex justify-content-between align-items-center">
-          <div>
-            <p><strong>{{ $pengajuanDispen }} Pengajuan Dispensasi Baru</strong></p>
-          </div>
-          <div>
-            <button class="btn btn-success btn-sm" onclick="">
-              Lihat Detail
-            </button>
-          </div>
+  <div class="container">
+    <h1 class="mb-4 text-center">Konfirmasi Dispensasi - Guru Piket</h1>
+    @foreach ($dispen as $data)
+  <!-- Guru Piket Card -->
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex align-items-center gap-3">
+        <div class="student-info">
+          <p class="name">{{ $data->nama }} ({{ $data->nis }})</p>
+          <p class="class">{{ $data->tingkat }} {{ $data->konsentrasi_keahlian }}</p>
         </div>
-        @else
-        <p>Tidak ada pengajuan dispensasi baru.</p>
-        @endif
       </div>
-      <div class="stats-card">
-        <h3>Statistik Pengguna</h3>
-        <p class="stat">450</p>
-        <p>Siswa Terdaftar</p>
-        <p class="stat">38</p>
-        <p>Guru Aktif</p>
-      </div>
-    </div>
-
-    <div class="info-cards">
-      <div class="info-card">
-        <h3>Data Siswa & Data Guru</h3>
-        <div class="divider"></div>
-        <p>Data ini dibutuhkan untuk login baik itu guru maupun siswa.</p>
-        <p>Username guru menggunakan NIP</p>
-        <p>Username siswa menggunakan nip</p>
-        <p>Dengan password masing-masing</p>
-      </div>
-
-      <div class="info-card">
-        <h3>Jadwal Piket Guru</h3>
-        <div class="divider"></div>
-        <p>Ini digunakan untuk mengetahui siapa saja guru yang bertugas melakukan piket sekolah.</p>
-      </div>
-
-      <div class="info-card">
-        <h3>History Dispen Siswa</h3>
-        <div class="divider"></div>
-        <p>Kumpulan data siswa yang telah melakukan dispen dalam 1 tahun.</p>
+      <div class="actions d-flex gap-2">
+        <button class="btn" >Detail</button>
+        <!-- Form Konfirmasi -->
+        <form action="{{ route('konfirmasiPiket') }}" method="POST">
+          @csrf
+          <input type="hidden" name="id_dispen" value="{{ $data->id_dispen }}">
+          <div class="actions d-flex gap-2">
+            <button type="submit" class="btn">Konfirmasi</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+    @endforeach
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-  </script>
+  <!-- Bootstrap and Bootstrap Icons CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybOveo3f8VgJUvP5Vyn6pd56rOH1diJfqa0ksL8/4Oh3nybs0" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0uW9YrkQ+Q+97Jmf6fF3j1vSxtIhQczb1Y88aV6YQw0W6qHm" crossorigin="anonymous"></script>
 </body>
 
 </html>

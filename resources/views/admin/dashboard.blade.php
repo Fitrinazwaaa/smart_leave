@@ -1,4 +1,5 @@
 <?php
+
 use App\Models\PiketGuru;
 use App\Models\AkunSiswa;
 use App\Models\AkunGuru;
@@ -43,18 +44,19 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
     <div class="semi-circle"></div>
     <div class="main-container">
         <div class="menu">
-            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat data siswa"
-                onclick="window.location.href='{{ route('kelasSiswa') }}';">
+            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat data siswa" onclick="window.location.href='{{ route('kelasSiswa') }}';">
                 <i class="fas fa-user-graduate"></i>
                 <span>Data Siswa</span>
             </div>
-            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat data guru"
-                onclick="window.location.href='{{ route('admin.guru.index') }}';">
+            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat data guru" onclick="window.location.href='{{ route('admin.guru.index') }}';">
                 <i class="fas fa-chalkboard-teacher"></i>
                 <span>Data Guru</span>
             </div>
-            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat history dispensasi"
-                onclick="navigateTo('history_dispen')">
+            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat data guru" onclick="window.location.href='{{ route('admin.piket') }}';">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Guru Piket</span>
+            </div>
+            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat history dispensasi" onclick="navigateTo('history_dispen')">
                 <i class="fas fa-file-alt"></i>
                 <span>History Dispen</span>
             </div>
@@ -70,7 +72,7 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
             <div class="notification-card">
                 <div class="accordion">
                     <div class="accordion-content">
-                        <h3 style="font-weight: bold;">Jadwal Piket Guru</h3>
+                        <h3 style="font-weight: bold;">Pekan Gajil</h3>
                         <table>
                             <thead>
                                 <tr>
@@ -83,48 +85,61 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
                             </thead>
                             <tbody>
                                 @php
-                                    // Tentukan jumlah baris berdasarkan hari dengan data terbanyak
-                                    $maxRows = max(
-                                        $piketGuru
-                                            ->filter(fn($guru) => strtolower($guru->hari_piket) === 'senin')
-                                            ->count(),
-                                        $piketGuru
-                                            ->filter(fn($guru) => strtolower($guru->hari_piket) === 'selasa')
-                                            ->count(),
-                                        $piketGuru
-                                            ->filter(fn($guru) => strtolower($guru->hari_piket) === 'rabu')
-                                            ->count(),
-                                        $piketGuru
-                                            ->filter(fn($guru) => strtolower($guru->hari_piket) === 'kamis')
-                                            ->count(),
-                                        $piketGuru
-                                            ->filter(fn($guru) => strtolower($guru->hari_piket) === 'jumat')
-                                            ->count(),
-                                    );
+                                $maxRows = max(
+                                $piketGuru->where('pekan', 'ganjil')->where('hari_piket', 'Senin')->count(),
+                                $piketGuru->where('pekan', 'ganjil')->where('hari_piket', 'Selasa')->count(),
+                                $piketGuru->where('pekan', 'ganjil')->where('hari_piket', 'Rabu')->count(),
+                                $piketGuru->where('pekan', 'ganjil')->where('hari_piket', 'Kamis')->count(),
+                                $piketGuru->where('pekan', 'ganjil')->where('hari_piket', 'Jumat')->count(),
+                                );
                                 @endphp
 
                                 @for ($i = 0; $i < $maxRows; $i++)
                                     <tr>
-                                        <td>
-                                            {{ optional($piketGuru->filter(fn($guru) => strtolower($guru->hari_piket) === 'senin')->values()->get($i))->nama ?? '' }}
-                                        </td>
-                                        <td>
-                                            {{ optional($piketGuru->filter(fn($guru) => strtolower($guru->hari_piket) === 'selasa')->values()->get($i))->nama ?? '' }}
-                                        </td>
-                                        <td>
-                                            {{ optional($piketGuru->filter(fn($guru) => strtolower($guru->hari_piket) === 'rabu')->values()->get($i))->nama ?? '' }}
-                                        </td>
-                                        <td>
-                                            {{ optional($piketGuru->filter(fn($guru) => strtolower($guru->hari_piket) === 'kamis')->values()->get($i))->nama ?? '' }}
-                                        </td>
-                                        <td>
-                                            {{ optional($piketGuru->filter(fn($guru) => strtolower($guru->hari_piket) === 'jumat')->values()->get($i))->nama ?? '' }}
-                                        </td>
+                                    <td>{{ optional($piketGuru->where('pekan', 'ganjil')->where('hari_piket', 'Senin')->values()->get($i))->nama ?? '' }}</td>
+                                    <td>{{ optional($piketGuru->where('pekan', 'ganjil')->where('hari_piket', 'Selasa')->values()->get($i))->nama ?? '' }}</td>
+                                    <td>{{ optional($piketGuru->where('pekan', 'ganjil')->where('hari_piket', 'Rabu')->values()->get($i))->nama ?? '' }}</td>
+                                    <td>{{ optional($piketGuru->where('pekan', 'ganjil')->where('hari_piket', 'Kamis')->values()->get($i))->nama ?? '' }}</td>
+                                    <td>{{ optional($piketGuru->where('pekan', 'ganjil')->where('hari_piket', 'Jumat')->values()->get($i))->nama ?? '' }}</td>
                                     </tr>
-                                @endfor
+                                    @endfor
                             </tbody>
                         </table>
+                    </div>
+                    <div class="accordion-content" style="margin-top: 15px;">
+                        <h3 style="font-weight: bold;">Pekan Genap</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Senin</th>
+                                    <th>Selasa</th>
+                                    <th>Rabu</th>
+                                    <th>Kamis</th>
+                                    <th>Jumat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                $maxRows = max(
+                                $piketGuru->where('pekan', 'genap')->where('hari_piket', 'Senin')->count(),
+                                $piketGuru->where('pekan', 'genap')->where('hari_piket', 'Selasa')->count(),
+                                $piketGuru->where('pekan', 'genap')->where('hari_piket', 'Rabu')->count(),
+                                $piketGuru->where('pekan', 'genap')->where('hari_piket', 'Kamis')->count(),
+                                $piketGuru->where('pekan', 'genap')->where('hari_piket', 'Jumat')->count(),
+                                );
+                                @endphp
 
+                                @for ($i = 0; $i < $maxRows; $i++)
+                                    <tr>
+                                    <td>{{ optional($piketGuru->where('pekan', 'genap')->where('hari_piket', 'Senin')->values()->get($i))->nama ?? '' }}</td>
+                                    <td>{{ optional($piketGuru->where('pekan', 'genap')->where('hari_piket', 'Selasa')->values()->get($i))->nama ?? '' }}</td>
+                                    <td>{{ optional($piketGuru->where('pekan', 'genap')->where('hari_piket', 'Rabu')->values()->get($i))->nama ?? '' }}</td>
+                                    <td>{{ optional($piketGuru->where('pekan', 'genap')->where('hari_piket', 'Kamis')->values()->get($i))->nama ?? '' }}</td>
+                                    <td>{{ optional($piketGuru->where('pekan', 'genap')->where('hari_piket', 'Jumat')->values()->get($i))->nama ?? '' }}</td>
+                                    </tr>
+                                    @endfor
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -26,7 +26,8 @@ class GuruKonfirmasiController extends Controller
         // Cek apakah guru yang login sedang memiliki jadwal piket
         $jadwalPiket = PiketGuru::where('nip', $nip)
             ->where('hari_piket', $hariIni)
-            ->first();
+            ->where('aktif', 1)  // Pastikan hanya yang aktif yang dipilih
+            ->first();  // Ambil data pertama yang ditemukan
 
         if (!$jadwalPiket) {
             return redirect()->route('dashboard.guru')->withErrors(['error' => 'Anda tidak memiliki jadwal piket hari ini.']);
@@ -121,54 +122,25 @@ class GuruKonfirmasiController extends Controller
     {
         // Ambil data NIP guru yang sedang login
         $nip = auth()->user()->nip;
-    
+
         // Ambil data dispensasi yang harus dikonfirmasi oleh guru mata pelajaran yang sesuai dengan NIP guru yang login
         $dispen = Dispensasi::whereHas('konfirmasi', function ($query) {
             $query->whereNotNull('konfirmasi_1')->whereNull('konfirmasi_2');
         })->where('nip', $nip) // Tambahkan filter NIP sesuai dengan guru yang login
-        ->get();
-    
+            ->get();
+
         // Jika tidak ada data dispensasi yang ditemukan untuk guru ini, Anda bisa menambahkan pesan error
         if ($dispen->isEmpty()) {
             return redirect()->route('dashboard.guru')->withErrors(['error' => 'Tidak ada data dispensasi yang perlu dikonfirmasi.']);
         }
-    
+
         // Return ke halaman konfirmasi guru pengajar dengan data yang sesuai
         return view('guru.konfirmasi_guru_pengajar', compact('dispen'));
     }
-    
-    
+
+
     public function konfirGuruKurikulum()
-{
-    // Ambil NIP pengguna yang sedang login
-    $nip = auth()->user()->nip;
-
-    // Ambil data pengguna dari tabel akun_guru berdasarkan NIP
-    $akunGuru = DB::table('akun_guru')->where('nip', $nip)->first();
-
-    // Pastikan pengguna memiliki jabatan 'kurikulum'
-    if (!$akunGuru || $akunGuru->jabatan !== 'kurikulum') {
-        return redirect()->route('dashboard.guru')->withErrors(['error' => 'Hanya pengguna dengan jabatan Kurikulum yang dapat mengakses halaman ini.']);
-    }
-
-    // Ambil data dispensasi yang harus dikonfirmasi oleh kurikulum
-    $dispen = Dispensasi::whereHas('konfirmasi', function ($query) {
-        $query->whereNotNull('konfirmasi_1')
-            ->whereNotNull('konfirmasi_2')
-            ->whereNull('konfirmasi_3'); // Hanya yang belum dikonfirmasi_3
-    })->get();
-
-    return view('guru.konfirmasi_kurikulum', compact('dispen'));
-}
-
-public function konfirmasiKurikulum(Request $request)
-{
-    // Validasi input
-    $request->validate([
-        'id_dispen' => 'required|exists:dispensasi,id_dispen', // Memastikan id_dispen ada di tabel dispensasi
-    ]);
-
-    try {
+    {
         // Ambil NIP pengguna yang sedang login
         $nip = auth()->user()->nip;
 
@@ -177,31 +149,59 @@ public function konfirmasiKurikulum(Request $request)
 
         // Pastikan pengguna memiliki jabatan 'kurikulum'
         if (!$akunGuru || $akunGuru->jabatan !== 'kurikulum') {
-            return redirect()->route('konfirGuruKurikulum')->withErrors(['error' => 'Hanya pengguna dengan jabatan Kurikulum yang dapat mengonfirmasi.']);
+            return redirect()->route('dashboard.guru')->withErrors(['error' => 'Hanya pengguna dengan jabatan Kurikulum yang dapat mengakses halaman ini.']);
         }
 
-        // Cari dispensasi yang sesuai
-        $dispen = Dispensasi::findOrFail($request->id_dispen);
+        // Ambil data dispensasi yang harus dikonfirmasi oleh kurikulum
+        $dispen = Dispensasi::whereHas('konfirmasi', function ($query) {
+            $query->whereNotNull('konfirmasi_1')
+                ->whereNotNull('konfirmasi_2')
+                ->whereNull('konfirmasi_3'); // Hanya yang belum dikonfirmasi_3
+        })->get();
 
-        // Cek apakah konfirmasi_1 dan konfirmasi_2 sudah terisi, dan konfirmasi_3 belum diisi
-        $konfirmasi = Konfirmasi::where('id_dispen', $request->id_dispen)
-            ->whereNotNull('konfirmasi_1')
-            ->whereNotNull('konfirmasi_2')
-            ->whereNull('konfirmasi_3') // Pastikan konfirmasi_3 belum diisi
-            ->first();
-
-        if (!$konfirmasi) {
-            return redirect()->route('konfirGuruKurikulum')->withErrors(['error' => 'Konfirmasi tidak valid.']);
-        }
-
-        // Update konfirmasi_3 dengan NIP pengguna yang sedang login
-        $konfirmasi->konfirmasi_3 = $nip;
-        $konfirmasi->save();
-
-        return redirect()->route('konfirGuruKurikulum')->with('success', 'Konfirmasi berhasil.');
-    } catch (\Exception $e) {
-        return redirect()->route('konfirGuruKurikulum')->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        return view('guru.konfirmasi_kurikulum', compact('dispen'));
     }
-}
 
+    public function konfirmasiKurikulum(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'id_dispen' => 'required|exists:dispensasi,id_dispen', // Memastikan id_dispen ada di tabel dispensasi
+        ]);
+
+        try {
+            // Ambil NIP pengguna yang sedang login
+            $nip = auth()->user()->nip;
+
+            // Ambil data pengguna dari tabel akun_guru berdasarkan NIP
+            $akunGuru = DB::table('akun_guru')->where('nip', $nip)->first();
+
+            // Pastikan pengguna memiliki jabatan 'kurikulum'
+            if (!$akunGuru || $akunGuru->jabatan !== 'kurikulum') {
+                return redirect()->route('konfirGuruKurikulum')->withErrors(['error' => 'Hanya pengguna dengan jabatan Kurikulum yang dapat mengonfirmasi.']);
+            }
+
+            // Cari dispensasi yang sesuai
+            $dispen = Dispensasi::findOrFail($request->id_dispen);
+
+            // Cek apakah konfirmasi_1 dan konfirmasi_2 sudah terisi, dan konfirmasi_3 belum diisi
+            $konfirmasi = Konfirmasi::where('id_dispen', $request->id_dispen)
+                ->whereNotNull('konfirmasi_1')
+                ->whereNotNull('konfirmasi_2')
+                ->whereNull('konfirmasi_3') // Pastikan konfirmasi_3 belum diisi
+                ->first();
+
+            if (!$konfirmasi) {
+                return redirect()->route('konfirGuruKurikulum')->withErrors(['error' => 'Konfirmasi tidak valid.']);
+            }
+
+            // Update konfirmasi_3 dengan NIP pengguna yang sedang login
+            $konfirmasi->konfirmasi_3 = $nip;
+            $konfirmasi->save();
+
+            return redirect()->route('konfirGuruKurikulum')->with('success', 'Konfirmasi berhasil.');
+        } catch (\Exception $e) {
+            return redirect()->route('konfirGuruKurikulum')->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
+    }
 }

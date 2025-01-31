@@ -15,8 +15,9 @@ $nip = Auth::user()->nip;  // Mendapatkan nip dari user yang sedang login
 $hariIni = Carbon::now()->translatedFormat('l');
 // Cek apakah guru yang login sedang memiliki jadwal piket
 $jadwalPiket = PiketGuru::where('nip', $nip)
-  ->where('hari_piket', $hariIni)
-  ->first();
+->where('hari_piket', $hariIni)
+->where('aktif', 1)  // Pastikan hanya yang aktif yang dipilih
+->first();  // Ambil data pertama yang ditemukan
 
 // Ambil data dispensasi yang harus dikonfirmasi oleh guru mata pelajaran yang sesuai dengan NIP guru yang login
 $dispen = Dispensasi::whereHas('konfirmasi', function ($query) {

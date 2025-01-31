@@ -12,14 +12,20 @@ class PiketGuru extends Model
     protected $table = 'piket_guru';
     protected $guarded = [];
     protected $fillable = [
+        'id',
         'nip',
         'nama',
-        'jk',
         'hari_piket',
+        'pekan',
+        'aktif',
     ];
     // Relasi jika diperlukan
     public function dispensasi()
     {
         return $this->hasMany(Dispensasi::class, 'nip', 'nip');
+    }
+    public function akunGuru()
+    {
+        return $this->belongsTo(AkunGuru::class, 'nip', 'nip');
     }
 }

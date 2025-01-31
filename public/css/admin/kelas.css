@@ -120,9 +120,9 @@ header .sub-title {
 }
 
 .card-header {
-    background-color: #030248;
-    color: white;
-    font-weight: bold;
+    background-color: #030248 !important;
+    color: white !important;
+    font-weight: bold !important;
 }
 
 .table th,

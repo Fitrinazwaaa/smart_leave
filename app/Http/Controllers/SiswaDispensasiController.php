@@ -6,6 +6,7 @@ use App\Models\AkunSiswa;
 use App\Models\Dispensasi;
 use App\Models\Konfirmasi;
 use App\Models\AkunGuru;
+use App\Models\PiketGuru;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -62,12 +63,20 @@ class SiswaDispensasiController extends Controller
         ]);
 
         // Kirim notifikasi ke guru piket
-        $hariIni = now()->format('l');
-        $guruPiket = AkunGuru::where('hari_piket', $hariIni)->first();
+        $hariIni = now()->format('l');  // Mendapatkan hari ini (misalnya 'Monday', 'Tuesday', dll)
+        $nip = auth()->user()->nip;  // Mendapatkan NIP dari pengguna yang sedang login
+
+        // Mencari guru piket yang bertugas hari ini dengan status aktif = 1
+        $guruPiket = PiketGuru::where('nip', $nip)
+            ->where('hari_piket', $hariIni)
+            ->where('aktif', 1)  // Pastikan hanya yang aktif yang dipilih
+            ->first();  // Ambil data pertama yang ditemukan
 
         if ($guruPiket) {
+            // Kirim notifikasi jika guru piket ditemukan
             Notification::send($guruPiket, new KonfirmasiNotifikasi($dispensasi));
         }
+
 
         return redirect()->route('dashboard.siswa')->with('success', 'Pengajuan dispensasi berhasil dibuat.');
     }
@@ -95,12 +104,12 @@ class SiswaDispensasiController extends Controller
     {
         // Mengambil data nama pengajar berdasarkan mata pelajaran yang dipilih
         $pengajar = DB::table('matapelajaran_guru')
-                       ->where('mata_pelajaran', $mataPelajaran)
-                       ->select('nama', 'nip')
-                       ->get();
-    
+            ->where('mata_pelajaran', $mataPelajaran)
+            ->select('nama', 'nip')
+            ->get();
+
         return response()->json($pengajar);
-    }    
+    }
 
     // Proses konfirmasi bertahap (guru piket, pengajar, kurikulum)
     public function konfirmasi(Request $request, $id)

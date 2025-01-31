@@ -13,107 +13,107 @@ $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
     <title>Surat Izin</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            margin-right: 45px;
-        }
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        margin-right: 45px;
+    }
 
-        .container {
-            width: 100%;
-            margin: auto;
-            border: 2px solid black;
-            padding: 4px 20px 20px 20px;
-            line-height: 1.6;
-            height: 450px;
-        }
+    .container {
+        width: 100%;
+        margin: auto;
+        border: 2px solid black;
+        padding: 4px 20px 20px 20px;
+        line-height: 1.6;
+        height: 450px;
+    }
 
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            /* Agar elemen tetap di kiri */
-        }
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        /* Agar elemen tetap di kiri */
+    }
 
-        .header img {
-            /* margin-right: 15px;  */
-            margin-bottom: -800px;
-            margin-left: 110px;
-        }
+    .header img {
+        /* margin-right: 15px;  */
+        margin-bottom: -800px;
+        margin-left: 110px;
+    }
 
-        .header .text {
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-            /* Membuat teks rata kanan */
-            margin-left: 60px;
-            /* Mendorong teks ke kanan */
-            margin-top: -19px;
-        }
+    .header .text {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        /* Membuat teks rata kanan */
+        margin-left: 60px;
+        /* Mendorong teks ke kanan */
+        margin-top: -19px;
+    }
 
-        .header p {
-            margin: 2px;
-        }
+    .header p {
+        margin: 2px;
+    }
 
-        .header .title {
-            font-size: 14px;
-            font-weight: bold;
-        }
+    .header .title {
+        font-size: 14px;
+        font-weight: bold;
+    }
 
-        .line {
-            border-bottom: 2px solid black;
-            margin: 10px 0;
-        }
+    .line {
+        border-bottom: 2px solid black;
+        margin: 10px 0;
+    }
 
-        .content {
-            margin-top: 10px;
-        }
+    .content {
+        margin-top: 10px;
+    }
 
-        label {
-            display: inline-block;
-            width: 150px;
-            /* Sesuaikan lebar sesuai kebutuhan */
-            text-align: left;
-            /* Menyelaraskan teks ke kiri */
-            margin-left: 35px;
-        }
+    label {
+        display: inline-block;
+        width: 150px;
+        /* Sesuaikan lebar sesuai kebutuhan */
+        text-align: left;
+        /* Menyelaraskan teks ke kiri */
+        margin-left: 35px;
+    }
 
-        .titik_dua {
-            display: inline-block;
-            width: 20px;
-            /* Menambahkan ruang untuk titik dua */
-            text-align: center;
-            /* Memastikan titik dua ada di tengah */
-        }
+    .titik_dua {
+        display: inline-block;
+        width: 20px;
+        /* Menambahkan ruang untuk titik dua */
+        text-align: center;
+        /* Memastikan titik dua ada di tengah */
+    }
 
-        span {
-            display: inline-block;
-            text-align: left;
-        }
+    span {
+        display: inline-block;
+        text-align: left;
+    }
 
-        .checkbox {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border: 1px solid black;
-            margin-right: 5px;
-        }
+    .checkbox {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border: 1px solid black;
+        margin-right: 5px;
+    }
 
-        .signature-container {
-            margin-top: 15px;
-            display: flex;
-            justify-content: space-between;
-            text-align: center;
-            align-items: center;
-        }
+    .signature-container {
+        margin-top: 15px;
+        display: flex;
+        justify-content: space-between;
+        text-align: center;
+        align-items: center;
+    }
 
-        .signature p {
-            margin: 5px 0;
-        }
+    .signature p {
+        margin: 5px 0;
+    }
 
-        .dibuat {
-            text-align: right;
-            margin-top: 20px;
-        }
+    .dibuat {
+        text-align: right;
+        margin-top: 20px;
+    }
     </style>
 </head>
 
@@ -198,7 +198,7 @@ $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
             <p style="margin-top: -8px;">Kepala SMK Negeri 1 Kawali memberikan izin kepada:</p>
             <p style="margin-top: -8px;"><label>Nama</label><span class="titik_dua">:</span> <span>{{ $data->nama }}</span></p>
             <p style="margin-top: -11px;"><label>NIS</label><span class="titik_dua">:</span> <span>{{ Auth::user()->nis }}</span></p>
-            <p style="margin-top: -11px;"><label>Kelas</label><span class="titik_dua">:</span> <span>{{ $data->tingkat }} {{ $data->konsentrasi_keahlian }}</span></p>
+            <p style="margin-top: -11px;"><label>Kelas</label><span class="titik_dua">:</span> <span>{{ $data->tingkatan }} {{ $data->konsentrasi_keahlian }}</span></p>
             <p style="margin-top: -11px;"><label>Program Keahlian</label><span class="titik_dua">:</span> <span>{{ $data->program_keahlian }}</span></p>
             <p style="margin-top: -11px;"><label>Untuk</label><span class="titik_dua">:</span> <span>{{ $data->kategori }}</span></p>
             <p style="margin-top: -11px;"><label>Mata Pelajaran</label><span class="titik_dua">:</span> <span>{{ $data->mata_pelajaran }}</span></p>
@@ -212,7 +212,7 @@ $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
                 <p>Diketahui,</p>
                 <p style="margin-top: -15px;">Wakabid Kurikulum</p>
                 <br><br>
-                <span>{{ $konfirm->nama_wakabid }}</span>
+                <span style="z-index: 1000;">{{ $konfirm->nama_wakabid }}</span>
                 <p style="margin-top: -15px;">________________________</p>
                 <p style="margin-top: -15px">NIP : {{ $konfirm->konfirmasi_3 }}</p>
                 <img src="{{ public_path('img/Terkonfirmasi.png') }}" class="image" width="130px" style="margin-top: -105px; z-index: -20; transform: rotate(-30deg); opacity: 0.5;">
@@ -221,7 +221,7 @@ $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
                 <p>Disetujui,</p>
                 <p style="margin-top: -15px;">Guru Mata Pelajaran</p>
                 <br><br>
-                <span>{{ $konfirm->nama_guru }}</span>
+                <span style="z-index: 1000;">{{ $konfirm->nama_guru }}</span>
                 <p style="margin-top: -15px;">________________________</p>
                 <p style="margin-top: -15px">NIP : {{ $konfirm->konfirmasi_2 }}</p>
                 <img src="{{ public_path('img/Terkonfirmasi.png') }}" class="image" width="130px" style="margin-top: -105px; z-index: -20; transform: rotate(-30deg); opacity: 0.5;">
@@ -231,7 +231,7 @@ $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
                 <p style="margin-top: -15px;">a.n. Kepala Sekolah</p>
                 <p style="margin-top: -15px;">Petugas Piket</p>
                 <br><br>
-                <span>{{ $konfirm->nama_petugas }}</span>
+                <span style="z-index: 1000;">{{ $konfirm->nama_petugas }}</span>
                 <p style="margin-top: -11px;">________________________</p>
                 <p style="margin-top: -15px">NIP : {{ $konfirm->konfirmasi_1 }}</p>
                 <img src="{{ public_path('img/Terkonfirmasi.png') }}" class="image" width="250px" style="margin-top: -140px; z-index: -20; transform: rotate(-30deg); opacity: 0.5;">

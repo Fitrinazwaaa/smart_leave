@@ -14,31 +14,25 @@ class DispensasiPdfController extends Controller
     {
         // Ambil data dispensasi berdasarkan siswa yang login
         $nis = Auth::user()->nis;
-        $dispensasi = Dispensasi::where('nis', $nis)->get();
-    
+        $dispensasi = Dispensasi::where('nis', $nis)->with('konfirmasi')->get();
+
         // Jika tidak ada data dispensasi, tampilkan pesan atau redirect
         if ($dispensasi->isEmpty()) {
             return redirect()->back()->with('error', 'Tidak ada data dispensasi.');
         }
-    
-        // Ambil nama-nama guru berdasarkan NIP
+
+        // Ambil nama-nama guru berdasarkan NIP untuk setiap konfirmasi
         foreach ($dispensasi as $data) {
             foreach ($data->konfirmasi as $konfirm) {
-                // Cari nama guru berdasarkan NIP konfirmasi_1, konfirmasi_2, dan konfirmasi_3
-                $namaPetugas = AkunGuru::where('nip', $konfirm->konfirmasi_1)->first()->nama ?? 'Nama tidak ditemukan';
-                $namaGuru = AkunGuru::where('nip', $konfirm->konfirmasi_2)->first()->nama ?? 'Nama tidak ditemukan';
-                $namaWakabid = AkunGuru::where('nip', $konfirm->konfirmasi_3)->first()->nama ?? 'Nama tidak ditemukan';
-    
-                // Set nama-nama tersebut untuk digunakan di view
-                $konfirm->nama_wakabid = $namaWakabid;
-                $konfirm->nama_guru = $namaGuru;
-                $konfirm->nama_petugas = $namaPetugas;
+                $konfirm->nama_petugas = AkunGuru::where('nip', $konfirm->konfirmasi_1)->value('nama') ?? 'Nama tidak ditemukan';
+                $konfirm->nama_guru = AkunGuru::where('nip', $konfirm->konfirmasi_2)->value('nama') ?? 'Nama tidak ditemukan';
+                $konfirm->nama_wakabid = AkunGuru::where('nip', $konfirm->konfirmasi_3)->value('nama') ?? 'Nama tidak ditemukan';
             }
         }
-    
+
         // Load view untuk PDF, dan kirim data dispensasi serta nama guru ke view
         $pdf = Pdf::loadView('siswa.pdfDispensasi', compact('dispensasi'));
-    
+
         // Tampilkan langsung di browser
         return $pdf->stream('dispensasi.pdf');
     }

@@ -225,23 +225,16 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
                                     <select class="form-select" id="program_keahlian" name="program_keahlian" required>
                                         <option value="" disabled>Pilih</option>
                                         @foreach ($programKeahlian as $item)
-                                            <option value="{{ $item->program_keahlian }}">{{ $item->program_keahlian }}</option>
+                                        <option value="{{ $item->program_keahlian }}">{{ $item->program_keahlian }}</option>
                                         @endforeach
                                         <option value="NULL">Tidak Memilih</option> <!-- Opsi Kosong yang bisa dipilih -->
                                     </select>
-                                </div>                                
+                                </div>
                                 <div class="mb-3">
-                                    <label for="hari_piket" class="form-label">Hari Piket</label>
-                                    <select class="form-select" id="hari_piket" name="hari_piket" required>
-                                        <option value="" disabled>Pilih Hari Piket</option>
-                                        <option value="Senin">Senin</option>
-                                        <option value="Selasa">Selasa</option>
-                                        <option value="Rabu">Rabu</option>
-                                        <option value="Kamis">Kamis</option>
-                                        <option value="Jumat">Jumat</option>
-                                        <option value="-">Tidak ada jadwal</option> <!-- Opsi Kosong yang bisa dipilih -->
-                                    </select>
-                                </div>                                
+                                    <label for="no_hp" class="form-label">No Telepon</label>
+                                    <input type="text" class="form-control" id="no_hp"
+                                        name="no_hp" placeholder="Masukkan Mata Pelajaran" required>
+                                </div>
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password</label>
                                     <input type="password" class="form-control" id="password" name="password"
@@ -287,7 +280,7 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
                                 <th>Mata Pelajaran</th>
                                 <th>Tingkat</th>
                                 <th>Program Keahlian</th>
-                                <th>Hari Piket</th>
+                                <th>Telepon</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -300,7 +293,7 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
                                     <td>{{ $guru->mata_pelajaran }}</td>
                                     <td>{{ $guru->tingkat }}</td>
                                     <td>{{ $guru->program_keahlian }}</td>
-                                    <td>{{ is_null($guru->hari_piket) ? '-' : $guru->hari_piket }}</td>
+                                    <td>{{ $guru->no_hp }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

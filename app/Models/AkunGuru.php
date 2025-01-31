@@ -22,7 +22,7 @@ class AkunGuru extends Model
         'mata_pelajaran',
         'tingkat',
         'program_keahlian',
-        'hari_piket',
+        'no_hp',
         'jabatan',
         'password',
     ];
@@ -35,12 +35,6 @@ class AkunGuru extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'nip', 'nip');
-    }
-
-    // Fungsi pencarian guru piket berdasarkan hari
-    public static function findGuruPiket($hari)
-    {
-        return self::where('hari_piket', $hari)->first();
     }
 
     // Fungsi pencarian guru berdasarkan mata pelajaran
@@ -56,5 +50,10 @@ class AkunGuru extends Model
     public static function findKurikulum()
     {
         return self::where('jabatan', 'kurikulum')->first();
+    }
+
+    public function piketGuru()
+    {
+        return $this->hasMany(PiketGuru::class, 'nip', 'nip');
     }
 }

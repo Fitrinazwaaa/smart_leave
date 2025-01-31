@@ -13,13 +13,17 @@ return new class extends Migration
     {
         Schema::create('piket_guru', function (Blueprint $table) {
             $table->id();
-            $table->string('nip');
+            $table->string('nip');  // Ubah menjadi string untuk mencocokkan tipe data dengan 'akun_guru'
             $table->string('nama');
-            $table->enum('jk', ['L', 'P']);
             $table->string('hari_piket');
+            $table->string('pekan');
+            $table->string('aktif')->nullable();
             $table->timestamps();
+    
+            $table->foreign('nip')->references('nip')->on('akun_guru')->onDelete('cascade');
         });
     }
+    
 
     /**
      * Reverse the migrations.
