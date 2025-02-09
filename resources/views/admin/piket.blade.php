@@ -26,7 +26,7 @@
         <div class="logo">
             <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
             <div>
-                <h2>piket SMK NEGERI 1 KAWALI</h2>
+                <h2>PIKET GURU SMK NEGERI 1 KAWALI</h2>
                 <p class="sub-title">Kurikulum</p>
             </div>
         </div>
