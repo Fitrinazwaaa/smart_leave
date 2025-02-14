@@ -161,79 +161,81 @@ color: black; /* Ubah warna teks menjadi hitam saat dihover */
 
 /* Notifikasi dan Statistik */
 .d-flex {
-margin-top: 100px;
-display: flex;
-justify-content: space-between;
-flex-wrap: wrap;
-gap: 32px;
-}
-
-.notification-card,
-.stats-card {
-padding: 24px;
-border-radius: 8px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-text-align: center;
-flex: 1 1 45%;
-max-width: 45%;
-}
-
-.notification-card{
+  margin-top: 110px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 32px;
+  }
+  
+  .notification-card,
+  .stats-card {
+    width: 800px;
+  padding: 24px;
+  border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
+  /* flex: 1 1 55%; */
+  /* max-width: 30%; */
+  }
+  
+  .notification-card{
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .notification-card:hover{
+      transform: translateY(-10px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Notifikasi Card */
+  table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+    }
+  
+    th, td {
+      border: 1px solid #d9d9d9;
+      padding: 12px;
+      text-align: left;
+    }
+  
+    th {
+      background-color: #d9d9d9;
+      text-align: center;
+      font-size: 16px;
+    }
+  
+    td {
+      font-size: 14px;
+    }
+  
+  /* Statistik Card */
+  .stats-card {
+    width: 324px;
+  background-color: rgba(3, 2, 72, 0.9);
+  color: white;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.notification-card:hover{
-  transform: translateY(-10px);
+  }
+  
+  .stats-card h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  }
+  
+  .stats-card .stat {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  }
+  
+  .stats-card:hover {
+  transform: translateY(-8px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-/* Notifikasi Card */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 4px;
   }
-
-  th, td {
-    border: 1px solid #d9d9d9;
-    padding: 12px;
-    text-align: left;
-  }
-
-  th {
-    background-color: #d9d9d9;
-    text-align: center;
-    font-size: 16px;
-  }
-
-  td {
-    font-size: 14px;
-  }
-
-/* Statistik Card */
-.stats-card {
-background-color: rgba(3, 2, 72, 0.9);
-color: white;
-transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.stats-card h3 {
-font-size: 20px;
-margin-bottom: 12px;
-}
-
-.stats-card .stat {
-font-size: 30px;
-font-weight: bold;
-margin-bottom: 8px;
-}
-
-.stats-card:hover {
-transform: translateY(-8px);
-box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
 
 .info-cards {
 display: flex;
@@ -276,4 +278,75 @@ margin: 0 auto 16px;
 margin: 0 0 8px;
 font-size: 14px;
 text-align: left;
+}
+
+/* Mobile-Specific Header Styling */
+@media (max-width: 768px) {
+  header {
+    flex-direction: row; /* Tetap horizontal */
+    justify-content: space-between; /* Pisahkan logo dan tombol logout */
+    align-items: center; /* Pusatkan elemen secara vertikal */
+    padding: 22px 20px; /* Sesuaikan padding untuk layar kecil */
+    gap: 10px; /* Jarak antar elemen */
+  }
+  
+  header .logo {
+    display: flex;
+    align-items: center; /* Pusatkan logo dan teks secara vertikal */
+    gap: 8px; /* Jarak lebih kecil antara logo dan teks */
+  }
+  
+  header .logo img {
+    width: 45px; /* Ukuran logo lebih kecil */
+    height: 45px;
+    border-radius: 50%; /* Tetap bulat */
+    border: 2px solid white; /* Border lebih tipis */
+    margin-left: -40px;
+  }
+
+  header .text-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start; /* Teks tetap rata kiri */
+  }
+
+  header h2 {
+    font-size: 16px; /* Ukuran font judul lebih kecil */
+    line-height: 1.3; /* Sesuaikan jarak antar baris */
+    margin: 0; /* Hilangkan margin default */
+    font-weight: bold;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2); /* Bayangan halus */
+  }
+
+  header .sub-title {
+    font-size: 12px; /* Subtitle lebih kecil */
+    margin: 0; /* Hilangkan margin default */
+    color: #dce400; /* Warna tetap gold */
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2); /* Bayangan halus */
+  }
+
+  header .logout {
+    padding: 6px 10px; /* Sesuaikan ukuran tombol */
+    font-size: 12px; /* Ukuran font tombol lebih kecil */
+    font-weight: 600; /* Tetap tebal */
+    border-radius: 4px; /* Kurangi radius */
+    margin: 0; /* Hilangkan margin default */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Bayangan lebih ringan */
+    transition: all 0.2s ease;
+  }
+
+  header .logout:hover {
+    transform: translateY(-2px); /* Sedikit melayang saat hover */
+  }
+  .semi-circle {
+    width: 100%; /* Sesuaikan agar lebar mengikuti layar */
+    height: 300px; /* Atur tinggi agar tidak terlalu besar */
+    margin: -200px auto 32px; /* Margin yang lebih kecil */
+    padding-top: 430px;
+    border-radius: 50% / 50%; /* Buat tetap terlihat seperti semi-circle */
+  }
+  .main-container{
+    margin-top: 100px;
+  }
 }

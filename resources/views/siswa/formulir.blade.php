@@ -232,7 +232,6 @@
                 <label for="kategori" class="form-label">Kategori Dispensasi</label>
                 <select class="form-select" id="kategori" name="kategori" required>
                     <option value="" disabled selected>Pilih kategori</option>
-                    <option value="masuk kelas">Masuk Kelas</option>
                     <option value="keluar lingkungan sekolah">Keluar Lingkungan Sekolah</option>
                     <option value="mengikuti kegiatan">Mengikuti Kegiatan</option>
                 </select>
@@ -294,6 +293,26 @@
             }
         });
     </script>
+<script>
+    // Event listener untuk dropdown kategori
+    document.getElementById('kategori').addEventListener('change', function () {
+        var buktiFotoDiv = document.querySelector('.mb-3 input#bukti_foto').parentNode; // Div pembungkus bukti foto
+        if (this.value === 'mengikuti kegiatan') {
+            buktiFotoDiv.style.display = 'block'; // Tampilkan jika kategori "mengikuti kegiatan"
+        } else {
+            buktiFotoDiv.style.display = 'none'; // Sembunyikan untuk kategori lain
+        }
+    });
+
+    // Pastikan bukti foto disembunyikan secara default saat halaman pertama kali dimuat
+    document.addEventListener('DOMContentLoaded', function () {
+        var kategoriDropdown = document.getElementById('kategori');
+        var buktiFotoDiv = document.querySelector('.mb-3 input#bukti_foto').parentNode;
+        if (kategoriDropdown.value !== 'mengikuti kegiatan') {
+            buktiFotoDiv.style.display = 'none';
+        }
+    });
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

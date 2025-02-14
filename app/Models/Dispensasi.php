@@ -35,11 +35,15 @@ class Dispensasi extends Model
     // Relasi Dispensasi ke Konfirmasi
     public function konfirmasi()
     {
-        return $this->hasMany(Konfirmasi::class, 'id_dispen', 'id_dispen'); 
+        return $this->hasMany(Konfirmasi::class, 'id_dispen', 'id_dispen');
     }    
     // Relasi ke model PiketGuru jika diperlukan
     public function piketGuru()
     {
         return $this->belongsTo(PiketGuru::class, 'nip', 'nip');
+    }
+    public function isReturned()
+    {
+        return $this->waktu_kembali !== null;
     }
 }

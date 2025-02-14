@@ -12,7 +12,7 @@ class Konfirmasi extends Model
     protected $table = 'konfirmasi';
 
     // Kolom yang boleh diisi
-    protected $fillable = ['id_dispen', 'konfirmasi_1', 'konfirmasi_2', 'konfirmasi_3'];
+    protected $fillable = ['id_dispen', 'kategori' , 'konfirmasi_1', 'konfirmasi_2', 'konfirmasi_3'];
 
     // Relasi Konfirmasi ke Dispensasi
     public function dispensasi()

@@ -32,6 +32,8 @@ if (!$guru) {
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
     /* Global Style */
     html,
@@ -43,6 +45,8 @@ if (!$guru) {
       overscroll-behavior: none;
       background: linear-gradient(to bottom, #ffffff, #f3f4f7);
       background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+      background-attachment: fixed;
+      /* Membuat latar belakang tetap */
     }
 
     /* Header Style */
@@ -177,16 +181,16 @@ if (!$guru) {
     }
 
     .student-info .name {
-      font-size: 18px;
+      font-size: 13px;
       font-weight: bold;
       margin: 0;
       color: #343a40;
     }
 
-    .student-info .class, .student-info .time-info {
-      font-size: 13px;
+    .student-info .time-info {
+      font-size: 10px;
       color: #6c757d;
-      margin: 0;
+      margin-left: 4px;
     }
 
     .actions {
@@ -200,7 +204,7 @@ if (!$guru) {
       border: none;
       transition: all 0.3s;
     }
-    
+
     .btn-detail:hover {
       background-color: #434190;
       transform: translateY(-2px);
@@ -213,7 +217,7 @@ if (!$guru) {
       border: none;
       transition: all 0.3s;
     }
-    
+
     .btn-confirm:hover {
       background-color: #2f855a;
       transform: translateY(-2px);
@@ -255,11 +259,149 @@ if (!$guru) {
       border-bottom-left-radius: 15px;
       border-bottom-right-radius: 15px;
     }
+
+    /* Mobile Specific Styling */
+    @media (max-width: 768px) {
+
+      /* Header */
+      header {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 8px;
+        position: fixed;
+      }
+
+      header .back-button {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        margin: 0;
+        font-size: 16px;
+        width: 36px;
+        height: 36px;
+      }
+
+      header .logo {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      header .logo img {
+        width: 50px;
+        height: 50px;
+      }
+
+      header h2 {
+        font-size: 18px;
+      }
+
+      header .sub-title {
+        font-size: 12px;
+      }
+
+      /* Container */
+      .container {
+        margin: 140px auto 0;
+        padding: 16px;
+        border-radius: 8px;
+      }
+
+      .container h5 {
+        font-size: 14px;
+      }
+
+      .container p,
+      .container button {
+        font-size: 12px;
+      }
+
+      .container .modal-title {
+        font-size: 14px;
+      }
+
+      .container img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .container .btn {
+        padding: 6px;
+        font-size: 13px;
+      }
+
+      /* Card */
+      .container .card {
+        padding: 10px 12px;
+        margin-bottom: 12px;
+      }
+
+      .container .card:hover {
+        transform: none;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Row Content */
+      .student-info {
+        text-align: left;
+      }
+
+      .student-info .name {
+        font-size: 12px;
+      }
+
+      .student-info .time-info {
+        font-size: 10px;
+      }
+
+      /* Buttons */
+      .actions {
+        flex-direction: row;
+        gap: 6px;
+      }
+
+      .btn-detail,
+      .btn-confirm {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      /* Modal */
+      .modal-content {
+        padding: 16px;
+      }
+
+      .modal-header {
+        padding: 12px;
+      }
+
+      .modal-body p {
+        font-size: 12px;
+      }
+
+      .modal-body img {
+        margin-top: 8px;
+        border-radius: 8px;
+      }
+
+      .modal-footer {
+        padding: 10px;
+      }
+
+      /* Semi-circle */
+      .semi-circle {
+        width: 90%;
+        height: 150px;
+        margin: -75px auto 32px;
+        border-radius: 50% / 50%;
+      }
+    }
   </style>
 </head>
 
 <body>
-<header>
+  <header>
     <button class="back-button" onclick="window.location.href='{{ route('dashboard.guru') }}';">
       <i class="fas fa-arrow-left"></i>
     </button>
@@ -278,24 +420,69 @@ if (!$guru) {
   @endif
 
   <div class="container">
-    <h3 class="mb-4 text-center fw-bold">Konfirmasi Dispensasi Oleh Guru Piket</h3>
-    
-    @foreach ($dispen as $data)
+    <!-- Kategori Keluar Lingkungan Sekolah -->
+    <h5 class="mb-4 fw-bold" style="text-align: left; padding-top: 10px;">Konfirmasi Dispensasi Oleh Guru Piket Kategori : Keluar Lingkungan Sekolah</h5>
+    @foreach ($dispenKeluar as $data)
     <div class="card">
       <div class="row-content">
-        <!-- Informasi Siswa (Kiri) -->
         <div class="student-info">
           <p class="name"><i class="bi bi-person-circle"></i> {{ $data->nama }} - {{ $data->tingkatan }} {{ $data->konsentrasi_keahlian }}</p>
-          <!-- <p class="class"><i class="bi bi-book"></i> {{ $data->tingkatan }} {{ $data->konsentrasi_keahlian }}</p> -->
-          <p class="time-info" style="margin-left: 2px;"><i class="bi bi-clock" style="margin-right: 4px;"></i> {{ $data->created_at->format('d M Y, H:i') }}</p>
+          <p class="time-info"><i class="bi bi-clock" style="margin-right: 2px;"></i> {{ $data->created_at->format('d M Y, H:i') }}</p>
         </div>
-
-        <!-- Tombol Aksi (Kanan) -->
         <div class="actions">
           <button class="btn btn-detail px-3" data-bs-toggle="modal" data-bs-target="#modal{{ $data->id_dispen }}" style="font-size: 13px;">
             <i class="bi bi-eye"></i> Detail
           </button>
+          <form action="{{ route('konfirmasiPiket') }}" method="POST">
+            @csrf
+            <input type="hidden" name="id_dispen" value="{{ $data->id_dispen }}">
+            <button type="submit" class="btn btn-confirm px-3" style="font-size: 13px;"><i class="bi bi-check-circle"></i> Konfirmasi</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Detail Dispensasi -->
+    <div class="modal fade" id="modal{{ $data->id_dispen }}" tabindex="-1" aria-labelledby="modalLabel{{ $data->id_dispen }}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold" id="modalLabel{{ $data->id_dispen }}"><i class="bi bi-info-circle"></i> Detail Dispensasi</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p><i class="bi bi-person"></i> <strong>Nama:</strong> {{ $data->nama }}</p>
+            <p><i class="bi bi-hash"></i> <strong>NIS:</strong> {{ $data->nis }}</p>
+            <p><i class="bi bi-mortarboard"></i> <strong>Kelas:</strong> {{ $data->tingkatan }} {{ $data->konsentrasi_keahlian }}</p>
+            <p><i class="bi bi-clock"></i> <strong>Waktu Pengajuan:</strong> {{ $data->created_at->format('d M Y, H:i') }}</p>
+            <p><i class="bi bi-chat-text"></i> <strong>Kategori:</strong> {{ $data->kategori }}</p>
+            <p><i class="bi bi-chat-text"></i> <strong>Alasan:</strong> {{ $data->alasan }}</p>
 
+            @if($data->bukti_foto)
+            <p><i class="bi bi-camera"></i> <strong>Bukti Foto:</strong></p>
+            <img src="{{ asset('storage/'.$data->bukti_foto) }}" alt="Bukti Dispensasi">
+            @endif
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    @endforeach
+
+    <!-- Kategori Mengikuti Kegiatan -->
+    <h5 class="mb-4 fw-bold text-gray-800 border-t" style="text-align: left; padding-top: 20px; margin-top: 30px;">Konfirmasi Dispensasi Oleh Guru Piket Kategori : Mengikuti kegiatan</h5>
+    @foreach ($dispenKegiatan as $data)
+    <div class="card">
+      <div class="row-content">
+        <div class="student-info">
+          <p class="name"><i class="bi bi-person-circle"></i> {{ $data->nama }} - {{ $data->tingkatan }} {{ $data->konsentrasi_keahlian }}</p>
+          <p class="time-info"><i class="bi bi-clock" style="margin-right: 2px;"></i> {{ $data->created_at->format('d M Y, H:i') }}</p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-detail px-3" data-bs-toggle="modal" data-bs-target="#modal{{ $data->id_dispen }}" style="font-size: 13px;">
+            <i class="bi bi-eye"></i> Detail
+          </button>
           <form action="{{ route('konfirmasiPiket') }}" method="POST">
             @csrf
             <input type="hidden" name="id_dispen" value="{{ $data->id_dispen }}">
@@ -318,6 +505,7 @@ if (!$guru) {
             <p><i class="bi bi-hash"></i> <strong>NIS:</strong> {{ $data->nis }}</p>
             <p><i class="bi bi-mortarboard"></i> <strong>Kelas:</strong> {{ $data->tingkatan }} {{ $data->konsentrasi_keahlian }}</p>
             <p><i class="bi bi-clock"></i> <strong>Waktu Pengajuan:</strong> {{ $data->created_at->format('d M Y, H:i') }}</p>
+            <p><i class="bi bi-chat-text"></i> <strong>Kategori:</strong> {{ $data->kategori }}</p>
             <p><i class="bi bi-chat-text"></i> <strong>Alasan:</strong> {{ $data->alasan }}</p>
 
             @if($data->bukti_foto)
@@ -331,8 +519,53 @@ if (!$guru) {
         </div>
       </div>
     </div>
-
     @endforeach
+
+    <h5 class="mb-4 fw-bold text-gray-800 border-t" style="text-align: left; padding-top: 20px; margin-top: 30px;">Konfirmasi Dispensasi Oleh Guru Piket Kategori: Siswa Kembali</h5>
+    @foreach ($dispenSiswaKembali as $data)
+    <div class="card">
+      <div class="row-content">
+        <div class="student-info">
+          <p class="name"><i class="bi bi-person-circle"></i> {{ $data->nama }} - {{ $data->tingkatan }} {{ $data->konsentrasi_keahlian }}</p>
+          <p class="time-info"><i class="bi bi-clock" style="margin-right: 2px;"></i> {{ $data->created_at->format('d M Y, H:i') }}</p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-detail px-3" data-bs-toggle="modal" data-bs-target="#modal{{ $data->id_dispen }}" style="font-size: 13px;">
+            <i class="bi bi-eye"></i> Detail
+          </button>
+          <form action="{{ route('konfirKembali') }}" method="POST">
+            @csrf
+            <input type="hidden" name="id_dispen" value="{{ $data->id_dispen }}">
+            <button type="submit" class="btn btn-confirm px-3" style="font-size: 13px;"><i class="bi bi-check-circle"></i> Konfirmasi</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Modal for Detail -->
+    <div class="modal fade" id="modal{{ $data->id_dispen }}" tabindex="-1" aria-labelledby="modalLabel{{ $data->id_dispen }}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel{{ $data->id_dispen }}">Detail Dispensasi</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Nama:</strong> {{ $data->nama }}</p>
+            <p><strong>Kelas:</strong> {{ $data->tingkatan }} {{ $data->konsentrasi_keahlian }}</p>
+            <p><strong>Alasan:</strong> {{ $data->alasan }}</p>
+            <p><strong>Waktu Kembali:</strong> {{ $data->created_at->format('d M Y, H:i') }}</p>
+            <p><strong>Bukti Foto:</strong></p>
+            <img src="{{ asset('storage/' . $data->bukti_foto) }}" alt="Bukti Foto" class="img-fluid rounded">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    @endforeach
+
+
   </div>
 
   <!-- Bootstrap and Bootstrap Icons CDN -->
@@ -343,4 +576,5 @@ if (!$guru) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>

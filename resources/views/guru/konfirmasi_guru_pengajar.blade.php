@@ -43,6 +43,8 @@ if (!$guru) {
       overscroll-behavior: none;
       background: linear-gradient(to bottom, #ffffff, #f3f4f7);
       background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+      background-attachment: fixed;
+      /* Membuat latar belakang tetap */
     }
 
     /* Header Style */
@@ -183,7 +185,8 @@ if (!$guru) {
       color: #343a40;
     }
 
-    .student-info .class, .student-info .time-info {
+    .student-info .class,
+    .student-info .time-info {
       font-size: 13px;
       color: #6c757d;
       margin: 0;
@@ -200,7 +203,7 @@ if (!$guru) {
       border: none;
       transition: all 0.3s;
     }
-    
+
     .btn-detail:hover {
       background-color: #434190;
       transform: translateY(-2px);
@@ -213,7 +216,7 @@ if (!$guru) {
       border: none;
       transition: all 0.3s;
     }
-    
+
     .btn-confirm:hover {
       background-color: #2f855a;
       transform: translateY(-2px);
@@ -255,11 +258,92 @@ if (!$guru) {
       border-bottom-left-radius: 15px;
       border-bottom-right-radius: 15px;
     }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 8px;
+        position: fixed;
+      }
+
+      header .back-button {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        margin: 0;
+        font-size: 16px;
+        width: 36px;
+        height: 36px;
+      }
+
+      header .logo {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      header .logo img {
+        width: 50px;
+        height: 50px;
+      }
+
+      header h2 {
+        font-size: 18px;
+      }
+
+      header .sub-title {
+        font-size: 12px;
+      }
+
+      /* Container */
+      .container {
+        margin: 140px auto 0;
+        padding: 16px;
+        border-radius: 8px;
+      }
+
+      .container h5 {
+        font-size: 14px;
+      }
+
+      .container p,
+      .container button {
+        font-size: 12px;
+      }
+
+      .container .modal-title {
+        font-size: 14px;
+      }
+
+      .container img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .container .btn {
+        padding: 6px;
+        font-size: 13px;
+      }
+
+      /* Card */
+      .container .card {
+        padding: 10px 12px;
+        margin-bottom: 12px;
+      }
+
+      .container .card:hover {
+        transform: none;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      }
+    }
   </style>
+
 </head>
 
 <body>
-<header>
+  <header>
     <button class="back-button" onclick="window.location.href='{{ route('dashboard.guru') }}';">
       <i class="fas fa-arrow-left"></i>
     </button>
@@ -279,7 +363,7 @@ if (!$guru) {
 
   <div class="container">
     <h3 class="mb-4 text-center fw-bold">Konfirmasi Dispensasi Oleh Guru Matapelajaran</h3>
-    
+
     @foreach ($dispen as $data)
     <div class="card">
       <div class="row-content">
@@ -318,6 +402,7 @@ if (!$guru) {
             <p><i class="bi bi-hash"></i> <strong>NIS:</strong> {{ $data->nis }}</p>
             <p><i class="bi bi-mortarboard"></i> <strong>Kelas:</strong> {{ $data->tingkatan }} {{ $data->konsentrasi_keahlian }}</p>
             <p><i class="bi bi-clock"></i> <strong>Waktu Pengajuan:</strong> {{ $data->created_at->format('d M Y, H:i') }}</p>
+            <p><i class="bi bi-chat-text"></i> <strong>Kategori:</strong> {{ $data->kategori }}</p>
             <p><i class="bi bi-chat-text"></i> <strong>Alasan:</strong> {{ $data->alasan }}</p>
 
             @if($data->bukti_foto)
@@ -343,4 +428,5 @@ if (!$guru) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>

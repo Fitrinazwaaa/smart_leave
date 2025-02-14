@@ -15,9 +15,9 @@ $nip = Auth::user()->nip;  // Mendapatkan nip dari user yang sedang login
 $hariIni = Carbon::now()->translatedFormat('l');
 // Cek apakah guru yang login sedang memiliki jadwal piket
 $jadwalPiket = PiketGuru::where('nip', $nip)
-->where('hari_piket', $hariIni)
-->where('aktif', 1)  // Pastikan hanya yang aktif yang dipilih
-->first();  // Ambil data pertama yang ditemukan
+  ->where('hari_piket', $hariIni)
+  ->where('aktif', 1)  // Pastikan hanya yang aktif yang dipilih
+  ->first();  // Ambil data pertama yang ditemukan
 
 // Ambil data dispensasi yang harus dikonfirmasi oleh guru mata pelajaran yang sesuai dengan NIP guru yang login
 $dispen = Dispensasi::whereHas('konfirmasi', function ($query) {
@@ -39,8 +39,13 @@ if (!$guru) {
 $pengajuanDispenKonfirmasi1Null = Konfirmasi::whereNull('konfirmasi_1')->count();
 
 // Menghitung pengajuan dispensasi dengan pengecekan konfirmasi_2, hanya jika konfirmasi_1 tidak null
-$pengajuanDispenKonfirmasi2Null = Konfirmasi::whereNotNull('konfirmasi_1')->whereNull('konfirmasi_2')->count();
-
+$pengajuanDispenKonfirmasi2Null = Konfirmasi::where('kategori', 'mengikuti kegiatan')
+    ->whereNotNull('konfirmasi_1')
+    ->whereNull('konfirmasi_2')
+    ->whereHas('dispensasi', function ($query) use ($nip) {
+        $query->where('nip', $nip); // Filter berdasarkan nip dari tabel dispensasi
+    })
+    ->count();
 // Menghitung pengajuan dispensasi dengan pengecekan konfirmasi_3, hanya jika konfirmasi_1 dan konfirmasi_2 tidak null
 $pengajuanDispenKonfirmasi3Null = Konfirmasi::whereNotNull('konfirmasi_1')->whereNotNull('konfirmasi_2')->whereNull('konfirmasi_3')->count();
 
@@ -116,7 +121,7 @@ $isKurikulum = $akunGuru && $akunGuru->jabatan === 'kurikulum'; // Verifikasi ja
       @endif
 
       @if ($dispen->isNotEmpty()) <!-- Check if there are dispensations that need confirmation -->
-      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat konfirmasi guru pengajar" onclick="window.location.href='{{ route('konfirGuruMataPelajaran') }}';">
+      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat konfirmasi guru pengajar"  onclick="window.location.href='{{ route('konfirGuruMataPelajaran') }}';">
         <i class="fas fa-chalkboard-teacher"></i>
         <span>Konfirmasi Guru Pengajar</span>
         @if ($pengajuanDispenKonfirmasi2Null > 0)
@@ -135,11 +140,11 @@ $isKurikulum = $akunGuru && $akunGuru->jabatan === 'kurikulum'; // Verifikasi ja
       </div>
       @endif
 
-      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat jadwal piket" onclick="navigateTo('jadwal_piket')">
+      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat jadwal piket" onclick="window.location.href='{{ route('jadwal_piket') }}';">
         <i class="fas fa-calendar-check"></i>
         <span>Jadwal Piket</span>
       </div>
-      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat history dispensasi" onclick="navigateTo('history_dispen')">
+      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat history dispensasi" onclick="window.location.href='{{ route('historyGuru') }}';">
         <i class="fas fa-file-alt"></i>
         <span>History Dispen</span>
       </div>
@@ -165,12 +170,29 @@ $isKurikulum = $akunGuru && $akunGuru->jabatan === 'kurikulum'; // Verifikasi ja
         @endif
       </div>
       <div class="stats-card">
-        <h3>Statistik Pengguna</h3>
-        <p class="stat">450</p>
-        <p>Siswa Terdaftar</p>
-        <p class="stat">38</p>
-        <p>Guru Aktif</p>
+        <h3>Statistik Dispensasi Siswa</h3>
+        <div class="stat-item">
+          <p class="stat" id="stat-keluar-lingkungan">0</p>
+          <p>Keluar Lingkungan Sekolah</p>
+        </div>
+        <div class="stat-item">
+          <p class="stat" id="stat-mengikuti-kegiatan">0</p>
+          <p>Mengikuti Kegiatan</p>
+        </div>
       </div>
+
+      <?php
+      // Menghitung jumlah dispensasi berdasarkan kategori
+      $jumlahKeluarLingkungan = Dispensasi::where('kategori', 'Keluar Lingkungan Sekolah')->count();
+      $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->count();
+      ?>
+
+      <script>
+        // Menampilkan data ke elemen HTML
+        document.getElementById('stat-keluar-lingkungan').textContent = "<?php echo $jumlahKeluarLingkungan; ?>";
+        document.getElementById('stat-mengikuti-kegiatan').textContent = "<?php echo $jumlahMengikutiKegiatan; ?>";
+      </script>
+
     </div>
 
     <div class="info-cards">

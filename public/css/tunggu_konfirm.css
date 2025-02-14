@@ -106,6 +106,46 @@
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     }
 
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 10px;
+        position: relative; /* Tambahkan relative untuk posisi child absolute */
+      }
+    
+      header .back-button {
+        position: absolute; /* Pindahkan button dengan posisi absolute */
+        top: 10px; /* Jarak dari atas */
+        left: 10px; /* Jarak dari kiri */
+        margin: 0; /* Hilangkan margin default */
+        font-size: 16px;
+        width: 40px;
+        height: 40px;
+      }
+    
+      header .logo {
+        flex-direction: column;
+        gap: 10px;
+      }
+    
+      header .logo img {
+        width: 60px;
+        height: 60px;
+      }
+    
+      header h2 {
+        font-size: 20px;
+      }
+    
+      header .sub-title {
+        font-size: 12px;
+      }
+    }
+    
+
     .container{
       max-width: 1280px;
   margin: 130px auto 0;
@@ -199,3 +239,80 @@
       font-size: 1.5rem;
       color: #28a745;
     }
+
+    /* Responsive Design for Mobile */
+@media (max-width: 768px) {
+  html, body {
+    font-size: 14px;
+  }
+
+  .container {
+    margin: 80px auto 0;
+    padding: 20px;
+    border-radius: 8px;
+  }
+
+  .card {
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-body {
+    display: flex; /* Menggunakan Flexbox */
+    flex-direction: row; /* Elemen ditampilkan dalam satu baris */
+    align-items: center; /* Pusatkan secara vertikal */
+    justify-content: space-between; /* Ruang di antara elemen */
+    gap: 10px;
+  }
+  
+  .student-info {
+    flex: 1; /* Isi ruang yang tersedia di kiri */
+    display: flex; /* Jika ada elemen di dalamnya, mereka juga bisa diatur dengan Flexbox */
+    flex-direction: column; /* Pastikan elemen di dalamnya tetap vertikal */
+    gap: 2px;
+  }
+  
+  .icon-wrapper, 
+  .actions {
+    flex-shrink: 0; /* Jangan mengecilkan elemen di kanan */
+  }
+  
+
+  .student-info .name {
+    font-size: 0.95rem; /* Ukuran lebih kecil untuk nama */
+  }
+
+  .student-info .class {
+    font-size: 0.8rem; /* Ukuran lebih kecil untuk kelas */
+  }
+
+  .actions button {
+    min-width: 100%; /* Tombol memanjang sesuai lebar */
+    margin-top: 10px;
+    padding: 8px 10px; /* Padding tombol lebih kecil */
+    font-size: 0.85rem; /* Font tombol lebih kecil */
+  }
+
+  .actions .btn {
+    font-size: 0.85rem; /* Ukuran font tombol lebih kecil */
+  }
+
+  .icon-wrapper {
+    width: 30px; /* Ukuran ikon lebih kecil */
+    height: 30px;
+  }
+
+  .check-icon {
+    font-size: 1rem; /* Ukuran ikon centang lebih kecil */
+  }
+
+  .guru-info {
+    font-size: 0.8rem; /* Nama guru lebih kecil */
+  }
+}

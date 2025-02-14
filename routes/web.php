@@ -8,12 +8,15 @@ use App\Http\Controllers\AdminKelasController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminGuruController;
 use App\Http\Controllers\AdminPiketController;
+use App\Http\Controllers\ChatBotController;
+use App\Http\Controllers\DispensasiController;
 use App\Http\Controllers\GuruKonfirmasiController;
 use App\Http\Controllers\SiswaDispensasiController;
 use App\Http\Controllers\SiswaKonfirmController;
 use App\Http\Controllers\PdfViewerController;
 use App\Http\Controllers\DispensasiPdfController;
 use App\Http\Controllers\GuruDetailController;
+use App\Http\Controllers\SiswaController;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/', [AuthController::class, 'index_login'])->name('login');
@@ -72,6 +75,10 @@ Route::prefix('/admin/piket')->group(function () {
     Route::post('/update-pekan-status', [AdminPiketController::class, 'updatePekanStatus']);
 });
 
+Route::prefix('/admin')->group(function () {
+    Route::get('/history', [DispensasiController::class, 'history_admin'])->name('historyAdmin');
+    Route::post('/upload-bukti/{id}', [DispensasiController::class, 'uploadBuktiFoto'])->name('upload.bukti');
+    Route::post('/upload-selfie/{id}', [DispensasiController::class, 'uploadFotoSelfie'])->name('upload.selfie');});
 
 Route::prefix('admin/siswa')->group(function () {
     // Rute untuk manipulasi data siswa dan kelas di admin
@@ -98,18 +105,23 @@ Route::prefix('/siswa')->group(function () {
     Route::post('/dispensasi', [SiswaDispensasiController::class, 'store'])->name('dispensasi.store');
     Route::get('/dispensasi/{dispensasi}/edit', [SiswaDispensasiController::class, 'edit'])->name('dispensasi.edit');
     Route::put('/dispensasi/{dispensasi}', [SiswaDispensasiController::class, 'update'])->name('dispensasi.update');
-    Route::get('/dispensasi/qr-code', [SiswaDispensasiController::class, 'generateQRCode'])->name('dispensasi.qrCode');
+    // Route::get('/dispensasi/qr-code', [SiswaDispensasiController::class, 'generateQRCode'])->name('dispensasi.qrCode');
     Route::get('/dispensasi/lapor-kembali', [SiswaDispensasiController::class, 'showReturnForm'])->name('dispensasi.reportReturn');
     Route::post('/dispensasi/lapor-kembali', [SiswaDispensasiController::class, 'storeReturn'])->name('dispensasi.storeReturn');
     Route::get('/get-pengajar/{mataPelajaranId}', [SiswaDispensasiController::class, 'getPengajar']);
     Route::post('/konfirmasi/{konfirmasi}', [SiswaDispensasiController::class, 'konfirmasi'])->name('konfirmasi.proses');
-
     Route::get('/konfirmasi', [SiswaKonfirmController::class, 'tungguKonfir'])->name('konfirm.index');
+    // Route::post('/kirim-pesan', [SiswaController::class, 'kirimPesan'])->name('kirim.bot.chat');
+
 });
 
 Route::prefix('/guru')->group(function () {
+    Route::get('/history', [DispensasiController::class, 'history_guru'])->name('historyGuru');
+    Route::post('/hapus-semua-data', [GuruKonfirmasiController::class, 'hapusSemuaData'])->name('hapusSemuaData');
+    Route::get('/jadwal_piket', [GuruKonfirmasiController::class, 'jadwal_piket'])->name('jadwal_piket');
     Route::get('/konfirmasi_piket', [GuruKonfirmasiController::class, 'konfirGuruPiket'])->name('konfirGuruPiket');
     Route::post('/konfirmasi_piket/proses', [GuruKonfirmasiController::class, 'konfirmasiPiket'])->name('konfirmasiPiket');
+    Route::post('/konfirmasi_piket_kembali', [GuruKonfirmasiController::class, 'confirmPhoto'])->name('konfirKembali');
     Route::get('/konfirmasi_mata_pelajaran', [GuruKonfirmasiController::class, 'konfirGuruMataPelajaran'])->name('konfirGuruMataPelajaran');
     Route::post('/konfirmasi_mata_pelajaran/proses', [GuruKonfirmasiController::class, 'konfirmasiMataPelajaran'])->name('konfirmasiMataPelajaran');
     Route::get('/konfirmasi_kurikulum', [GuruKonfirmasiController::class, 'konfirGuruKurikulum'])->name('konfirGuruKurikulum');
@@ -120,3 +132,10 @@ Route::get('/siswa/pdf-viewer', [PdfViewerController::class, 'showPdf'])->name('
 
 Route::get('/siswa/dispensasi/pdf', [DispensasiPdfController::class, 'generatePdf'])->name('dispensasi.pdf');
 Route::get('/siswa/dispensasi/pdf/download', [DispensasiPdfController::class, 'downloadPdf'])->name('dispensasi.pdfDownload');
+
+Route::get('/dispensasi/camera/{nis}', [SiswaDispensasiController::class, 'showCamera'])->name('dispensasi.camera');
+Route::post('/dispensasi/submit-photo/{id}', [SiswaDispensasiController::class, 'submitPhoto'])->name('dispensasi.submitPhoto');
+// Route::post('/dispensasi/{id}/submit-photo', [DispensasiController::class, 'submitPhoto'])->name('dispensasi.submitPhoto');
+// Route::post('/dispensasi/{id}/confirm-photo', [GuruKonfirmasiController::class, 'confirmPhoto'])->name('dispensasi.confirmPhoto');
+Route::post('/dispensasi/{id}/finalize', [SiswaDispensasiController::class, 'finalizeData'])->name('dispensasi.finalize');
+Route::post('/kirim-chat', [SiswaKonfirmController::class, 'kirimChat'])->name('kirim.chat');

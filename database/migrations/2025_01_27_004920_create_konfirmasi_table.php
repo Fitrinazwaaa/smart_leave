@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('konfirmasi', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_dispen');
-            $table->string('tahap_sekarang')->default('guru_piket');
+            $table->string('kategori');
             $table->string('konfirmasi_1')->nullable();
             $table->string('konfirmasi_2')->nullable();
             $table->string('konfirmasi_3')->nullable();

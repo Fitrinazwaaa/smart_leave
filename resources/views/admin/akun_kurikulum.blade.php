@@ -9,8 +9,20 @@
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.min.css" rel="stylesheet">
+        <!-- Bootstrap 5 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJb3RrP6j1eg84BQ2erfFPLBaZrj1I1NE9FYkCOs5TtZUSSHjGZbmL8HjzqP" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
+        /* Global Style */
+        html,
         body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overscroll-behavior: none;
             background: #030248;
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -21,7 +33,114 @@
             min-height: 100vh;
         }
 
+        /* Header Style */
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            display: flex;
+            justify-content: flex-start;
+            /* Align items to the start */
+            align-items: center;
+            /* Vertically center the content */
+            padding: 15px;
+            background: linear-gradient(90deg, #030248, #4b6cb7);
+            color: white;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-bottom: 3px solid #dce400;
+            transition: all 0.3s ease;
+        }
+
+        header:hover {
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Back Button Styling (Arrow only) */
+        header .back-button {
+            margin-left: 40px;
+            margin-right: 20px;
+            background-color: transparent;
+            border: none;
+            padding: 8px;
+            font-size: 20px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease, color 0.3s ease;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            /* Ensure no space between button and icon */
+        }
+
+        header .back-button i {
+            font-size: 20px;
+            margin: 0;
+            /* Ensure no extra space around the icon */
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        /* Hover effect */
+        header .back-button:hover {
+            transform: scale(1.1);
+            color: #dce400;
+            /* Change to gold color on hover */
+        }
+
+        /* Focus effect */
+        header .back-button:focus {
+            outline: none;
+            transform: scale(1.1);
+        }
+
+        /* Logo Styling */
+        header .logo {
+            display: flex;
+            align-items: center;
+            /* Align logo vertically in the center */
+            justify-content: center;
+            /* Center content horizontally */
+            gap: 16px;
+        }
+
+        header .logo img {
+            width: 70px;
+            height: 70px;
+            padding: 5px;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+
+        header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            line-height: 1.2;
+            /* Adjust line height to improve vertical centering */
+        }
+
+        header .sub-title {
+            margin: 0;
+            font-size: 14px;
+            color: #dce400;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        /* body {
+            background: #030248;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        } */
+
         .card {
+            margin: 130px auto 50px;
             background: #ffffff;
             color: #030248;
             border-radius: 20px;
@@ -119,6 +238,18 @@
     </style>
 </head>
 <body>
+<header>
+        <button class="back-button" onclick="window.location.href='{{ route('dashboard.admin') }}';">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="logo">
+            <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
+            <div>
+                <h2>AKUN & DATA SISWA SMK NEGERI 1 KAWALI</h2>
+                <p class="sub-title">Kurikulum</p>
+            </div>
+        </div>
+    </header>
     <div class="card">
         <div class="card-header">
             Pengaturan Akun Kurikulum

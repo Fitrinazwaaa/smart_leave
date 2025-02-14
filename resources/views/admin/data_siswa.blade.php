@@ -270,11 +270,10 @@
                                             </td>
                                             <td style="text-align: center">{{ $siswa['nis'] }}</td>
                                             <td>{{ $siswa['nama'] }}</td>
-                                            <td style="text-align: center">{{ $siswa['tingkatan'] }}
-                                                {{ $siswa['konsentrasi_keahlian'] }}</td>
+                                            <td style="text-align: center">{{ $siswa['konsentrasi_keahlian'] }}</td>
                                             <td>{{ $siswa['program_keahlian'] }}</td>
-                                            <td style="text-align: center">{{ $siswa['jk'] }}</td>
-                                        </tr>
+                                            <td style="text-align: center">{{ $siswa['jk'] === 'L' ? 'Laki-Laki' : 'Perempuan' }}</td>
+                                            </tr>
                                     @endforeach
                                 </tbody>
                             </table>

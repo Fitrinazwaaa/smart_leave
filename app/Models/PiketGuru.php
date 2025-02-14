@@ -28,4 +28,5 @@ class PiketGuru extends Model
     {
         return $this->belongsTo(AkunGuru::class, 'nip', 'nip');
     }
+    
 }

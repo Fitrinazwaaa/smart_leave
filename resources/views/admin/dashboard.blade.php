@@ -3,10 +3,15 @@
 use App\Models\PiketGuru;
 use App\Models\AkunSiswa;
 use App\Models\AkunGuru;
+use App\Models\Dispensasi;
 
 $piketGuru = PiketGuru::all();
 $totalSiswa = AkunSiswa::count(); // Hitung jumlah siswa
 $totalGuru = AkunGuru::count(); // Hitung jumlah guru
+
+// Menghitung jumlah dispensasi berdasarkan kategori
+$jumlahKeluarLingkungan = Dispensasi::where('kategori', 'Keluar Lingkungan Sekolah')->count();
+$jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->count();
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -56,7 +61,7 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
                 <i class="fas fa-chalkboard-teacher"></i>
                 <span>Guru Piket</span>
             </div>
-            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat history dispensasi" onclick="navigateTo('history_dispen')">
+            <div class="menu-item" data-bs-toggle="tooltip" title="Lihat history dispensasi" onclick="window.location.href='{{ route('historyAdmin') }}';">
                 <i class="fas fa-file-alt"></i>
                 <span>History Dispen</span>
             </div>
@@ -143,13 +148,30 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
                     </div>
                 </div>
             </div>
-
-            <div class="stats-card">
-                <h3>Statistik Pengguna</h3>
-                <p class="stat">{{ $totalSiswa }}</p>
-                <p>Siswa Terdaftar</p>
-                <p class="stat">{{ $totalGuru }}</p>
-                <p>Guru Aktif</p>
+            <div>
+                <div class="stats-card">
+                    <h3>Statistik Dispensasi Siswa</h3>
+                    <div class="stat-item">
+                        <p class="stat" id="stat-keluar-lingkungan">0</p>
+                        <p>Keluar Lingkungan Sekolah</p>
+                    </div>
+                    <div class="stat-item">
+                        <p class="stat" id="stat-mengikuti-kegiatan">0</p>
+                        <p>Mengikuti Kegiatan</p>
+                    </div>
+                </div>
+                <script>
+                    // Menampilkan data ke elemen HTML
+                    document.getElementById('stat-keluar-lingkungan').textContent = "<?php echo $jumlahKeluarLingkungan; ?>";
+                    document.getElementById('stat-mengikuti-kegiatan').textContent = "<?php echo $jumlahMengikutiKegiatan; ?>";
+                </script>
+                <div class="stats-card" style="margin-top: 10px;">
+                    <h3>Statistik Pengguna</h3>
+                    <p class="stat">{{ $totalSiswa }}</p>
+                    <p>Siswa Terdaftar</p>
+                    <p class="stat">{{ $totalGuru }}</p>
+                    <p>Guru Aktif</p>
+                </div>
             </div>
         </div>
         <div class="info-cards">

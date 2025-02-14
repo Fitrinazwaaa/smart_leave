@@ -1,5 +1,7 @@
 <?php
+
 use App\Models\AkunGuru;
+
 $totalGuru = AkunGuru::count(); // Hitung jumlah guru
 ?>
 <!DOCTYPE html>
@@ -16,6 +18,8 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="{{ asset('css/admin/data_siswa.css') }}" rel="stylesheet" type="text/css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
         .modal-header {
             background-color: #030248;
@@ -84,6 +88,10 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
             </div>
         </div>
     </header>
+    <!-- Pesan jika tidak ada hasil pencarian -->
+    <div id="noResultsMessage" class="text-center mt-4 text-gray-500" style="display: none;">
+        <p>Data tidak ditemukan.</p>
+    </div>
     <!-- Modal Import -->
     <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -112,8 +120,7 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
     <main>
         <div style="display: flex; align-items: center; margin-bottom: 20px;">
             <div class="search-container">
-                <input type="text" placeholder="Cari">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                <input id="searchInput" type="text" placeholder="Cari berdasarkan NIP, Nama, Jenis Kelamin, Mata Pelajaran, Tingkat, Program Keahlian, atau Hari Piket"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -252,56 +259,46 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
             </div>
         </div>
         @if (session('success'))
-            <div id="popupAlert" class="alert alert-success alert-popup">
-                {{ session('success') }}
-            </div>
+        <div id="popupAlert" class="alert alert-success alert-popup">
+            {{ session('success') }}
+        </div>
         @endif
         @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show error-message" role="alert">
-                {{ session('error') }}
-            </div>
-        @endif
-    <!-- Bagian untuk pengecekan data guru -->
-    @if($dataGuru->isNotEmpty()) <!-- Jika data guru tidak kosong -->
-        <div class="accordion">
-            <div class="accordion-item">
-                <button class="accordion-trigger btn btn-dark w-100">DATA & AKUN GURU SMK NEGERI 1 KAWALI <span class="float-end"
-                    style="font-weight: 500; margin-right: 20px; font-size: 11px; margin-top: 4px">
-                    Jumlah Guru: {{ $totalGuru }}
-                </span></button>
-                <div class="accordion-content">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th><input type="checkbox" id="select_all" class="select_all"></th>
-                                <th>NIP/NUPTK</th>
-                                <th>Nama</th>
-                                <th>Jenis Kelamin</th>
-                                <th>Mata Pelajaran</th>
-                                <th>Tingkat</th>
-                                <th>Program Keahlian</th>
-                                <th>Telepon</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($dataGuru as $guru)
-                                <tr>
-                                    <td><input type="checkbox" name="hapus[]" class="checkbox_ids" value="{{ $guru->nip }}"></td>
-                                    <td>{{ $guru->nip }}</td>
-                                    <td>{{ $guru->nama }}</td>
-                                    <td>{{ $guru->jk }}</td>
-                                    <td>{{ $guru->mata_pelajaran }}</td>
-                                    <td>{{ $guru->tingkat }}</td>
-                                    <td>{{ $guru->program_keahlian }}</td>
-                                    <td>{{ $guru->no_hp }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>                    
-                </div>
-            </div>
+        <div class="alert alert-danger alert-dismissible fade show error-message" role="alert">
+            {{ session('error') }}
         </div>
-    @endif
+        @endif
+        <!-- Bagian untuk pengecekan data guru -->
+        @if($dataGuru->isNotEmpty())
+        <table class="w-full table-auto border-collapse" id="guruTable">
+            <thead>
+                <tr class="bg-gray-200 text-gray-700">
+                    <th><input type="checkbox" id="select_all" class="select_all"></th>
+                    <th class="px-4 py-2 text-left">NIP/NUPTK</th>
+                    <th class="px-4 py-2 text-center">Nama</th>
+                    <th class="px-4 py-2 text-center">Jenis Kelamin</th>
+                    <th class="px-4 py-2 text-left">Mata Pelajaran</th>
+                    <th class="px-4 py-2 text-center">Tingkat</th>
+                    <th class="px-4 py-2 text-center">Program Keahlian</th>
+                    <th class="px-4 py-2 text-center">Telponn</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach ($dataGuru as $guru)
+            <tr>
+                    <td><input type="checkbox" name="hapus[]" class="checkbox_ids" value="{{ $guru->nip }}"></td>
+                    <td>{{ $guru->nip }}</td>
+                    <td>{{ $guru->nama }}</td>
+                    <td>{{ $guru->jk }}</td>
+                    <td>{{ $guru->mata_pelajaran }}</td>
+                    <td>{{ $guru->tingkat }}</td>
+                    <td>{{ $guru->program_keahlian }}</td>
+                    <td>{{ $guru->no_hp }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        @endif
     </main>
     {{-- DELETE - START --}}
     <script>
@@ -383,7 +380,43 @@ $totalGuru = AkunGuru::count(); // Hitung jumlah guru
             }, 4000); // 4000 ms = 4 detik
         });
     </script>
-    {{-- WAKTU MUNCUL ALERT - END --}}
+
+    {{-- Searching - START --}}
+    <!-- Script Pencarian -->
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('guruTable');
+            const rows = table.getElementsByTagName('tr');
+
+            let hasData = false;
+
+            for (let i = 1; i < rows.length; i++) { // Mulai dari index 1 untuk melewati header tabel
+                const cells = rows[i].getElementsByTagName('td');
+                let rowText = '';
+
+                for (let j = 0; j < cells.length; j++) {
+                    rowText += cells[j].textContent.toLowerCase() + ' ';
+                }
+
+                if (rowText.includes(filter)) {
+                    rows[i].style.display = ''; // Tampilkan baris
+                    hasData = true;
+                } else {
+                    rows[i].style.display = 'none'; // Sembunyikan baris
+                }
+            }
+
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            if (hasData) {
+                noResultsMessage.style.display = 'none';
+            } else {
+                noResultsMessage.style.display = 'block';
+            }
+        });
+    </script>
+    {{-- Searching - END --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
         integrity="sha384-oBqDVmMz4fnFO9gybOveo3f8VgJUvP5Vyn6pd56rOH1diJfqa0ksL8/4Oh3nybs0" crossorigin="anonymous">

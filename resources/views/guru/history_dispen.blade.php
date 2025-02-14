@@ -1,3 +1,21 @@
+<?php
+
+use App\Models\AkunGuru;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+Carbon::setLocale('id');
+$nip = Auth::user()->nip;  // Mendapatkan nip dari user yang sedang login
+$guru = AkunGuru::where('nip', $nip)->first();
+// Ambil data pengguna dari tabel akun_guru berdasarkan NIP
+$akunGuru = DB::table('akun_guru')->where('nip', $nip)->first();
+
+if (!$guru) {
+    // Jika guru tidak ditemukan, tampilkan error atau redirect
+    return redirect()->route('login')->withErrors(['error' => 'Guru tidak ditemukan.']);
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -178,20 +196,26 @@
             header .sub-title {
                 font-size: 12px;
             }
+
+            .container {
+                margin: 130px auto 0;
+                padding: 20px;
+                border-radius: 8px;
+            }
         }
     </style>
 </head>
 
 <body class="bg-gray-100 font-sans antialiased">
     <header>
-        <button class="back-button" onclick="window.location.href='{{ route('dashboard.admin') }}';">
+        <button class="back-button" onclick="window.location.href='{{ route('dashboard.guru') }}';">
             <i class="fas fa-arrow-left"></i>
         </button>
         <div class="logo">
             <img src="{{ asset('img/Smk-Negeri-1-Kawali-Logo.png') }}" alt="Logo">
             <div>
                 <h2>DISPENSASI DIGITAL SMK NEGERI 1 KAWALI</h2>
-                <p class="sub-title">Kurikulum</p>
+                <p class="sub-title">{{ $guru->nama }}</p>
             </div>
         </div>
     </header>
@@ -202,20 +226,9 @@
 
         <!-- Filter -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <!-- Tombol Hapus Semua Data Dispensasi -->
-            <div class="flex justify-end mb-6" style="margin-bottom: -29px;">
-                <form action="{{ route('hapusSemuaData') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus semua data dispensasi?')">
-                    @csrf
-                    <button type="submit"
-                         class="px-6 py-2 bg-red-600 text-white rounded-md shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 text-xs">
-                        Hapus Semua Data Dispensasi
-                    </button>
-                </form>
-            </div>
-
             <h2 class="font-semibold text-gray-800 border-b pb-4 mb-4 text-xs"
                 style="margin-top: -2px; padding-bottom: 9px; font-size: 20px;">Filter Data</h2>
-            <form method="GET" action="{{ route('historyAdmin') }}" class="flex flex-wrap items-center gap-4 text-xs">
+            <form method="GET" action="{{ route('historyGuru') }}" class="flex flex-wrap items-center gap-4 text-xs">
                 <!-- Waktu -->
                 <div class="w-1/6 min-w-[150px]">
                     <label for="waktu" class="font-medium text-gray-600 mb-1 block">Waktu</label>
@@ -270,6 +283,9 @@
                 </div>
             </form>
         </div>
+
+
+
 
         <!-- Kategori: Keluar Lingkungan Sekolah -->
         <div id="keluar-sekolah" class="mb-10 kategori">
