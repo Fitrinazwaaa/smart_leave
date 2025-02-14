@@ -6,6 +6,7 @@ use App\Exports\SiswaEksport;
 use App\Imports\SiswaImport;
 use Illuminate\Http\Request;
 use App\Models\AkunSiswa;
+use App\Models\Dispensasi;
 use App\Models\Kelas;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -115,6 +116,7 @@ class AdminSiswaController extends Controller
         User::whereIn('nis', $request->hapus)->delete();
         // Hapus entri siswa berdasarkan NIS yang dipilih
         AkunSiswa::whereIn('nis', $request->hapus)->delete();
+        Dispensasi::whereIn('nis', $request->hapus)->delete();
         return redirect()->route('kelasSiswa')->with('success', 'Siswa yang dipilih beserta akunnya berhasil dihapus.');
     }
 

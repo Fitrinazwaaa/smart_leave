@@ -199,7 +199,7 @@
   <form action="{{ route('login.siswa') }}" method="POST">
     @csrf
     <div class="input-group">
-      <label for="nis">NIS Pengguna</label>
+      <label for="nis">NIS Siswa</label>
       <input type="text" id="nis" name="nis" required>
     </div>
     <div class="input-group">
@@ -215,7 +215,7 @@
   <form action="{{ route('login.guru') }}" method="POST">
     @csrf
     <div class="input-group">
-      <label for="nip">NIP/NUPTK Pengguna</label>
+      <label for="nip">NIP/NUPTK Guru</label>
       <input type="text" id="nip" name="nip" required>
     </div>
     <div class="input-group">
@@ -231,7 +231,7 @@
   <form action="{{ route('login.kurikulum') }}" method="POST">
     @csrf
     <div class="input-group">
-      <label for="username">Username</label>
+      <label for="username">Username Admin</label>
       <input type="text" id="username" name="username" required>
     </div>
     <div class="input-group">

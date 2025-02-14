@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AkunGuru;
+use App\Models\AkunSiswa;
 use App\Models\Dispensasi;
 use App\Models\Konfirmasi;
 use App\Models\PiketGuru;
@@ -40,14 +41,14 @@ $pengajuanDispenKonfirmasi1Null = Konfirmasi::whereNull('konfirmasi_1')->count()
 
 // Menghitung pengajuan dispensasi dengan pengecekan konfirmasi_2, hanya jika konfirmasi_1 tidak null
 $pengajuanDispenKonfirmasi2Null = Konfirmasi::where('kategori', 'mengikuti kegiatan')
-    ->whereNotNull('konfirmasi_1')
-    ->whereNull('konfirmasi_2')
-    ->whereHas('dispensasi', function ($query) use ($nip) {
-        $query->where('nip', $nip); // Filter berdasarkan nip dari tabel dispensasi
-    })
-    ->count();
+  ->whereNotNull('konfirmasi_1')
+  ->whereNull('konfirmasi_2')
+  ->whereHas('dispensasi', function ($query) use ($nip) {
+    $query->where('nip', $nip); // Filter berdasarkan nip dari tabel dispensasi
+  })
+  ->count();
 // Menghitung pengajuan dispensasi dengan pengecekan konfirmasi_3, hanya jika konfirmasi_1 dan konfirmasi_2 tidak null
-$pengajuanDispenKonfirmasi3Null = Konfirmasi::whereNotNull('konfirmasi_1')->whereNotNull('konfirmasi_2')->whereNull('konfirmasi_3')->count();
+$pengajuanDispenKonfirmasi3Null = Konfirmasi::where('kategori', 'mengikuti kegiatan')->whereNotNull('konfirmasi_1')->whereNotNull('konfirmasi_2')->whereNull('konfirmasi_3')->count();
 
 // Mengambil notifikasi pengguna
 $notifications = Auth::user()->notifications ?? []; // Ensure to provide a default empty array if null
@@ -60,6 +61,14 @@ if ($jadwalPiket) {
 
 // Cek apakah jabatan pengguna adalah 'kurikulum'
 $isKurikulum = $akunGuru && $akunGuru->jabatan === 'kurikulum'; // Verifikasi jabatan kurikulum
+
+$piketGuru = PiketGuru::all();
+$totalSiswa = AkunSiswa::count(); // Hitung jumlah siswa
+$totalGuru = AkunGuru::count(); // Hitung jumlah guru
+
+// Menghitung jumlah dispensasi berdasarkan kategori
+$jumlahKeluarLingkungan = Dispensasi::where('kategori', 'Keluar Lingkungan Sekolah')->count();
+$jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->count();
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -121,7 +130,7 @@ $isKurikulum = $akunGuru && $akunGuru->jabatan === 'kurikulum'; // Verifikasi ja
       @endif
 
       @if ($dispen->isNotEmpty()) <!-- Check if there are dispensations that need confirmation -->
-      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat konfirmasi guru pengajar"  onclick="window.location.href='{{ route('konfirGuruMataPelajaran') }}';">
+      <div class="menu-item" data-bs-toggle="tooltip" title="Lihat konfirmasi guru pengajar" onclick="window.location.href='{{ route('konfirGuruMataPelajaran') }}';">
         <i class="fas fa-chalkboard-teacher"></i>
         <span>Konfirmasi Guru Pengajar</span>
         @if ($pengajuanDispenKonfirmasi2Null > 0)
@@ -151,25 +160,8 @@ $isKurikulum = $akunGuru && $akunGuru->jabatan === 'kurikulum'; // Verifikasi ja
     </div>
 
     <!-- Notifikasi dan Statistik -->
-    <div class="d-flex">
-      <div class="notification-card">
-        <h4>Notifikasi Pengajuan Dispensasi</h4>
-        @if ($pengajuanDispenKonfirmasi1Null > 0 || $pengajuanDispenKonfirmasi2Null > 0 || $pengajuanDispenKonfirmasi3Null > 0)
-        <div class="alert alert-info d-flex justify-content-between align-items-center">
-          <div>
-            <p><strong>{{ $pengajuanDispenKonfirmasi1Null + $pengajuanDispenKonfirmasi2Null + $pengajuanDispenKonfirmasi3Null }} Pengajuan Dispensasi Baru</strong></p>
-          </div>
-          <div>
-            <button class="btn btn-success btn-sm" onclick="">
-              Lihat Detail
-            </button>
-          </div>
-        </div>
-        @else
-        <p>Tidak ada pengajuan dispensasi baru.</p>
-        @endif
-      </div>
-      <div class="stats-card">
+    <div class="d-flex justify-content-center align-items-center" style=" gap: 20px;">
+    <div class="stats-card">
         <h3>Statistik Dispensasi Siswa</h3>
         <div class="stat-item">
           <p class="stat" id="stat-keluar-lingkungan">0</p>
@@ -180,19 +172,18 @@ $isKurikulum = $akunGuru && $akunGuru->jabatan === 'kurikulum'; // Verifikasi ja
           <p>Mengikuti Kegiatan</p>
         </div>
       </div>
-
-      <?php
-      // Menghitung jumlah dispensasi berdasarkan kategori
-      $jumlahKeluarLingkungan = Dispensasi::where('kategori', 'Keluar Lingkungan Sekolah')->count();
-      $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->count();
-      ?>
-
       <script>
         // Menampilkan data ke elemen HTML
         document.getElementById('stat-keluar-lingkungan').textContent = "<?php echo $jumlahKeluarLingkungan; ?>";
         document.getElementById('stat-mengikuti-kegiatan').textContent = "<?php echo $jumlahMengikutiKegiatan; ?>";
       </script>
-
+      <div class="stats-card" style="margin-top: 10px;">
+        <h3>Statistik Pengguna</h3>
+        <p class="stat">{{ $totalSiswa }}</p>
+        <p>Siswa Terdaftar</p>
+        <p class="stat">{{ $totalGuru }}</p>
+        <p>Guru Aktif</p>
+      </div>
     </div>
 
     <div class="info-cards">
