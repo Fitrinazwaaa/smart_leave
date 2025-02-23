@@ -11,65 +11,80 @@ use Illuminate\Support\Facades\DB;
 
 // Atur locale Carbon ke Bahasa Indonesia
 Carbon::setLocale('id');
+
 $nip = Auth::user()->nip;  // Mendapatkan nip dari user yang sedang login
-// Ambil hari saat ini dalam format Bahasa Indonesia
 $hariIni = Carbon::now()->translatedFormat('l');
+
 // Cek apakah guru yang login sedang memiliki jadwal piket
 $jadwalPiket = PiketGuru::where('nip', $nip)
   ->where('hari_piket', $hariIni)
-  ->where('aktif', 1)  // Pastikan hanya yang aktif yang dipilih
-  ->first();  // Ambil data pertama yang ditemukan
+  ->where('aktif', 1)  
+  ->first();  
 
-// Ambil data dispensasi yang harus dikonfirmasi oleh guru mata pelajaran yang sesuai dengan NIP guru yang login
-$dispen = Dispensasi::whereHas('konfirmasi', function ($query) {
-  $query->whereNotNull('konfirmasi_1')->whereNull('konfirmasi_2');
-})->where('nip', $nip) // Tambahkan filter NIP sesuai dengan guru yang login
-  ->get();
+// Ambil data dispensasi yang dibuat hari ini, memiliki kategori "mengikuti kegiatan",
+// dan harus dikonfirmasi oleh guru piket
+$dispen = Dispensasi::whereDate('created_at', Carbon::today())
+    ->where('kategori', 'mengikuti kegiatan') // Tambahkan filter kategori
+    ->whereHas('konfirmasi', function ($query) {
+        $query->whereNotNull('konfirmasi_1') // Sudah dikonfirmasi oleh guru piket
+              ->whereNull('konfirmasi_2');  // Belum dikonfirmasi oleh guru pengajar
+    })
+    ->where('nip', $nip) 
+    ->get();
+
 
 // Ambil data guru
 $guru = AkunGuru::where('nip', $nip)->first();
-// Ambil data pengguna dari tabel akun_guru berdasarkan NIP
 $akunGuru = DB::table('akun_guru')->where('nip', $nip)->first();
 
 if (!$guru) {
-  // Jika guru tidak ditemukan, tampilkan error atau redirect
   return redirect()->route('login')->withErrors(['error' => 'Guru tidak ditemukan.']);
 }
 
-// Menghitung pengajuan dispensasi dengan pengecekan konfirmasi_1, konfirmasi_2, dan konfirmasi_3
-$pengajuanDispenKonfirmasi1Null = Konfirmasi::whereNull('konfirmasi_1')->count();
+// Menghitung pengajuan dispensasi hanya dari hari ini
+$pengajuanDispenKonfirmasi1Null = Konfirmasi::whereNull('konfirmasi_1')
+  ->whereDate('created_at', Carbon::today())
+  ->count();
 
-// Menghitung pengajuan dispensasi dengan pengecekan konfirmasi_2, hanya jika konfirmasi_1 tidak null
 $pengajuanDispenKonfirmasi2Null = Konfirmasi::where('kategori', 'mengikuti kegiatan')
   ->whereNotNull('konfirmasi_1')
   ->whereNull('konfirmasi_2')
   ->whereHas('dispensasi', function ($query) use ($nip) {
-    $query->where('nip', $nip); // Filter berdasarkan nip dari tabel dispensasi
-  })
+    $query->where('nip', $nip);
+  })->whereDate('created_at', Carbon::today())
   ->count();
-// Menghitung pengajuan dispensasi dengan pengecekan konfirmasi_3, hanya jika konfirmasi_1 dan konfirmasi_2 tidak null
-$pengajuanDispenKonfirmasi3Null = Konfirmasi::where('kategori', 'mengikuti kegiatan')->whereNotNull('konfirmasi_1')->whereNotNull('konfirmasi_2')->whereNull('konfirmasi_3')->count();
+
+$pengajuanDispenKonfirmasi3Null = Konfirmasi::where('kategori', 'mengikuti kegiatan')
+  ->whereNotNull('konfirmasi_1')
+  ->whereNotNull('konfirmasi_2')
+  ->whereNull('konfirmasi_3')
+  ->whereDate('created_at', Carbon::today())
+  ->count();
 
 // Mengambil notifikasi pengguna
-$notifications = Auth::user()->notifications ?? []; // Ensure to provide a default empty array if null
+$notifications = Auth::user()->notifications ?? [];
 
 // Cek apakah tombol konfirmasi guru piket perlu ditampilkan
-$tampilkanKonfirmasiPiket = false;
-if ($jadwalPiket) {
-  $tampilkanKonfirmasiPiket = true;  // Tombol konfirmasi hanya akan tampil jika jadwal piket ada
-}
+$tampilkanKonfirmasiPiket = $jadwalPiket ? true : false;
 
 // Cek apakah jabatan pengguna adalah 'kurikulum'
-$isKurikulum = $akunGuru && $akunGuru->jabatan === 'kurikulum'; // Verifikasi jabatan kurikulum
+$isKurikulum = $akunGuru && $akunGuru->jabatan === 'kurikulum';
 
 $piketGuru = PiketGuru::all();
-$totalSiswa = AkunSiswa::count(); // Hitung jumlah siswa
-$totalGuru = AkunGuru::count(); // Hitung jumlah guru
+$totalSiswa = AkunSiswa::count();
+$totalGuru = AkunGuru::count();
 
-// Menghitung jumlah dispensasi berdasarkan kategori
-$jumlahKeluarLingkungan = Dispensasi::where('kategori', 'Keluar Lingkungan Sekolah')->count();
-$jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->count();
+// Menghitung jumlah dispensasi berdasarkan kategori hanya dari hari ini
+$jumlahKeluarLingkungan = Dispensasi::where('kategori', 'Keluar Lingkungan Sekolah')
+  ->whereDate('created_at', Carbon::today())
+  ->count();
+
+$jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')
+  ->whereDate('created_at', Carbon::today())
+  ->count();
+
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -79,7 +94,7 @@ $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->
   <title>dashboard guru</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ asset('css/guru_dashboard.css') }}" rel="stylesheet" type="text/css">
   <script>
     function navigateTo(page) {
       alert(`Navigasi ke halaman: ${page}`);
@@ -190,22 +205,22 @@ $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->
       <div class="info-card">
         <h3>Data Siswa & Data Guru</h3>
         <div class="divider"></div>
-        <p>Data ini dibutuhkan untuk login baik itu guru maupun siswa.</p>
-        <p>Username guru menggunakan NIP</p>
-        <p>Username siswa menggunakan nip</p>
-        <p>Dengan password masing-masing</p>
+        <p style="text-align: center;">Data ini dibutuhkan untuk login baik itu guru maupun siswa.</p>
+        <p style="text-align: center;">Username guru menggunakan NIP</p>
+        <p style="text-align: center;">Username siswa menggunakan nip</p>
+        <p style="text-align: center;">Dengan password masing-masing</p>
       </div>
 
       <div class="info-card">
         <h3>Jadwal Piket Guru</h3>
         <div class="divider"></div>
-        <p>Ini digunakan untuk mengetahui siapa saja guru yang bertugas melakukan piket sekolah.</p>
+        <p style="text-align: center;">Ini digunakan untuk mengetahui siapa saja guru yang bertugas melakukan piket sekolah.</p>
       </div>
 
       <div class="info-card">
         <h3>History Dispen Siswa</h3>
         <div class="divider"></div>
-        <p>Kumpulan data siswa yang telah melakukan dispen dalam 1 tahun.</p>
+        <p style="text-align: center;">Kumpulan data siswa yang telah melakukan dispen dalam 1 tahun.</p>
       </div>
     </div>
   </div>

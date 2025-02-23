@@ -342,11 +342,58 @@ text-align: left;
   .semi-circle {
     width: 100%; /* Sesuaikan agar lebar mengikuti layar */
     height: 300px; /* Atur tinggi agar tidak terlalu besar */
-    margin: -200px auto 32px; /* Margin yang lebih kecil */
-    padding-top: 430px;
+    margin: -240px auto 32px; /* Margin yang lebih kecil */
+    padding-top: 610px;
     border-radius: 50% / 50%; /* Buat tetap terlihat seperti semi-circle */
   }
   .main-container{
-    margin-top: 100px;
+    margin-top: -90px;
+  }
+
+  /* Menu Items */
+  .menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .menu-item {
+    width: 45%;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  /* Notification & Stats */
+  .notification-card,
+  .stats-card {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .notification-card{
+    margin-top: -20px;
+  }
+  .stats-card{
+    margin-top: -30px;
+  }
+  /* Info Cards */
+  .info-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 5px;
+  }
+
+  .info-card {
+    width: 100%;
+    padding: 10px;
+  }
+  .stat-item p {
+    font-size: 14px; /* Menyesuaikan ukuran font pada statistik */
+  }
+  .stats-card p {
+    font-size: 14px; /* Menyesuaikan ukuran font pada statistik */
   }
 }

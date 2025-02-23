@@ -39,7 +39,62 @@
       </div>
     </div>
   </header>
+  <!-- Modal Detail Konfirmasi -->
+  <div class="modal fade" id="modalKonfirmasi{{ $konfir->id_dispen }}" tabindex="-1" aria-labelledby="modalKonfirmasiLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="modalKonfirmasiLabel">
+            <i class="bi bi-info-circle"></i> Detail Konfirmasi Dispensasi
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p><i class="bi bi-person"></i> <strong>Nama:</strong> {{ $siswa->nama }}</p>
+          <p><i class="bi bi-hash"></i> <strong>NIS:</strong> {{ $siswa->nis }}</p>
+          <p><i class="bi bi-mortarboard"></i> <strong>Kelas:</strong> {{ $siswa->tingkatan }} {{ $siswa->konsentrasi_keahlian }}</p>
+          <p><i class="bi bi-calendar"></i> <strong>Waktu Pengajuan:</strong> {{ $konfir->created_at->format('d M Y, H:i') }}</p>
+          <p><i class="bi bi-chat-text"></i> <strong>Kategori:</strong> {{ $konfir->kategori }}</p>
+          <p><i class="bi bi-chat-left-text"></i> <strong>Alasan:</strong> {{ $latestDispensasi->alasan }}</p>
 
+          <!-- Status Konfirmasi -->
+          <hr>
+          <h6 class="fw-bold">Status Konfirmasi</h6>
+          <p><i class="bi bi-person-check"></i> <strong>Guru Piket:</strong>
+            @if($konfir->konfirmasi_1)
+            <span class="text-success">Disetujui oleh {{ $guruPiket->nama ?? 'Tidak ditemukan' }}</span>
+            @else
+            <span class="text-danger">Belum dikonfirmasi</span>
+            @endif
+          </p>
+          <p><i class="bi bi-person-check"></i> <strong>Guru Pengajar:</strong>
+            @if($konfir->konfirmasi_2)
+            <span class="text-success">Disetujui oleh {{ $guruPengajar->nama ?? 'Tidak ditemukan' }}</span>
+            @else
+            <span class="text-danger">Belum dikonfirmasi</span>
+            @endif
+          </p>
+          <p><i class="bi bi-person-check"></i> <strong>Kurikulum:</strong>
+            @if($konfir->konfirmasi_3)
+            <span class="text-success">Disetujui oleh {{ $guruKurikulum->nama ?? 'Tidak ditemukan' }}</span>
+            @else
+            <span class="text-danger">Belum dikonfirmasi</span>
+            @endif
+          </p>
+
+          <!-- Bukti Foto -->
+          @if($konfir->bukti_foto)
+          <hr>
+          <h6 class="fw-bold">Bukti Foto</h6>
+          <img src="{{ asset('storage/'.$konfir->bukti_foto) }}" class="img-fluid rounded" alt="Bukti Dispensasi">
+          @endif
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="container">
     <h1 class="mb-4 text-center" style="font-weight: bold;">Konfirmasi Dispensasi</h1>
 
@@ -77,6 +132,11 @@
         </div>
         <div>
           <div class="vertical-layout">
+            @if($konfir && $konfir->konfirmasi_1)
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalKonfirmasi{{ $konfir->id_dispen }}" style="font-size: 13px;">
+              <i class="bi bi-eye"></i> Detail
+            </button>
+            @else
             @if($guruPiketList->isNotEmpty())
             @foreach($guruPiketList as $guru)
             <button class="btn btn-primary"
@@ -89,6 +149,7 @@
             @endforeach
             @else
             <p>Guru piket tidak tersedia untuk hari ini.</p>
+            @endif
             @endif
           </div>
         </div>
@@ -130,6 +191,11 @@
         </div>
         <div>
           <div class="vertical-layout">
+          @if($konfir && $konfir->konfirmasi_1)
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalKonfirmasi{{ $konfir->id_dispen }}" style="font-size: 13px;">
+              <i class="bi bi-eye"></i> Detail
+            </button>
+            @else
             @if($guruPiketList->isNotEmpty())
             @foreach($guruPiketList as $guru)
             <button class="btn btn-primary"
@@ -142,6 +208,7 @@
             @endforeach
             @else
             <p>Guru piket tidak tersedia untuk hari ini.</p>
+            @endif
             @endif
           </div>
         </div>
@@ -181,6 +248,11 @@
           </div>
         </div>
         <div class="vertical-layout">
+        @if($konfir && $konfir->konfirmasi_2)
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalKonfirmasi{{ $konfir->id_dispen }}" style="font-size: 13px;">
+              <i class="bi bi-eye"></i> Detail
+            </button>
+            @else
           @if($guruPengajar)
           <button class="btn btn-primary"
             data-nip="{{ $guruPengajar->nip }}"
@@ -189,6 +261,7 @@
             onclick="kirimChat(this)">
             Kirim Pesan ke {{ $guruPengajar->nama }}
           </button>
+          @endif
           @endif
         </div>
       </div>
@@ -226,6 +299,11 @@
           </div>
         </div>
         <div class="vertical-layout">
+        @if($konfir && $konfir->konfirmasi_3)
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalKonfirmasi{{ $konfir->id_dispen }}" style="font-size: 13px;">
+              <i class="bi bi-eye"></i> Detail
+            </button>
+            @else
           @if($guruKurikulum)
           <button class="btn btn-primary"
             data-nip="{{ $guruKurikulum->nip }}"
@@ -244,6 +322,7 @@
             Kirim Pesan ke {{ $guru->nama }}
           </button>
           @endforeach
+          @endif
           @endif
         </div>
       </div>

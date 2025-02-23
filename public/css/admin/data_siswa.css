@@ -8,6 +8,7 @@ body {
   overscroll-behavior: none;
   background: linear-gradient(to bottom, #ffffff, #f3f4f7);
   background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+  background-attachment: fixed;
 }
 
 /* Header Style */
@@ -97,7 +98,47 @@ header .sub-title {
   color: #dce400;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    position: fixed; /* Tambahkan relative untuk posisi child absolute */
+  }
 
+  header .back-button {
+    position: absolute; /* Pindahkan button dengan posisi absolute */
+    top: 10px; /* Jarak dari atas */
+    left: 10px; /* Jarak dari kiri */
+    margin: 0; /* Hilangkan margin default */
+    font-size: 16px;
+    width: 40px;
+    height: 40px;
+  }
+
+  header .logo {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  header .logo img {
+    width: 60px;
+    height: 60px;
+  }
+
+  header h2 {
+    font-size: 20px;
+  }
+
+  header .sub-title {
+    font-size: 12px;
+  }
+  .main{
+    margin-top: 160px;
+  }
+}
 /* Main Section */
 main {
   max-width: 1280px;
@@ -321,4 +362,117 @@ button.edit:hover {
   background-color: #030248;
   margin: 20px 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+/* Mobile small */
+@media (max-width: 480px) {
+  .accordion-trigger {
+    font-size: 12px;
+  }
+
+  table th, table td {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .modal-body form input,
+  .modal-body form select {
+    font-size: 14px;
+  }
+
+  #popupAlert, #noResultsMessage {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+@media (max-width: 768px) {
+  .accordion-trigger {
+    font-size: 12px;
+  }
+
+  table th, table td {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .modal-body form input,
+  .modal-body form select {
+    font-size: 14px;
+  }
+
+  #popupAlert, #noResultsMessage {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+@media (max-width: 768px) {
+  /* Membuat kontainer tombol lebih fleksibel */
+  .buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+  }
+
+  /* Memastikan form input lebih mudah digunakan di perangkat kecil */
+  .search-container input {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+  }
+
+  /* Ukuran ikon pencarian lebih kecil dan posisikan dengan baik */
+  .feather.feather-search {
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      right: 10px;
+      top: 12px;
+  }
+
+  /* Membuat tombol dalam kolom saat di mobile */
+  .btn-custom {
+      width: 100%;
+      padding: 10px 15px;
+      font-size: 14px;
+      text-align: center;
+  }
+
+  /* Modal lebih kecil dan lebih mudah diakses pada perangkat mobile */
+  .modal-dialog {
+      max-width: 90%;
+      margin: 30px auto;
+  }
+
+  /* Dropdown menu menyesuaikan ukuran layar */
+  .dropdown-menu {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 0;
+  }
+
+  .dropdown-item {
+      padding: 10px 20px;
+      font-size: 14px;
+  }
+
+  /* Mengatur ukuran ikon dropdown */
+  .bi-three-dots-vertical {
+      font-size: 20px;
+  }
+
+  /* Menyesuaikan tampilan tombol Naik Tingkat agar sesuai dengan layar kecil */
+  .btn-custom i {
+      font-size: 18px;
+  }
+
+  /* Memastikan modal import juga menyesuaikan ukuran layar */
+  .modal-content {
+      padding: 10px;
+  }
+
+  /* Membuat form di modal lebih mudah diakses pada perangkat mobile */
+  .form-control {
+      font-size: 14px;
+      padding: 10px;
+  }
 }

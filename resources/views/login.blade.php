@@ -148,6 +148,33 @@
 }
 
 @media (max-width: 480px) {
+  html, body {
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .container {
+    max-width: 90%;
+  }
+  
+  .role-selection-btn {
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    font-size: 14px;
+  }
+}
+@media (max-width: 750px) {
+  html, body {
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .container {
+    max-width: 90%;
+  }
+
   .role-selection-btn {
     font-size: 14px;
   }
@@ -171,11 +198,9 @@
 
     @if ($errors->any())
       <div class="alert alert-danger">
-        <ul>
           @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
+           {{ $error }}
           @endforeach
-        </ul>
       </div>
     @endif
     

@@ -128,16 +128,44 @@
             color: #dce400;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
-        /* body {
-            background: #030248;
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        } */
+        @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 10px;
+        position: fixed; /* Tambahkan fixed untuk posisi child absolute */
+      }
+    
+      header .back-button {
+        position: absolute; /* Pindahkan button dengan posisi absolute */
+        top: 10px; /* Jarak dari atas */
+        left: 10px; /* Jarak dari kiri */
+        margin: 0; /* Hilangkan margin default */
+        font-size: 16px;
+        width: 40px;
+        height: 40px;
+      }
+    
+      header .logo {
+        flex-direction: column;
+        gap: 10px;
+      }
+    
+      header .logo img {
+        width: 60px;
+        height: 60px;
+      }
+    
+      header h2 {
+        font-size: 20px;
+      }
+    
+      header .sub-title {
+        font-size: 12px;
+      }
+    }
 
         .card {
             margin: 130px auto 50px;
@@ -216,8 +244,10 @@
 
         @media (max-width: 768px) {
             .card {
+                margin : 10px;
                 padding: 15px;
-                width: 90%;
+                width: 824px;
+                height : 520px;
             }
 
             .card-header {
@@ -231,6 +261,7 @@
             }
 
             .btn-primary {
+                margin-top: 30px;
                 padding: 12px;
                 font-size: 0.9rem;
             }

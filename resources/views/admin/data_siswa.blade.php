@@ -58,7 +58,7 @@
             </div>
         </div>
     </div>
-    <main>
+    <main class="main">
         <div style="display: flex; align-items: center; margin-bottom: 20px;">
             <!-- Searching -->
             <div class="search-container" style="margin-bottom: 0px;">

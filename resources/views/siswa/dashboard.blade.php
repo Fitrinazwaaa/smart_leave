@@ -62,7 +62,7 @@ $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->
     <title>Dispensasi Siswa SMK NEGERI 1 KAWALI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/siswa_dashboard.css') }}" rel="stylesheet" type="text/css">
 
     <script>
         // Lokasi sekolah (latitude dan longitude)
@@ -232,10 +232,7 @@ $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->
         });
     </script>
 
-
-    <div class="semi-circle">
-
-    </div>
+    <div class="semi-circle"></div>
 
     <div class="main-container">
         <div class="menu">
@@ -282,7 +279,6 @@ $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->
                     }
                 });
             </script>
-
         </div>
 
 
@@ -362,7 +358,7 @@ $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="d-flex">
                 <div class="stats-card">
                     <h3>Statistik Dispensasi Siswa</h3>
                     <div class="stat-item">
@@ -379,7 +375,7 @@ $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->
                     document.getElementById('stat-keluar-lingkungan').textContent = "<?php echo $jumlahKeluarLingkungan; ?>";
                     document.getElementById('stat-mengikuti-kegiatan').textContent = "<?php echo $jumlahMengikutiKegiatan; ?>";
                 </script>
-                <div class="stats-card" style="margin-top: 10px;">
+                <div class="stats-card" style="margin-top: -20px;">
                     <h3>Statistik Pengguna</h3>
                     <p class="stat">{{ $totalSiswa }}</p>
                     <p>Siswa Terdaftar</p>
@@ -392,22 +388,22 @@ $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->
             <div class="info-card">
                 <h3>Data Siswa & Data Guru</h3>
                 <div class="divider"></div>
-                <p>Data ini dibutuhkan untuk login baik itu guru maupun siswa.</p>
-                <p>Username guru menggunakan NIP</p>
-                <p>Username siswa menggunakan NIS</p>
-                <p>Dengan password masing-masing</p>
+                <p style="text-align: center;">Data ini dibutuhkan untuk login baik itu guru maupun siswa.</p>
+                <p style="text-align: center;">Username guru menggunakan NIP</p>
+                <p style="text-align: center;">Username siswa menggunakan NIS</p>
+                <p style="text-align: center;">Dengan password masing-masing</p>
             </div>
 
             <div class="info-card">
                 <h3>Jadwal Piket Guru</h3>
                 <div class="divider"></div>
-                <p>Ini digunakan untuk mengetahui siapa saja guru yang bertugas melakukan piket sekolah.</p>
+                <p style="text-align: center;">Ini digunakan untuk mengetahui siapa saja guru yang bertugas melakukan piket sekolah.</p>
             </div>
 
             <div class="info-card">
                 <h3>History Dispen Siswa</h3>
                 <div class="divider"></div>
-                <p>Kumpulan data siswa yang telah melakukan dispen dalam 1 tahun.</p>
+                <p style="text-align: center;">Kumpulan data siswa yang telah melakukan dispen dalam 1 tahun.</p>
             </div>
         </div>
     </div>

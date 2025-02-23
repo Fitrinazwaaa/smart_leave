@@ -16,38 +16,40 @@ class SiswaKonfirmController extends Controller
     {
         $nis = auth()->user()->nis;
         $siswa = AkunSiswa::where('nis', $nis)->first();
-    
+
         // Ambil hari ini dalam format nama hari
         Carbon::setLocale('id'); // Bahasa Indonesia
         $hariIni = Carbon::now()->translatedFormat('l'); // Nama hari dalam bahasa Indonesia
-    
+
         // Ambil guru piket berdasarkan hari ini
         $guruPiketList = PiketGuru::where('hari_piket', $hariIni)
             ->where('aktif', 1)
             ->get();
-    
+
         // Ambil dispensasi terbaru siswa
         $latestDispensasi = Dispensasi::where('nis', $nis)
             ->latest('id_dispen') // Urutkan berdasarkan yang terbaru
             ->first();
-    
+
         $konfir = null;
         $guruPiket = null;
         $guruPengajar = null;
         $guruKurikulumList = collect(); // Default koleksi kosong
         $guruKurikulum = null;
-    
+
         if ($latestDispensasi) {
             // Ambil konfirmasi terkait dengan dispensasi terbaru
-            $konfir = Konfirmasi::where('id_dispen', $latestDispensasi->id_dispen)->first();
-    
+            $konfir = Konfirmasi::where('id_dispen', $latestDispensasi->id_dispen)
+            ->whereDate('created_at', Carbon::today()) // Hanya konfirmasi dari hari ini
+            ->first();
+
             // Ambil guru piket berdasarkan konfirmasi_1 jika ada
             if ($konfir && $konfir->konfirmasi_1) {
                 $guruPiket = AkunGuru::where('nip', $konfir->konfirmasi_1)
                     ->select('nip', 'nama', 'no_hp')
                     ->first();
             }
-    
+
             // Ambil guru pengajar berdasarkan konfirmasi_2 atau NIP di dispensasi
             if ($konfir && $konfir->konfirmasi_2) {
                 $guruPengajar = AkunGuru::where('nip', $konfir->konfirmasi_2)
@@ -58,7 +60,7 @@ class SiswaKonfirmController extends Controller
                     ->select('nip', 'nama', 'no_hp')
                     ->first();
             }
-    
+
             // Ambil guru kurikulum berdasarkan konfirmasi_3 atau daftar semua guru kurikulum
             if ($konfir && $konfir->konfirmasi_3) {
                 $guruKurikulum = AkunGuru::where('nip', $konfir->konfirmasi_3)
@@ -70,7 +72,7 @@ class SiswaKonfirmController extends Controller
                     ->get();
             }
         }
-    
+
         // Kirim data ke Blade
         return view('siswa.tunggu_konfirmasi', compact(
             'siswa',
@@ -79,11 +81,12 @@ class SiswaKonfirmController extends Controller
             'guruPengajar',
             'guruKurikulum',
             'guruKurikulumList',
-            'konfir'
+            'konfir',
+    'latestDispensasi'
         ));
     }
-    
-    
+
+
 
     public function kirimChat(Request $request)
     {

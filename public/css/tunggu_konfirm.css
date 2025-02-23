@@ -8,6 +8,7 @@
       overscroll-behavior: none;
       background: linear-gradient(to bottom, #ffffff, #f3f4f7);
       background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+      background-attachment: fixed;
     }
 
     /* Header Style */
@@ -113,7 +114,7 @@
         align-items: center;
         text-align: center;
         padding: 10px;
-        position: relative; /* Tambahkan relative untuk posisi child absolute */
+        position: fixed; /* Tambahkan relative untuk posisi child absolute */
       }
     
       header .back-button {
@@ -239,7 +240,41 @@
       font-size: 1.5rem;
       color: #28a745;
     }
+    /* Modal Styling */
+    .modal-content {
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
 
+    .modal-header {
+      background-color: #4b6cb7;
+      color: white;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+
+    .modal-body p {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    .modal-body i {
+      margin-right: 8px;
+      color: #4b6cb7;
+    }
+
+    .modal-body img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-footer {
+      background-color: #f8f9fa;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
     /* Responsive Design for Mobile */
 @media (max-width: 768px) {
   html, body {
@@ -247,7 +282,7 @@
   }
 
   .container {
-    margin: 80px auto 0;
+    margin: 160px auto 0;
     padding: 20px;
     border-radius: 8px;
   }

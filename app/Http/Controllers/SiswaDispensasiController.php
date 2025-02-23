@@ -46,16 +46,16 @@ class SiswaDispensasiController extends Controller
             'kategori' => 'required|string',
             'waktu_keluar' => 'required|date',
             'alasan' => 'required|string',
-            'bukti_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'bukti_foto' => 'nullable|mimes:jpeg,png,jpg,gif,bmp,svg,webp|max:5120',
         ]);
-    
+
         // Handle upload bukti foto jika ada
         if ($request->hasFile('bukti_foto')) {
             $fileName = time() . '_' . uniqid() . '.' . $request->bukti_foto->extension();
             $filePath = $request->bukti_foto->storeAs('uploads/dispensasi', $fileName, 'public');
             $validated['bukti_foto'] = $filePath; // Simpan path relatif ke database
         }
-    
+
         // Simpan data dispensasi
         $dispensasi = Dispensasi::create($validated);
 
@@ -92,10 +92,10 @@ class SiswaDispensasiController extends Controller
                 Notification::send($guruPiket, new KonfirmasiNotifikasi($dispensasi));
             }
         }
-    
+
         return redirect()->route('dashboard.siswa')->with('success', 'Pengajuan dispensasi berhasil dibuat.');
     }
-    
+
 
     // Menampilkan daftar dispensasi
     public function index()
@@ -180,14 +180,14 @@ class SiswaDispensasiController extends Controller
     {
         // Cari dispensasi berdasarkan NIS dan pastikan waktu_kembali belum diisi
         $dispensasi = Dispensasi::where('nis', $nis)->whereNull('waktu_kembali')->first();
-    
+
         // Jika tidak ada data yang valid, redirect ke dashboard siswa dengan pesan error
         if (!$dispensasi) {
             return redirect()->route('dashboard.siswa')->withErrors([
                 'error' => 'Anda sudah mencatat waktu kembali. Tidak dapat mengakses fitur ini lagi.'
             ]);
         }
-    
+
         // Kirim data dispensasi ke view untuk diproses lebih lanjut
         return view('siswa.camera', compact('dispensasi'));
     }
@@ -197,26 +197,26 @@ class SiswaDispensasiController extends Controller
         $request->validate([
             'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-    
+
         // Cari data dispensasi berdasarkan ID
         $dispensasi = Dispensasi::findOrFail($id);
-    
+
         // Periksa apakah waktu_kembali sudah diisi
         if ($dispensasi->waktu_kembali !== null) {
             return redirect()->route('dashboard.siswa')->withErrors([
                 'error' => 'Waktu kembali sudah dicatat sebelumnya. Tidak dapat memperbarui data lagi.',
             ]);
         }
-    
+
         // Simpan foto ke folder sementara di public/storage/dispensasi/temp
         $path = $request->file('photo')->store('dispensasi/temp', 'public');
-    
+
         // Update data dispensasi untuk mengirim laporan (tandai foto sementara)
         $dispensasi->update([
             'bukti_foto' => $path, // Foto disimpan sementara
             'laporan_dikirim' => now(), // Timestamp laporan dikirim
         ]);
-    
+
         // Kirim notifikasi ke guru piket (simulasi dengan flash message atau queue)
         // Logika ini bisa diganti dengan sistem notifikasi yang lebih kompleks.
         return redirect()->route('dashboard.siswa')
@@ -226,26 +226,25 @@ class SiswaDispensasiController extends Controller
     {
         // Cari data dispensasi berdasarkan ID
         $dispensasi = Dispensasi::findOrFail($id);
-    
+
         // Periksa apakah sudah dikonfirmasi oleh guru piket
         if ($dispensasi->konfirmasi_1 === null) {
             return redirect()->route('dashboard.siswa')->withErrors([
                 'error' => 'Data belum dikonfirmasi oleh guru piket. Tidak dapat menyimpan.',
             ]);
         }
-    
+
         // Pindahkan foto dari folder sementara ke folder final
         $finalPath = str_replace('dispensasi/temp', 'dispensasi', $dispensasi->bukti_foto);
         Storage::move($dispensasi->bukti_foto, $finalPath);
-    
+
         // Update kolom waktu_kembali dan foto ke lokasi final
         $dispensasi->update([
             'waktu_kembali' => now(),
             'bukti_foto' => $finalPath,
         ]);
-    
+
         return redirect()->route('dashboard.siswa')
             ->with('success', 'Data telah disimpan setelah konfirmasi guru piket.');
     }
-        
 }

@@ -16,48 +16,53 @@ class GuruKonfirmasiController extends Controller
     {
         // Atur locale Carbon ke Bahasa Indonesia
         Carbon::setLocale('id');
-
+    
         // Ambil data NIP guru yang sedang login
         $nip = auth()->user()->nip;
-
+    
         // Ambil hari saat ini dalam format Bahasa Indonesia
         $hariIni = Carbon::now()->translatedFormat('l');
-
+    
         // Cek apakah guru yang login sedang memiliki jadwal piket
         $jadwalPiket = PiketGuru::where('nip', $nip)
             ->where('hari_piket', $hariIni)
             ->where('aktif', 1)
             ->first();
-
+    
         if (!$jadwalPiket) {
             return redirect()->route('dashboard.guru')->withErrors([
                 'error' => 'Anda tidak memiliki jadwal piket hari ini.',
             ]);
         }
-
-        // Ambil data dispensasi berdasarkan kategori dan status konfirmasi
+    
+        // Ambil data dispensasi berdasarkan kategori dan status konfirmasi, hanya untuk data hari ini
         $dispenKeluar = Dispensasi::where('kategori', 'Keluar Lingkungan Sekolah')
+            ->whereDate('created_at', Carbon::today())
             ->whereHas('konfirmasi', fn($query) => $query->whereNull('konfirmasi_1'))
             ->get();
-
+    
         $dispenKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')
+            ->whereDate('created_at', Carbon::today())
             ->whereHas('konfirmasi', fn($query) => $query->whereNull('konfirmasi_1'))
             ->get();
-
-        $dispen = Dispensasi::whereHas('konfirmasi', fn($query) => $query->whereNull('konfirmasi_1'))->get();
-
-        // Ambil data dari tabel dispensasi berdasarkan kriteria
+    
+        $dispen = Dispensasi::whereDate('created_at', Carbon::today())
+            ->whereHas('konfirmasi', fn($query) => $query->whereNull('konfirmasi_1'))
+            ->get();
+    
+        // Ambil data dari tabel dispensasi berdasarkan kriteria untuk konfirmasi foto
         $dispenSiswaKembali = Dispensasi::where('kategori', 'Keluar Lingkungan Sekolah')
+            ->whereDate('created_at', Carbon::today())
             ->whereNotNull('bukti_foto') // Hanya data yang memiliki bukti foto
             ->whereHas('konfirmasi', function ($query) {
-                $query->whereNotNull('konfirmasi_1'); // Konfirmasi_1 bukan null
-                $query->whereNull('konfirmasi_2'); // Hanya lanjutkan jika konfirmasi_2 belum diisi
-
+                $query->whereNotNull('konfirmasi_1') // Konfirmasi_1 bukan null
+                      ->whereNull('konfirmasi_2'); // Hanya lanjutkan jika konfirmasi_2 belum diisi
             })
             ->get();
-
+    
         return view('guru.konfirmasi_guru_piket', compact('dispen', 'dispenKeluar', 'dispenKegiatan', 'dispenSiswaKembali'));
     }
+    
 
     public function konfirmasiPiket(Request $request)
     {

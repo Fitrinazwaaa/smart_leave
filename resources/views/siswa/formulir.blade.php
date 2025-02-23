@@ -20,6 +20,7 @@
             overscroll-behavior: none;
             background: linear-gradient(to bottom, #ffffff, #f3f4f7);
             background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+            background-attachment: fixed;
         }
 
         /* Header Style */
@@ -145,12 +146,50 @@
         /* Responsivitas untuk layar kecil */
         @media (max-width: 768px) {
             main {
-                margin: 120px 15px 30px;
+                margin: 150px 15px 30px;
                 /* Menambahkan jarak atas lebih kecil pada layar kecil */
                 padding: 20px;
                 /* Mengurangi padding untuk layar kecil */
             }
         }
+        @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 10px;
+        position: fixed; /* Tambahkan relative untuk posisi child absolute */
+      }
+    
+      header .back-button {
+        position: absolute; /* Pindahkan button dengan posisi absolute */
+        top: 10px; /* Jarak dari atas */
+        left: 10px; /* Jarak dari kiri */
+        margin: 0; /* Hilangkan margin default */
+        font-size: 16px;
+        width: 40px;
+        height: 40px;
+      }
+    
+      header .logo {
+        flex-direction: column;
+        gap: 10px;
+      }
+    
+      header .logo img {
+        width: 60px;
+        height: 60px;
+      }
+    
+      header h2 {
+        font-size: 20px;
+      }
+    
+      header .sub-title {
+        font-size: 12px;
+      }
+    }
     </style>
 </head>
 
@@ -169,7 +208,7 @@
     </header>
 
     <main class="container">
-        <h3 style="text-align: center; font-weight: bold;">Isi Formulir Dispensasi</h3>
+        <h3 style="text-align: center; font-weight: bold;">Data Formulir Dispensasi</h3>
 
         <!-- Formulir Dispensasi -->
         <form action="{{ route('dispensasi.store') }}" method="POST" enctype="multipart/form-data">
@@ -204,7 +243,8 @@
                 <label for="program_keahlian" class="form-label">Program Keahlian</label>
                 <input type="text" class="form-control" id="program_keahlian" name="program_keahlian" value="{{ $siswa->program_keahlian }}" readonly>
             </div>
-
+<hr>        <h3 style="text-align: center; font-weight: bold;">Isi Formulir Dispensasi</h3>
+<br>
             <!-- Mata Pelajaran yang tidak di ikuti -->
             <div class="mb-3">
                 <label for="mata_pelajaran" class="form-label">Mata Pelajaran Yang Tidak Diikuti</label>
@@ -240,7 +280,7 @@
             <!-- Alasan Dispensasi -->
             <div class="mb-3">
                 <label for="alasan" class="form-label">Alasan</label>
-                <textarea class="form-control" id="alasan" name="alasan" rows="3" required></textarea>
+                <input class="form-control" id="alasan" name="alasan" rows="3" required></input>
             </div>
 
             <!-- Waktu Keluar -->
@@ -251,7 +291,7 @@
 
             <!-- Foto Bukti (Optional) -->
             <div class="mb-3">
-                <label for="bukti_foto" class="form-label">Bukti Foto (Opsional)</label>
+                <label for="bukti_foto" class="form-label">Bukti Foto</label>
                 <input type="file" class="form-control" id="bukti_foto" name="bukti_foto">
             </div>
 
@@ -259,12 +299,6 @@
             <button type="submit" class="btn btn-primary">Kirim Pengajuan</button>
         </form>
     </main>
-
-    <footer class="bg-dark text-white py-3 mt-5">
-        <div class="container text-center">
-            <p>&copy; 2025 SMK Negeri 1 Kawali | All Rights Reserved</p>
-        </div>
-    </footer>
     <script>
         document.getElementById('mata_pelajaran').addEventListener('change', function() {
             var mataPelajaran = this.value;

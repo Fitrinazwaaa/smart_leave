@@ -18,85 +18,87 @@ class GuruImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
-        // Cari apakah data dengan NIP yang sama sudah ada di tabel akun_guru
-        $existingGuru = AkunGuru::where('nip', $row['nip'])->first();
+        // Pastikan NIP tidak kosong
+        if (empty($row['nip'])) {
+            return null;
+        }
 
-        // Password dienkripsi
-        $hashedPassword = Hash::make($row['password']);
+        // Bersihkan nilai dari spasi ekstra
+        $nip = trim($row['nip']);
+        $nama = trim($row['nama']);
+        $jenisKelamin = trim($row['jenis_kelamin']);
+        $mataPelajaranRaw = trim($row['mata_pelajaran'] ?? '');
+        $programKeahlian = trim($row['program_keahlian']);
+        $tingkat = trim($row['tingkat']);
+        $telepon = trim($row['telepon']);
+        $jabatan = trim($row['jabatan']);
+        $password = trim($row['password'] ?? 'smkn1kawali'); // Default jika kosong
 
-        // Pisahkan hari piket dan mata pelajaran
-        $mataPelajaran = explode(',', $row['mata_pelajaran']);
+        // Enkripsi password
+        $hashedPassword = Hash::make($password);
 
-        if ($existingGuru) {
-            // Update data di tabel akun_guru
-            $existingGuru->update([
-                'nama' => $row['nama'],
-                'jk' => $row['jenis_kelamin'], // L atau P
-                'mata_pelajaran' => $row['mata_pelajaran'],
-                'program_keahlian' => $row['program_keahlian'],
-                'tingkat' => $row['tingkat'],
-                'no_hp' => $row['telepon'],
-                'jabatan' => $row['jabatan'],
-                'password' => $hashedPassword,
-            ]);
+        // Pisahkan mata pelajaran menjadi array
+        $mataPelajaranList = array_map('trim', explode(',', $mataPelajaranRaw));
 
-            // Update atau tambahkan data ke tabel users
-            DB::table('users')->updateOrInsert(
-                ['nip' => $row['nip']],
-                [
+        DB::beginTransaction();
+        try {
+            // Cek apakah guru dengan NIP yang sama sudah ada
+            $existingGuru = AkunGuru::where('nip', $nip)->first();
+
+            if ($existingGuru) {
+                // Jika sudah ada, update data
+                $existingGuru->update([
+                    'nama' => $nama,
+                    'jk' => $jenisKelamin,
+                    'mata_pelajaran' => $mataPelajaranRaw,
+                    'program_keahlian' => $programKeahlian,
+                    'tingkat' => $tingkat,
+                    'no_hp' => $telepon,
+                    'jabatan' => $jabatan,
                     'password' => $hashedPassword,
-                    'username' => null,
-                ]
-            );
-
-            // Update data di tabel matapelajaran_guru
-            foreach ($mataPelajaran as $mapel) {
-                DB::table('matapelajaran_guru')->updateOrInsert(
-                    ['nip' => $row['nip'], 'mata_pelajaran' => trim($mapel)],
-                    [
-                        'nama' => $row['nama'],
-                        'jk' => $row['jenis_kelamin'],
-                        'program_keahlian' => $row['program_keahlian'],
-                        'tingkat' => $row['tingkat'],
-                    ]
-                );
+                ]);
+            } else {
+                // Jika tidak ada, buat data baru
+                $existingGuru = AkunGuru::create([
+                    'nip' => $nip,
+                    'nama' => $nama,
+                    'jk' => $jenisKelamin,
+                    'mata_pelajaran' => $mataPelajaranRaw,
+                    'program_keahlian' => $programKeahlian,
+                    'tingkat' => $tingkat,
+                    'no_hp' => $telepon,
+                    'jabatan' => $jabatan,
+                    'password' => $hashedPassword,
+                ]);
             }
 
-            return null; // Data sudah diperbarui
+            // Tambahkan atau perbarui data ke tabel users
+            DB::table('users')->updateOrInsert(
+                ['nip' => $nip],
+                ['password' => $hashedPassword, 'username' => null]
+            );
+
+            // Tambahkan atau update data di tabel matapelajaran_guru
+            foreach ($mataPelajaranList as $mapel) {
+                if (!empty($mapel)) {
+                    DB::table('matapelajaran_guru')->updateOrInsert(
+                        ['nip' => $nip, 'mata_pelajaran' => $mapel],
+                        [
+                            'nama' => $nama,
+                            'jk' => $jenisKelamin,
+                            'program_keahlian' => $programKeahlian,
+                            'tingkat' => $tingkat,
+                        ]
+                    );
+                }
+            }
+
+            DB::commit(); // Simpan perubahan ke database
+            return $existingGuru;
+        } catch (\Exception $e) {
+            DB::rollBack(); // Batalkan transaksi jika ada error
+            \Log::error("Error Import Guru: " . $e->getMessage()); // Simpan ke log
+            return null;
         }
-
-        // Jika data tidak ditemukan, buat data baru di tabel akun_guru
-        $newGuru = new AkunGuru([
-            'nip' => $row['nip'],
-            'nama' => $row['nama'],
-            'jk' => $row['jenis_kelamin'], // L atau P
-            'mata_pelajaran' => $row['mata_pelajaran'],
-            'program_keahlian' => $row['program_keahlian'],
-            'tingkat' => $row['tingkat'],
-            'no_hp' => $row['telepon'],
-            'jabatan' => $row['jabatan'],
-            'password' => $hashedPassword,
-        ]);
-
-        // Tambahkan data ke tabel users
-        DB::table('users')->insert([
-            'nip' => $row['nip'],
-            'password' => $hashedPassword,
-            'username' => null,
-        ]);
-
-        // Tambahkan data ke tabel matapelajaran_guru
-        foreach ($mataPelajaran as $mapel) {
-            DB::table('matapelajaran_guru')->insert([
-                'nip' => $row['nip'],
-                'nama' => $row['nama'],
-                'jk' => $row['jenis_kelamin'],
-                'program_keahlian' => $row['program_keahlian'],
-                'tingkat' => $row['tingkat'],
-                'mata_pelajaran' => trim($mapel),
-            ]);
-        }
-
-        return $newGuru;
     }
 }

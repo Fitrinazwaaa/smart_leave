@@ -8,15 +8,12 @@ use App\Http\Controllers\AdminKelasController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminGuruController;
 use App\Http\Controllers\AdminPiketController;
-use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\DispensasiController;
 use App\Http\Controllers\GuruKonfirmasiController;
 use App\Http\Controllers\SiswaDispensasiController;
 use App\Http\Controllers\SiswaKonfirmController;
 use App\Http\Controllers\PdfViewerController;
 use App\Http\Controllers\DispensasiPdfController;
-use App\Http\Controllers\GuruDetailController;
-use App\Http\Controllers\SiswaController;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/', [AuthController::class, 'index_login'])->name('login');

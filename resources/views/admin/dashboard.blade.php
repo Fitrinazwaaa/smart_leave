@@ -148,7 +148,7 @@ $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="d-flex">
                 <div class="stats-card">
                     <h3>Statistik Dispensasi Siswa</h3>
                     <div class="stat-item">
@@ -165,7 +165,7 @@ $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->
                     document.getElementById('stat-keluar-lingkungan').textContent = "<?php echo $jumlahKeluarLingkungan; ?>";
                     document.getElementById('stat-mengikuti-kegiatan').textContent = "<?php echo $jumlahMengikutiKegiatan; ?>";
                 </script>
-                <div class="stats-card" style="margin-top: 10px;">
+                <div class="stats-card" style="margin-top: -20px;">
                     <h3>Statistik Pengguna</h3>
                     <p class="stat">{{ $totalSiswa }}</p>
                     <p>Siswa Terdaftar</p>
@@ -178,20 +178,20 @@ $jumlahMengikutiKegiatan = Dispensasi::where('kategori', 'Mengikuti Kegiatan')->
             <div class="info-card">
                 <h3>Data Siswa & Data Guru</h3>
                 <div class="divider"></div>
-                <p>Data ini dibutuhkan untuk login baik itu guru maupun siswa.</p>
-                <p>Username guru menggunakan NIP</p>
-                <p>Username siswa menggunakan NIS</p>
-                <p>Dengan password masing-masing</p>
+                <p style="text-align: center;">Data ini dibutuhkan untuk login baik itu guru maupun siswa.</p>
+                <p style="text-align: center;">Username guru menggunakan NIP</p>
+                <p style="text-align: center;">Username siswa menggunakan NIS</p>
+                <p style="text-align: center;">Dengan password masing-masing</p>
             </div>
             <div class="info-card">
                 <h3>Jadwal Piket Guru</h3>
                 <div class="divider"></div>
-                <p>Ini digunakan untuk mengetahui siapa saja guru yang bertugas melakukan piket sekolah.</p>
+                <p style="text-align: center;">Ini digunakan untuk mengetahui siapa saja guru yang bertugas melakukan piket sekolah.</p>
             </div>
             <div class="info-card">
                 <h3>History Dispen Siswa</h3>
                 <div class="divider"></div>
-                <p>Kumpulan data siswa yang telah melakukan dispen dalam 1 tahun.</p>
+                <p style="text-align: center;">Kumpulan data siswa yang telah melakukan dispen dalam 1 tahun.</p>
             </div>
         </div>
     </div>

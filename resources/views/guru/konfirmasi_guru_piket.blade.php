@@ -303,10 +303,10 @@ if (!$guru) {
 
       /* Container */
       .container {
-        margin: 140px auto 0;
-        padding: 16px;
-        border-radius: 8px;
-      }
+                margin: 130px auto 0;
+                padding: 20px;
+                border-radius: 8px;
+            }
 
       .container h5 {
         font-size: 14px;

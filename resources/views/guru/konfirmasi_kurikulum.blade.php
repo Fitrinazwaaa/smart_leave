@@ -257,85 +257,143 @@ if (!$guru) {
       border-bottom-left-radius: 15px;
       border-bottom-right-radius: 15px;
     }
-    @media (max-width: 768px) {
-      header {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 8px;
-    position: fixed;
-  }
+        /* Mobile Specific Styling */
+        @media (max-width: 768px) {
 
-  header .back-button {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    margin: 0;
-    font-size: 16px;
-    width: 36px;
-    height: 36px;
-  }
+/* Header */
+header {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 8px;
+  position: fixed;
+}
 
-  header .logo {
-    flex-direction: column;
-    gap: 8px;
-  }
+header .back-button {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  margin: 0;
+  font-size: 16px;
+  width: 36px;
+  height: 36px;
+}
 
-  header .logo img {
-    width: 50px;
-    height: 50px;
-  }
+header .logo {
+  flex-direction: column;
+  gap: 8px;
+}
 
-  header h2 {
-    font-size: 18px;
-  }
+header .logo img {
+  width: 50px;
+  height: 50px;
+}
 
-  header .sub-title {
-    font-size: 12px;
-  }
+header h2 {
+  font-size: 18px;
+}
 
-      /* Container */
-      .container {
-        margin: 140px auto 0;
-        padding: 16px;
-        border-radius: 8px;
-      }
+header .sub-title {
+  font-size: 12px;
+}
 
-      .container h5 {
-        font-size: 14px;
-      }
+/* Container */
+.container {
+  margin: 140px auto 0;
+  padding: 16px;
+  border-radius: 8px;
+}
 
-      .container p,
-      .container button {
-        font-size: 12px;
-      }
+.container h5 {
+  font-size: 14px;
+}
 
-      .container .modal-title {
-        font-size: 14px;
-      }
+.container p,
+.container button {
+  font-size: 12px;
+}
 
-      .container img {
-        max-width: 100%;
-        height: auto;
-      }
+.container .modal-title {
+  font-size: 14px;
+}
 
-      .container .btn {
-        padding: 6px;
-        font-size: 13px;
-      }
+.container img {
+  max-width: 100%;
+  height: auto;
+}
 
-      /* Card */
-      .container .card {
-        padding: 10px 12px;
-        margin-bottom: 12px;
-      }
+.container .btn {
+  padding: 6px;
+  font-size: 13px;
+}
 
-      .container .card:hover {
-        transform: none;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-      }
-    }
+/* Card */
+.container .card {
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+.container .card:hover {
+  transform: none;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Row Content */
+.student-info {
+  text-align: left;
+}
+
+.student-info .name {
+  font-size: 12px;
+}
+
+.student-info .time-info {
+  font-size: 10px;
+}
+
+/* Buttons */
+.actions {
+  flex-direction: row;
+  gap: 6px;
+}
+
+.btn-detail,
+.btn-confirm {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+/* Modal */
+.modal-content {
+  padding: 16px;
+}
+
+.modal-header {
+  padding: 12px;
+}
+
+.modal-body p {
+  font-size: 12px;
+}
+
+.modal-body img {
+  margin-top: 8px;
+  border-radius: 8px;
+}
+
+.modal-footer {
+  padding: 10px;
+}
+
+/* Semi-circle */
+.semi-circle {
+  width: 90%;
+  height: 150px;
+  margin: -75px auto 32px;
+  border-radius: 50% / 50%;
+}
+}
   </style>
 </head>
 

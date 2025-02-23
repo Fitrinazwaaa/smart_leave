@@ -276,17 +276,8 @@ td {
   text-align: left;
   }
 
-/* Responsif untuk Semi-Circle dan Header */
+/* Mobile-Specific Header Styling */
 @media (max-width: 768px) {
-
-  /* Styling Body */
-  body {
-      font-size: 14px;
-      padding: 0;
-      margin: 0;
-  }
-
-  /* Header */
   header {
     flex-direction: row; /* Tetap horizontal */
     justify-content: space-between; /* Pisahkan logo dan tombol logout */
@@ -423,7 +414,7 @@ td {
     margin-bottom: 10px;
   }
   .notification-card{
-    margin-top: -80px;
+    margin-top: -20px;
   }
   .stats-card{
     margin-top: -110px;
@@ -451,9 +442,5 @@ td {
   }
   .stats-card p {
     font-size: 14px; /* Menyesuaikan ukuran font pada statistik */
-  }
-
-  .stat {
-    font-size: 16px; /* Menyesuaikan ukuran font statistik */
   }
 }
